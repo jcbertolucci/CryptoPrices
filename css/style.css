@@ -10,11 +10,7 @@ body{
 .wrapper{
   display: grid;
   grid-template-columns:repeat(3, 1fr);
-  /*
-  grid-column-gap: 2em;
-  grid-row-gap: 2em;
-  */
-  grid-gap: 2em;
+  grid-gap: 1em;
 }
 
 .div-main{
