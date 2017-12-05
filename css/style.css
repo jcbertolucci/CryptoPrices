@@ -1,0 +1,87 @@
+/*Fonts*/
+@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro|Roboto+Mono|Source+Sans+Pro:b');
+
+/*Elements*/
+body{
+    font-family: 'Source Sans Pro'
+}
+
+/*Classes*/
+.wrapper{
+  display: grid;
+  grid-template-columns:repeat(3, 1fr);
+  /*
+  grid-column-gap: 2em;
+  grid-row-gap: 2em;
+  */
+  grid-gap: 2em;
+}
+
+.div-main{
+    padding-top: 70px;
+}
+.no-padding{
+    padding: 0px 0px 0px 0px;
+}
+.no-padding-left-right{
+    padding-left: 0px;
+    padding-right: 0px;
+}
+.font-orange{
+    --color: rgb(224, 65, 7);
+}
+.cool-link {
+    display: inline-block;
+    color: rgb(224, 65, 7);
+    --color: hsla(13, 100%, 50%, 0.719);
+    text-decoration: none;
+}
+.cool-link::after {
+    content: '';
+    display: block;
+    width: 0;
+    height: 2px;
+    background: rgb(224, 65, 7);
+    transition: width .3s;
+}
+.cool-link:hover{
+    color: rgb(224, 65, 7);
+}
+.cool-link:hover::after {
+    width: 100%;
+    transition: width .3s;    
+}
+
+/*Ids*/
+#btnSignIn{
+    padding-right: 15px;
+    color: rgb(224, 65, 7);
+    cursor: pointer;
+    font-size: 16px;
+    font-family: 'Source Sans Pro'
+}
+#btnSignIn:hover{
+    padding-right: 15px;
+    color: rgb(224, 65, 7);
+}
+#btnSignUp{
+    color: rgb(224, 65, 7);
+    border: 2px solid rgb(224, 65, 7);
+    background-color: white;
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+    cursor: pointer;
+    font-size: 17px;
+    font-family: 'Source Sans Pro'
+}
+#btnSignUp:hover {
+    background-color: rgb(224, 65, 7);
+    color: white;
+}
+#app h5{
+    font-family: 'Source Sans Pro Bold';
+    font-style: bold;
+}
+#nav-menu{
+    font-family: 'Source Sans Pro'
+}
