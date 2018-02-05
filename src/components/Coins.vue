@@ -1,23 +1,28 @@
-<template id="CoinsTemplate reset-space">
+<template id="CoinsTemplate">
   <div class="reset-space">
-    <div class="tab reset-space border border-top-0 border-left-0 border-right-0">
-      <button class="tablinks" v-for="coin in coins" v-bind:class="{active: coin.isActive}" @click="openCoin(coin)">{{coin.name}} 
-        <p>{{coin.price}}</p>
+    <div class="tab border border-top-0 border-left-0 border-right-0">
+      <button class="tablinks" v-for="coin in topFiveCoins" v-bind:class="{active: coin.isActive}" @click="openCoin(coin)">{{coin.name}} 
+        <p>A${{coin.priceAud}}</p>
       </button>
     </div>
-    <div class="reset-space" v-for="coin in coins" v-if="coin.isActive">
+    <div class="reset-space" v-for="coin in topFiveCoins" v-if="coin.isActive">
       <div class="div-prices align-center reset-space top-padding">
-        <div class="text-center">
-          <h1 class="font-weight-normal">A${{coin.price}}</h1>
-          <h6 class="font-weight-light">{{coin.name}} Price</h6>
+        <div class="text-center div-price">
+          <a class="font-weight-bold is-size-5 h1-value text-top font-orange">
+            A$
+          </a>
+          <h1 class="font-weight-bold is-size-1 font-orange h1-value ">
+            {{coin.priceAud}}
+          </h1>
+          <h6 class="font-weight-bold is-size-6">{{coin.name}} Price</h6>
         </div>
         <div class="text-center">
-          <h1 class="font-weight-normal">{{coin.priceVar}}</h1>
-          <h6 class="font-weight-light">Since Last Month(AUD)</h6>
+          <h1 class="font-weight-bold is-size-1">{{coin.dayPercVar}}</h1>
+          <h6 class="font-weight-bold is-size-6">Since Last 24h(%)</h6>
         </div>
         <div class="text-center">
-          <h1 class="font-weight-normal">{{coin.perVar}}</h1>
-          <h6 class="font-weight-light">Since Last Month(%)</h6>
+          <h1 class="font-weight-bold is-size-1">{{coin.weekPercVar}}</h1>
+          <h6 class="font-weight-bold is-size-6">Since Last Week(%)</h6>
         </div>
       </div>
       <div>
@@ -31,6 +36,7 @@
 /* eslint-disable */
 import GraphTemplate from "./CoinGraph.vue";
 
+
 export default {
   components: {
     'graph-template': GraphTemplate
@@ -38,77 +44,101 @@ export default {
   data() {
     return {
       currentCoin:'',
-      coins: [
-        {
-          name: "Bitcoin",
-          price: "189.56",
-          priceVar: "50.00",
-          perVar: "56%",
-          isActive: true
-        },
-        {
-          name: "Litecoin",
-          price: "400.00",
-          priceVar: "A$3.00",
-          perVar: "12%",
-          isActive: false
-        },
-        {
-          name: "Ripple",
-          price: "3300.00",
-          priceVar: "A$15.45",
-          perVar: "1%",
-          isActive: false
-        },
-        {
-          name: "Monero",
-          price: "200.00",
-          priceVar: "A$56.00",
-          perVar: "2%",
-          isActive: false
-        },
-        {
-          name: "Ethereum",
-          price: "200.00",
-          priceVar: "A$12.35",
-          perVar: "90%",
-          isActive: false
-        }
-      ],
+      topFiveCoins: [],
     };
   },
   methods: {
     openCoin: function(coin) {
       //deactivate all elements
-      this.coins.forEach(element => {
+      this.topFiveCoins.forEach(element => {
         element.isActive = false;
       });
       //activate clicked coin
       coin.isActive = true;
       //set the currentCoin to bind it to child component
       this.currentCoin = coin;
+    },
+    fetchTopCoins: function() {
+      let requestData = [];
+      let coins = [];
+      let coin = {
+        id: '',
+        name: '',
+        symbol: '',
+        rank: '',
+        price_usd: '',
+        price_btc: '',
+        volume_usd_24h: '',
+        market_cap_usd: '',
+        available_supply: '' ,
+        total_supply: '',
+        max_supply: '',
+        percent_change_1h: '',
+        percent_change_24h: '',
+        percent_change_7d: '',
+        last_updated: '',
+        price_aud: '',
+        volume_aud_24h: '',
+        market_cap_aud: '',
+        isActive: false
+      }
+      let currency = 'AUD';
+      let limitCoins = '5'
+      let url = `https://api.coinmarketcap.com/v1/ticker/?convert=${currency}&limit=${limitCoins}`;
+           
+      this.$http.get(url).then(function(data){ 
+        requestData = data.body;
+        requestData.forEach( function (item){
+          coin = {};
+          coin.isActive = item.rank === "1";
+          coin.name = item.name;
+          coin.priceAud = parseFloat(item.price_aud).toFixed(2);
+          coin.priceUsd = parseFloat(item.price_usd).toFixed(2);
+          coin.weekPercVar = item.percent_change_7d;
+          coin.dayPercVar = item.percent_change_24h;
+          coin.hourPercVar = item.percent_change_1h;
+          coin.marketCapAud = item.market_cap_aud.format();
+          coin.totalSupply = item.total_supply;
+
+          coins.push(coin);
+        })
+        this.topFiveCoins = coins;
+      }); 
+      
     }
+  },
+  created(){
+    this.fetchTopCoins();
   }
 };
 </script>
 
 <style scoped>
-.reset-space {
-  padding: 0px;
+.text-top{
+  vertical-align: text-bottom;
+}
+.div-price{
+  font-size: 0px;
+}
+.h1-value{
+  display: inline-block;
 }
 .top-padding {
   padding-top: 20px;
 }
+.font-orange{
+  color: rgb(224, 65, 7);
+}
 div h1 {
-  color: hsl(256, 67%, 23%);
-  font-family: "Lato";
+  color: hsl(256, 67%, 10%);
 }
 div h6 {
-  color: hsl(256, 67%, 30%);
-  font-family: "Lato";
-  letter-spacing: 3px;
+  color: hsl(256, 67%, 10%);
+  letter-spacing: 1px;
 }
+
 /* Style the tab */
+
 div.tab {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
@@ -126,16 +156,10 @@ div.div-prices {
   grid-gap: 1em;
   grid-auto-rows: minmax(20px, auto);
   letter-spacing: 3px;
+  font-family: "Open Sans";
 }
-div.tab button {
-  background-color: inherit;
-  float: left;
-  border: none;
-  outline: none;
-  cursor: pointer;
-  color: hsl(0, 4%, 70%);
-  transition: 0s;
-}
+
+
 /* Change background color of buttons on hover */
 div.tab button:hover {
   --color: rgb(224, 65, 7);

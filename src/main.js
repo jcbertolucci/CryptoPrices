@@ -3,13 +3,29 @@
 import Vue from 'vue'
 import App from './App'
 import VueResource from 'vue-resource'
+import VueRouter from 'vue-router'
+import Home from './components/Home.vue'
+import SignUp from './components/SignUp.vue'
 
 Vue.use(VueResource)
+Vue.use(VueRouter)
 Vue.config.productionTip = false
 
-/* eslint-disable no-new */
+const routes = [
+  { path: '/', component: Home },
+  //{ path: '/login', component: Login },
+  { path: '/signup', component: SignUp },
+]
+
+const router = new VueRouter({
+  routes,
+  mode: 'history'
+})
+
+/* eslint-disable*/
 new Vue({
   el: '#app',
+  router,
   template: '<App/>',
   components: {App}
 })

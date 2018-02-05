@@ -1,16 +1,13 @@
 /*Fonts*/
-@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro|Roboto+Mono|Source+Sans+Pro:b');
+@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro|Roboto+Mono|Source+Sans+Pro:b|Lato:700|Open+Sans|Roboto:thin');
 
 /*Elements*/
-body{
-    font-family: 'Source Sans Pro'
-}
 
 /*Classes*/
 .wrapper{
   display: grid;
-  grid-template-columns:repeat(3, 1fr);
-  grid-gap: 1em;
+  grid-template-columns:repeat(2, 1fr);
+  grid-gap: 2em;
 }
 
 .div-main{
@@ -50,14 +47,14 @@ body{
 
 /*Ids*/
 #btnSignIn{
-    padding-right: 15px;
+    padding-right: 14px;
     color: rgb(224, 65, 7);
     cursor: pointer;
-    font-size: 16px;
+    font-size: 14px;
     font-family: 'Source Sans Pro'
 }
 #btnSignIn:hover{
-    padding-right: 15px;
+    padding-right: 14px;
     color: rgb(224, 65, 7);
 }
 #btnSignUp{
@@ -67,17 +64,44 @@ body{
     -webkit-transition-duration: 0.4s; /* Safari */
     transition-duration: 0.4s;
     cursor: pointer;
-    font-size: 17px;
+    font-size: 15px;
     font-family: 'Source Sans Pro'
 }
 #btnSignUp:hover {
     background-color: rgb(224, 65, 7);
     color: white;
 }
-#app h5{
-    font-family: 'Source Sans Pro Bold';
-    font-style: bold;
-}
 #nav-menu{
     font-family: 'Source Sans Pro'
 }
+#footer > #div-footer{
+  display: grid;
+  grid-template-columns:repeat(2, 1fr);
+}
+#div-footer li{
+  list-style-type: none;
+  padding: 10px 50px 5px 0px;
+}
+#div-footer li{
+  color: rgb(250, 245, 245);
+  text-align: left;
+  font-family: 'Roboto';
+  font-size: 14px;
+}
+#div-footer li a{
+  color: rgb(250, 245, 245);
+  text-align: left;
+  font-family: 'Roboto';
+  font-size: 14px;
+  padding: 2px 5px 0px 70px;
+}
+.footer-heading{
+  color: rgb(221, 19, 19);
+  font-weight: bold;
+  font-size: 19px;
+}
+#footer div{
+  background: hsl(256, 67%, 10%);
+}
+
+
