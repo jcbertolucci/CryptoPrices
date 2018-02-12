@@ -45,7 +45,7 @@ export const store = new Vuex.Store({
         //activate clicked coin
         peyload.isActive = true;
         //set the currentCoin to bind it to child component
-        state.currentCoin = peyload;
+        state.currentCoin = payload;
     },
     fetchTopCoins: (state, payload) => {
         let requestData = [];
