@@ -46,7 +46,7 @@
 }
 
 /*Ids*/
-#btnSignIn{
+ #btnSignIn{
     padding-right: 14px;
     color: rgb(224, 65, 7);
     cursor: pointer;
@@ -61,7 +61,7 @@
     color: rgb(224, 65, 7);
     border: 2px solid rgb(224, 65, 7);
     background-color: white;
-    -webkit-transition-duration: 0.4s; /* Safari */
+    -webkit-transition-duration: 0.4s; 
     transition-duration: 0.4s;
     cursor: pointer;
     font-size: 15px;
@@ -70,7 +70,7 @@
 #btnSignUp:hover {
     background-color: rgb(224, 65, 7);
     color: white;
-}
+} */
 #nav-menu{
     font-family: 'Source Sans Pro'
 }

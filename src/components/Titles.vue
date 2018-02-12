@@ -1,6 +1,6 @@
 <template>
   <div class="margin">
-    <h1 class="title">{{ title }}</h1>
+    <vue-text class="headline black--text">{{ title }}</vue-text>
     <hr class="hr-after-h4">
   </div>  
 </template>

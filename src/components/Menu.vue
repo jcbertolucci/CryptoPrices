@@ -3,7 +3,7 @@
     <div class="container border border-top-0 border-left-0 border-right-0 no-padding-left-right">
       <nav class="navbar navbar-light no-padding-left-right">
         <a href="#">
-          <img src="/src/assets/incliti2.png" width="110" height="50" class="d-inline-block align-top rounded" alt="">
+          <img src="/src/assets/incliti2.png" width="110" height="150" class=" align-top rounded" alt="">
         </a>
         <div class="btn">
           <a id="btnSignIn" class="align-middle">Sign in</a>

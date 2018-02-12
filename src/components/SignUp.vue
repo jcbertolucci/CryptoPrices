@@ -1,4 +1,5 @@
 <template>
+  <!--
   <div class="center" id="main-div">
     <div class="container">
       <div class="columns is-centered">
@@ -36,6 +37,7 @@
             <br>
             <div class="field">
               <div class="control">
+                <div class="g-signin2 centered" data-width="200" data-height="50" data-longtitle="true" data-onsuccess="onSignIn"></div>
                 <button class="button orange btn">Register</button>
               </div>
             </div>
@@ -45,19 +47,107 @@
       </div>
     </div>      
   </div>  
+  -->
+      <v-container >
+        <v-layout row>
+          <v-flex xs12 sm6 offset-sm3 >
+            <v-card>
+              <v-snackbar
+                v-model="snackbar"
+                absolute
+                top
+                right
+                color="success">
+                <span>Registration successful!</span>
+                <v-icon dark>check_circle</v-icon>
+              </v-snackbar>
+              <v-card-text>
+                <v-container>
+                  <form @submit.prevent="signUserUp()">
+                    <v-layout row>
+                      <v-flex xs8>
+                        <v-text-field
+                          name="email"
+                          label="Email"
+                          id="email"
+                          v-model="email"
+                          type="email"
+                          required>
+                        </v-text-field>
+                      </v-flex>
+                    </v-layout>
+                    <v-layout row>
+                      <v-flex xs8>
+                        <v-text-field
+                          name="Password"
+                          label="Password"
+                          id="password"
+                          v-model="password"
+                          type="password"
+                          required>
+                        </v-text-field>
+                      </v-flex>
+                    </v-layout>
+                    <v-layout row>
+                      <v-flex xs8>
+                        <v-text-field
+                          name="Password"
+                          label="Confirm Password"
+                          id="confirmPassword"
+                          v-model="confirmPassword"
+                          type="password"
+                          :rules="[comparePasswords]"
+                          required>
+                        </v-text-field>
+                      </v-flex>
+                    </v-layout>
+                    <v-layout row>
+                      <v-flex x12>
+                        <v-btn class="deep-orange darken-2 white--text" type="submit">Sign Up</v-btn>
+                      </v-flex>
+                    </v-layout>
+                  </form>
+                </v-container>
+              </v-card-text>
+            </v-card>
+          </v-flex>
+        </v-layout>
+      </v-container>
+  
 </template>
 
 <script>
 /* eslint-disable */
 import TitlesTemplate from './Titles.vue'
+import * as firebase from 'firebase'
 
   export default{
     data(){
       return{
-        fullName,
-        password,
-        passwordConf
+        email: '',
+        password:  '',
+        confirmPassword: '',
+        snackbar: false
       }
+    },
+    computed: {
+      comparePasswords () {
+        return this.password !== this.confirmPassword ? 'Passwords do not match' : ''
+      }
+    },
+    methods: {
+      signUserUp(){
+        firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
+        .then(user => {
+          console.log(user)
+          this.snackbar = true
+        })
+        .catch(
+          error => {
+            console.log(error.message)
+          }
+        )
+      },
     },
     components:{
       'title-vue': TitlesTemplate
@@ -67,6 +157,7 @@ import TitlesTemplate from './Titles.vue'
 </script>
 
 <style>
+/*
 .center{
   position: fixed;
   top: 50%;
@@ -102,6 +193,15 @@ import TitlesTemplate from './Titles.vue'
 .btn:hover{
   color: whitesmoke
 }
-
+.centered{
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 50%;
+  margin: auto;
+  margin-bottom: 5%
+}
+*/
 </style>
 
