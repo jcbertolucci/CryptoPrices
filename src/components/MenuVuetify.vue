@@ -1,10 +1,15 @@
 <!-- HTML -->
 <template>
-  <v-layout class="ma-0" row wrap>
-    <v-flex  x10>
-      <img src="/src/assets/incliti2.png" width="110" height="50" class="d-inline-block align-top rounded" alt="">
+  <v-layout class="text-xs-center parent">
+    <v-flex class="item">
+       <!-- <img src="/src/assets/incliti2.png" alt="avatar" height="47px" width="100px"> -->
     </v-flex>
-    <v-flex xs2>
+    <v-flex class="item">
+       <v-btn flat class="deep-orange--text pa-0 ma-0 body-2" to="/portfolio">My portfolio</v-btn>      
+       <v-btn flat class="deep-orange--text pa-0 ma-0 body-2" to="/coins">Coins</v-btn>
+       <v-btn flat  class="deep-orange--text pa-0 ma-0 body-2" to="/contact">Contact us</v-btn>
+    </v-flex>
+    <v-flex class="item">
       <v-btn small outline class="deep-orange darken-2 deep-orange--text heading" to="/signin">Sign In</v-btn>
       <v-btn class="deep-orange darken-2 white--text" to="/signup">Sign Up</v-btn>
     </v-flex>
@@ -18,6 +23,13 @@
 
 <!-- Style -->
 <style scoped>
+.parent{
+  display: flex;
+  justify-content: space-between;
+}
+.item{
+
+}
 </style>
 
 

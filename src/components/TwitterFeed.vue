@@ -1,18 +1,18 @@
 <template>
   <div>
     <!--HEADER-->
-    <v-toolbar color="light-blue white--text" light dense prominent>
+    <v-toolbar color="primary lighten-1  accent--text" light dense prominent>
       <i class="fab fa-twitter fa-3x"></i>
       <v-toolbar-title class="headline">Tweets</v-toolbar-title>
     </v-toolbar> 
     <!--CONTENT CARDS-->  
-    <v-container fluid grid-list class="pa-0 pt-2 elevation-15">
+    <v-container fluid grid-list class="pa-0 pt-2 elevation-2">
       <v-layout row wrap>
         <v-flex v-bind="{ [`xs${item.flex}`]: true}" v-for="item in twitters" :key="item.id">
           <v-card class="ma-3">
             <v-layout column wrap text-xs-center>
               <v-flex xs12>
-                <v-card align-center color="light-blue lighten-1" >
+                <v-card align-center color="primary lighten-1" >
                   <v-flex xs12 pl-5 pr-5 mr-5 ml-5 pt-1>
                     <v-avatar size="100px">
                       <img :src="item.urlImg" alt=""></img>

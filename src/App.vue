@@ -10,7 +10,25 @@
 
 export default {
   /* eslint-disable */
-  name: 'app'
+  name: 'app',
+
+  methods: {
+    fetchTopCoins(){
+      this.$store.dispatch('fetchTopCoins')//call store action
+    },
+    fetchAllCoins(){
+      this.$store.dispatch('fetchAllCoins')//call store action
+    }
+    ,
+    fetchCoinMarkets(){
+      this.$store.dispatch('fetchCoinMarkets')//call store action
+    }
+  },
+  created(){
+    this.fetchTopCoins();
+    this.fetchAllCoins();
+    this.fetchCoinMarkets();
+  }
 }
 </script>
 

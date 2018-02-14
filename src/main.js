@@ -15,13 +15,29 @@ import Home from './components/Home.vue'
 import SignUp from './components/SignUp.vue'
 import HomeVuetify from './components/HomeVuetify.vue'
 import Coins from './components/Coins.vue'
+import colors from 'vuetify/es5/util/colors'
+import Trend from 'vuetrend';
+import Chartkick from 'chartkick'
+import VueChartkick from 'vue-chartkick'
+import Chart from 'chart.js'
 
-
+Vue.use(VueChartkick, { Chartkick })
+Vue.use(Trend);
 Vue.use(Vuex)
-Vue.use(Vuetify)
 Vue.use(VueResource)
 Vue.use(VueRouter)
 Vue.config.productionTip = false
+Vue.use(Vuetify,{
+  theme: {
+    primary: colors.deepOrange.accent4,
+    secondary: colors.red.lighten2,
+    accent: colors.purple.darken4,
+    error: colors.red.base,
+    warning: colors.yellow.base,
+    info: colors.blue.base,
+    success: colors.green.base
+  }
+})
 
 const routes = [
   //{ path: '/', component: Home }

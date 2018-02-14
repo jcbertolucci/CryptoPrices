@@ -1,99 +1,86 @@
 <template>
-  <div class="white">
-    <v-toolbar flat app color="white">
-      <vue-menu></vue-menu>
-    </v-toolbar>
-    <v-content class="text-xs-center">
-      <vue-submenu></vue-submenu>  
-      <br><br><br><br><br>
-      <v-card>
-        <div class="parent">
-          <v-navigation-drawer permanent light class="item">
-            <v-toolbar flat class="deep-orange accent-4">
-              <v-list>
-                <v-list-tile>
-                  <v-btn  color="white" small flat dark>
-                    <img src="../../src/assets/coins/eth.svg" alt="" height="30px">
-                  </v-btn> 
-                  <v-list-tile-title class="title white--text">
-                    Bitcoin
-                  </v-list-tile-title>
-                </v-list-tile>
-              </v-list>
-            </v-toolbar>
-            <v-divider></v-divider>
-            <v-list dense class="pt-0">
-              <v-list-tile v-for="item in items" :key="item.title" @click="">
-                <v-list-tile-action>
-                  <v-icon>{{ item.icon }}</v-icon>
-                </v-list-tile-action>
-                <v-list-tile-content>
-                  <v-list-tile-title>{{ item.title }}</v-list-tile-title>
-                </v-list-tile-content>
-              </v-list-tile>
-            </v-list>
-          </v-navigation-drawer>
-          <v-navigation-drawer permanent light class="item">
-            <v-toolbar flat class="deep-orange accent-4">
-              <v-list>
-                <v-list-tile>
-                  <v-btn  color="white" small flat dark>
-                    <img src="../../src/assets/coins/eth.svg" alt="" height="30px">
-                  </v-btn> 
-                  <v-list-tile-title class="title white--text">
-                    Bitcoin
-                  </v-list-tile-title>
-                </v-list-tile>
-              </v-list>
-            </v-toolbar>
-            <v-divider></v-divider>
-            <v-list dense class="pt-0">
-              <v-list-tile v-for="item in items" :key="item.title" @click="">
-                <v-list-tile-action>
-                  <v-icon>{{ item.icon }}</v-icon>
-                </v-list-tile-action>
-                <v-list-tile-content>
-                  <v-list-tile-title>{{ item.title }}</v-list-tile-title>
-                </v-list-tile-content>
-              </v-list-tile>
-            </v-list>
-          </v-navigation-drawer>
-        </div>
-      </v-card>
-    </v-content>
-  </div>
+  <v-app class="white">
+    <div class="white">
+      <v-toolbar flat app color="accent" height="85px">
+        <vue-menu></vue-menu>
+      </v-toolbar>
+      <v-content class="text-xs-center white">
+        <h4 class="display-3 primary--text padding"></h4>
+        <v-container grid-list-md text-xs-center mx-auto>
+          <v-layout row wrap mx-auto justify-space-around>
+            <v-flex xs12>
+              <span class="title grey--text">Quick search:</span>
+            </v-flex >
+            <br><br>
+            <v-flex xs1 v-for="coin in coinTableItems" v-bind:data="coin" v-bind:key="coin.name">
+              <v-btn outline color="secondary" @click="selectedCoin(coin)">{{ coin.name }}</v-btn>
+            </v-flex>         
+          </v-layout>  
+        </v-container>
+        <br>
+        <v-card class="justify-center" flat>
+          <v-text-field
+            append-icon="search"
+            label="Search other coins..."
+            single-line
+            v-model="search"
+          ></v-text-field>
+        </v-card>  
+        <br> <br>
+        <v-card>
+          <div class="parent white">
+            <div class="item">
+              <navigation-drawer></navigation-drawer>
+              <!--<table-vuetify originOfCall='Coins'></table-vuetify>-->
+              <div class="item">
+                <vue-db2-chartAxis></vue-db2-chartAxis>
+              </div>
+            </div>
+          </div>
+        </v-card>
+      </v-content>
+    </div>    
+  </v-app>
 </template>
 
 <script>
 //Charts
-import Trend from 'vuetrend';
+
 //Charts
 import MenuTemplate from './MenuVuetify.vue'
 import SubMenuTemplate from './SubMenu.vue'
+import TableVuetify from './TableVuetify.vue'
+import NavigationDrawer from './NavigationDrawer.vue'
+import ChartTemplate from './Chart.vue'
 import {mapActions} from 'vuex'
 import {mapGetters} from 'vuex'
-
 
 export default {
   computed: {
     ...mapGetters([
-      ''
-    ])
+      'coinTableItems'
+    ]),
+    searchFieldCoins: () => {
+      let items = [{value: 1, text: 'Option 1'},{value: 2, text: 'Option 2'}]
+      return items
+    }
   },
   components: {
     'vue-menu': MenuTemplate,
     'vue-submenu': SubMenuTemplate,
-    'trend': Trend
+    'table-vuetify' : TableVuetify,
+    'navigation-drawer': NavigationDrawer,
+    'vue-db2-chartAxis': ChartTemplate
+  },
+  methods:{
+    ...mapActions({
+      selectedCoin: 'setCurrentCoin'
+    })
   },
   data() {
     return {
-      items: [
-        { title: 'Charts', icon: 'dashboard' },
-        { title: 'Market', icon: 'question_answer' },
-        { title: 'Social', icon: 'dashboard' },
-        { title: 'Historical data', icon: 'question_answer' }
-      ]
-    };
+      search: ''
+    }
   }
 }
 </script>
@@ -101,9 +88,13 @@ export default {
 <style scoped>
 .parent{
   display: flex;
-  justify-content:space-between
+  justify-content: space-between
 }
 .item{
-
+  width: 100%
+}
+.padding{
+  padding-top: 100px;
+  padding-bottom: 50px;
 }
 </style>
