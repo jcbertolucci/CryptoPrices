@@ -18,13 +18,31 @@ export const store = new Vuex.Store({
       { text: 'Change (7d)', value: 'weekPercVar'}
     ],
     currentCoin: {},
-    currentCurrency: 'USD',
+    selectedPair: {name: 'Australian Dollar', symbol: 'AUD'},
+    selectedCoin: {name: 'Bitcoin', symbol: 'BTC'},
+    currentCurrency: 'AUD',
     topCoins: [],
     coinTableitems: [],
     allCoinsTableItems: [],
+    marketCoinItems:[],
     coinMarkets:[],
+    totalCoins: 0,
+    user: {id: '',  email: '' }
+
   },
   getters:{
+    marketCoinItems: state => {
+      return state.marketCoinItems
+    },
+    user: state => {
+      return state.user
+    },
+    selectedPair: state => {
+      return state.selectedPair
+    },
+    selectedCoin: state => {
+      return state.selectedCoin
+    },
     currentCurrency: state =>{
       return state.currentCurrency
     },
@@ -50,11 +68,25 @@ export const store = new Vuex.Store({
       return state.coinMarkets
     },
     totalCoins: state =>{
-      let ttlCoins = state.allCoinsTableItems.length
+      //let ttlCoins = state.allCoinsTableItems.length
       return 1560
     },
    },
   mutations:{
+    setUser: (state, payload) => {
+      state.user = payload
+    },
+    setMarketCoinItems: (state, payload) => {
+      state.marketCoinItems = payload
+    },
+    setSelectedPair: (state, payload) => {
+      state.selectedPair = payload
+      store.dispatch('fetchCoinMarkets', 'MARKET')//TODO
+    },
+    setSelectedCoin: (state, payload) => {
+      state.selectedCoin = payload
+      store.dispatch('fetchCoinMarkets', 'MARKET')
+    },
     setCurrentCurrency: (state, payload) => {
       state.currentCurrency = payload
     },
@@ -71,20 +103,6 @@ export const store = new Vuex.Store({
         //set the currentCoin to bind it to child component
         state.currentCoin = payload;
     },
-    fetchCoinMarkets: (state, payload) => {
-      let requestData = [];
-      let coins = []
-      let coin = {}
-      let proxyUrl = 'https://cors-anywhere.herokuapp.com/'
-      let url = `${proxyUrl}https://min-api.cryptocompare.com/data/top/exchanges/full?fsym=${state.currentCoin.symbol}&tsym=${state.currency}`
-
-      fetch(url)
-      .then(response => response.json())
-      .then(data => {
-        state.coinMarkets.push(data.Data)
-      })
-
-    },    
     fetchTopCoins: (state, payload) => {
         let requestData = [];
         let coinsCryptoCompare = []
@@ -116,7 +134,7 @@ export const store = new Vuex.Store({
             coin.weekPercVar = item.percent_change_7d;
             coin.dayPercVar = item.percent_change_24h;
             coin.hourPercVar = item.percent_change_1h;
-            coin.marketCapAud = utils.formatNumbersCents(item.market_cap_aud)
+            coin.marketCapAud = utils.formatNumbers(item.market_cap_aud)
             coin.marketCapUsd = utils.formatNumbers(item.market_cap_usd)
             coin.totalSupply = utils.USFormat(item.total_supply);
             coin.volumeUsd = utils.formatNumbers(item['24h_volume_usd'])
@@ -144,8 +162,9 @@ export const store = new Vuex.Store({
                 }
               })
             });
-            state.coinTableitems = coins
           })
+          state.coinTableitems = coins
+          return coins
         })
     },
     fetchAllCoins: (state, payload) => {
@@ -155,7 +174,7 @@ export const store = new Vuex.Store({
       let coin = {}
       let currency = 'AUD';
       let baseImageUrl = ''
-      let url = `https://api.coinmarketcap.com/v1/ticker/?convert=${currency}&limit=10`
+      let url = `https://api.coinmarketcap.com/v1/ticker/?convert=${currency}&limit=2000`//TODO
       let proxyUrl = 'https://cors-anywhere.herokuapp.com/'
       let urlCoinList = `${proxyUrl}https://www.cryptocompare.com/api/data/coinlist/`
       
@@ -183,6 +202,8 @@ export const store = new Vuex.Store({
           coin.totalSupply = utils.USFormat(item.total_supply);
           coin.volumeUsd = utils.formatNumbers(item['24h_volume_usd'])
           coin.imageUrl = ''
+          coin.exchanges = []
+          coin.coinInfo = {}
 
           coins.push(coin);
         })
@@ -205,12 +226,75 @@ export const store = new Vuex.Store({
               }
             })
           });
-          state.allCoinsTableItems = coins
+          return coins
         })
+        .then(coins => {
+
+           if(payload === 'MARKET') {//Just for Coins that need Market infos */
+            let proxyUrl = 'https://cors-anywhere.herokuapp.com/'
+            let url = ""
+            let symbol = ""
+
+            Object.keys(coins).forEach( (key) => {
+              symbol = coins[key].symbol.toUpperCase()
+              
+              if (state.selectedCoin.symbol.toUpperCase() === coins[key].symbol.toUpperCase()
+                  || state.selectedCoin.symbol.toUpperCase() === coins[key].name.toUpperCase()){
+              //url = `${proxyUrl}https://min-api.cryptocompare.com/data/top/exchanges/full?fsym=${symbol}&tsym=${state.currentCurrency}`
+                url = `${proxyUrl}https://min-api.cryptocompare.com/data/top/exchanges/full?fsym=${state.selectedCoin.symbol}&tsym=${state.selectedPair.symbol}`
+                fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    if(data.Message === "No exchanges available"){
+                      coins[key].exchanges = []
+                    }else{
+                      /* console.log(data.Data)
+                      console.log(data.Data.Exchanges) */
+                      data.Data.AggregatedData.PRICE = utils.formatNumbersCents(data.Data.AggregatedData.PRICE)
+                      data.Data.AggregatedData.LASTVOLUME = utils.USFormat3(data.Data.AggregatedData.LASTVOLUME)
+                      data.Data.AggregatedData.VOLUMEDAY = utils.USFormat3(data.Data.AggregatedData.VOLUMEDAY)
+                      data.Data.AggregatedData.OPENDAY = utils.formatNumbersCents(data.Data.AggregatedData.OPENDAY)
+                      data.Data.AggregatedData.HIGHDAY = utils.formatNumbersCents(data.Data.AggregatedData.HIGHDAY)
+                      data.Data.AggregatedData.LOWDAY = utils.formatNumbersCents(data.Data.AggregatedData.LOWDAY)
+                      data.Data.AggregatedData.CHANGEPCTDAY >= 0 ? data.Data.AggregatedData.POSITIVE = true : data.Data.AggregatedData.POSITIVE = false
+                      data.Data.AggregatedData.CHANGEPCTDAY = utils.USFormat2(data.Data.AggregatedData.CHANGEPCTDAY) + '%'
+                      
+                      coins[key].coinInfo = data.Data.AggregatedData
+                      data.Data.Exchanges.map( (exchange) => {
+                        exchange.PRICE = utils.formatNumbersCents(exchange.PRICE)
+                        exchange.LASTVOLUME = utils.USFormat3(exchange.LASTVOLUME)
+                        exchange.VOLUME24HOUR = utils.USFormat3(exchange.VOLUME24HOUR)
+                        exchange.OPEN24HOUR = utils.formatNumbersCents(exchange.OPEN24HOUR)
+                        exchange.HIGH24HOUR = utils.formatNumbersCents(exchange.HIGH24HOUR)
+                        exchange.LOW24HOUR = utils.formatNumbersCents(exchange.LOW24HOUR)
+                        exchange.CHANGEPCT24HOUR >= 0 ? exchange.POSITIVE = true : exchange.POSITIVE = false
+                        exchange.CHANGEPCT24HOUR = utils.USFormat2(exchange.CHANGEPCT24HOUR) + '%'
+                      })
+                      coins[key].exchanges = data.Data.Exchanges
+                    } 
+                })
+              } 
+            })
+            state.marketCoinItems = coins
+          }   
+          return coins          
+        })
+        state.marketCoinItems = coins
+        state.allCoinsTableItems = coins
+        return coins        
       })
     }    
   },
   actions: {
+    UPDATE_USER: (context, payload) => {
+      context.commit('setUser', payload)
+    },
+    UPDATE_PAIR: (context, payload) => {
+      context.commit('setSelectedPair', payload)
+    },
+    UPDATE_COIN: (context, payload) => {
+      context.commit('setSelectedCoin', payload)
+    },
     fetchTopCoins: (context, payload) => {
       context.commit('fetchTopCoins')
     },
@@ -218,7 +302,7 @@ export const store = new Vuex.Store({
       context.commit('fetchAllCoins')
     },
     fetchCoinMarkets: (context, payload) => {
-      context.commit('fetchCoinMarkets')
+      context.commit('fetchAllCoins', payload)
     },
     setCurrentCurrency: (context, payload) => {
       context.commit('setCurrentCurrency', payload)

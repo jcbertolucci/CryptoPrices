@@ -1,11 +1,13 @@
 <template id="TableVuetify">
+
+  <!-- If called from Home page -->
   <v-data-table v-if="calledFromHomePath" :headers="coinTableHeader" :items="coinTableItems" hide-actions class="elevation-2" >
     <template slot="items" slot-scope="props" class="table">
       <td class="text-xs-left pl-0">
         <v-btn color="grey" small flat dark>
           <img :src="props.item.imageUrl" height="30">
         </v-btn>              
-        {{ props.item.name }}
+        <!-- {{ props.item.name }}-->
       </td>
       <td class="text-xs-right">{{ props.item.priceUsd }}</td>
       <td class="text-xs-right">{{ props.item.priceAud }}</td>
@@ -22,7 +24,7 @@
       </td>
     </template>
     <template slot="no-data">
-      <v-progress-circular indeterminate v-bind:size="200" v-bind:width="3" color="deep-orange accent-4"></v-progress-circular>
+      <!-- <v-progress-circular indeterminate v-bind:size=200 v-bind:width=3 color="deep-orange accent-4"></v-progress-circular> -->
     </template>
     <template slot="footer">
       <td colspan="100%">
@@ -33,22 +35,131 @@
 
   <!-- If called from Coins page -->
   <v-card v-else-if="calledFromCoinsPath"> 
-    <v-container fluid grid-list-md>
-      <v-text-field
-        append-icon="search"
-        label="Search Coin"
-        single-line
-        hide-details
-        v-model="search"
-      ></v-text-field>
+    <!-- <v-container grid-list-md text-xs-center>
+      <v-layout row wrap mx-auto justify-space-around>
+        <v-flex xs1 v-for="coin in coinTableItems" v-bind:data="coin" v-bind:key="coin.name">
+          <v-btn outline color="primary" @click="selectedCoin(coin.name)">{{ coin.name }}</v-btn>
+        </v-flex>         
+      </v-layout>  
+    </v-container> -->
+    <v-card class="pb-3">
+      <v-layout column></v-layout>
+      <v-layout row justify-left align-center pa-0 ma-0>
+        <v-flex id="first-left-flex"  xs1 offset-xs0 pa-0 ma-0>
+          <v-subheader>Currency pair:</v-subheader>
+        </v-flex>
+        <v-flex id="first-select-flex" xs2 offset-xs0>
+          <v-select
+            single-line
+            bottom
+            :items="pairs"
+            v-model="selectedPair"
+            v-bind:label="selectedPair.name"
+            single-line
+            item-text="name"
+            item-value="symbol"
+            return-object
+          ></v-select>
+        </v-flex>
+        <v-flex xs10 offset-xs1 pa-0 ma-0 pl-5>
+          <v-subheader class="coins-title">{{filteredItems[0].name}}({{filteredItems[0].symbol}})/{{selectedPair.symbol}}</v-subheader>
+        </v-flex>
+      </v-layout>
+      
+      <v-layout row justify-left id="layout-bottom-coin-info" pa-0 ma-0> 
+          <v-flex id="second-left-flex" xs1 offset-xs0 pa-0 ma-0>
+            <v-subheader>Coin:</v-subheader>
+          </v-flex>
+          <v-flex id="second-select-flex" xs2 offset-xs0 pa-0 ma-0>
+            <v-select
+              single-line
+              bottom
+              :items="coinsForSearch"
+              v-model="selectedCoin"
+              v-bind:label="selectedCoin.name"
+              single-line
+              item-text="name"
+              item-value="symbol"
+              return-object
+            ></v-select>
+            <!-- <v-text-field
+              append-icon="search"
+              label="Search Coin"
+              single-line
+              hide-details
+              v-model="search"
+            ></v-text-field> -->
+          </v-flex>
+          <v-flex xs1 offset-xs0 class="cards-info" pa-0 ma-0 pl-5 ml-4 v-if="exchangesSelectedCoin.length > 1">
+            <h2>LAST PRICE<span>{{filteredItems[0].coinInfo.PRICE}}</span></h2>
+          </v-flex>
+          <v-flex xs1 offset-xs0 class="cards-info" pa-0 ma-0 pl-5 v-if="exchangesSelectedCoin.length > 1">
+            <h2>OPEN DAY<span>{{filteredItems[0].coinInfo.OPENDAY}}</span></h2>
+          </v-flex>
+          <v-flex xs1 offset-xs0 class="cards-info" pa-0 ma-0 pl-5 v-if="exchangesSelectedCoin.length > 1">
+            <h2>LOW DAY<span>{{filteredItems[0].coinInfo.LOWDAY}}</span></h2>
+          </v-flex>
+          <v-flex xs1 offset-xs0 class="cards-info" pa-0 ma-0 pl-5 v-if="exchangesSelectedCoin.length > 1">
+            <h2>HIGH DAY<span>{{filteredItems[0].coinInfo.HIGHDAY}}</span></h2>
+          </v-flex>
+          <v-flex xs1 offset-xs0 class="cards-info align-right" pa-0 ma-0 pl-5 v-if="exchangesSelectedCoin.length > 1">
+            <h2 v-if="filteredItems[0].coinInfo.POSITIVE">DAILY CHANGE
+              <span class="green--text">{{filteredItems[0].coinInfo.CHANGEPCTDAY}}</span>
+            </h2>
+            <h2 v-else="filteredItems[0].coinInfo.POSITIVE">DAILY CHANGE
+              <span class="red--text">{{filteredItems[0].coinInfo.CHANGEPCTDAY}}</span>
+            </h2>
+          </v-flex>
+          <v-flex xs1 offset-xs0 class="cards-info" pa-0 ma-0 pl-5 v-if="exchangesSelectedCoin.length > 1">
+          <!-- color="green" class="green--text center" -->
+            <h2>VOLUME DAY<span>{{filteredItems[0].coinInfo.VOLUMEDAY}}</span></h2>
+          </v-flex>
+          <v-flex xs1 offset-xs0 class="cards-info" pa-0 ma-0 pl-5 v-if="exchangesSelectedCoin.length > 1">
+            <h2>LAST MARKET<span caption>{{filteredItems[0].coinInfo.LASTMARKET}}</span></h2>
+          </v-flex>
+          <v-flex xs1 offset-xs0 class="cards-info" pa-0 ma-0 pl-5 v-if="exchangesSelectedCoin.length > 1">
+            <h2>LAST VOLUME<span>{{filteredItems[0].coinInfo.LASTVOLUME}}</span></h2>
+          </v-flex>
+        </v-layout>
+      </v-layout>
+    </v-card>   
+    <v-container dark fluid grid-list-md>
+        <!-- <v-layout row justify-left align-center>
+          <v-flex xs1 offset-xs0>
+            <v-subheader>Currency pair:</v-subheader>
+          </v-flex>
+          <v-flex xs1 offset-xs0>
+            <v-select
+              :items="items"
+              v-model="selectedCurrency"
+              label="Select"
+              single-line
+              bottom
+            ></v-select>
+          </v-flex>
+          <v-flex xs9 offset-xs1>
+            <v-subheader class="coins-title">{{filteredItems[0].name}}({{filteredItems[0].symbol}})/TODO</v-subheader>
+          </v-flex>
+        </v-layout>   -->
+        
+      <h1 v-if="exchangesSelectedCoin.length > 1" class="container-title">Exchanges for pair: {{filteredItems[0].symbol}}/{{selectedPair.symbol}}</h1>
       <br>
+      <template>
+        <v-progress-linear
+          :indeterminate="query"
+          :query="true"
+          v-model="value"
+          :active="show"
+        ></v-progress-linear>
+      </template>
       <v-data-iterator
         content-tag="v-layout"
         row
         wrap
-        :items="filteredItems"
+        :items="exchangesSelectedCoin"
         :rows-per-page-items="rowsPerPageItems"
         :pagination.sync="pagination"
+        :no-data-text = "messageLoading"
       >
         <v-flex
           slot="item"
@@ -58,132 +169,140 @@
           md4
           lg3
         >
-          <v-card>
-            <v-card-title class="pa-3 ma-0">
-              <v-btn small flat dark class="pa-0 ma-0">
-                <img class="pa-0 ma-0" :src="props.item.imageUrl" height="30">
-              </v-btn> 
-              <h4>{{ props.item.name }}</h4>
+          <v-card class="card-coins">
+            <v-card-title class="pa-3 ma-0 ">
+              <!-- <v-btn small flat @click="refresh(props)"> 
+                <img class="pa-0 ma-0" :src="props.item.MARKET" height="55">
+              </v-btn>  -->
+              <h4 class="title">{{ props.item.MARKET }}</h4>
             </v-card-title>
             <v-divider></v-divider>
             <v-list dense>
               <v-list-tile>
-                <v-list-tile-content>Price US$:</v-list-tile-content>
-                <v-list-tile-content class="align-end">{{ props.item.priceUsd }}</v-list-tile-content>
+                <v-list-tile-content class="card-subtitle">Price</v-list-tile-content>
+                <v-divider></v-divider>
               </v-list-tile>
               <v-list-tile>
-                <v-list-tile-content>Price A$:</v-list-tile-content>
-                <v-list-tile-content class="align-end">{{ props.item.priceAud }}</v-list-tile-content>
+                <v-list-tile-content>Last Price:</v-list-tile-content>
+                <v-list-tile-content class="align-end">
+                  <h2>{{ props.item.PRICE }}</h2>
+                </v-list-tile-content>
               </v-list-tile>
               <v-list-tile>
-                <v-list-tile-content>Market Cap US$:</v-list-tile-content>
-                <v-list-tile-content class="align-end">{{ props.item.marketCapUsd }}</v-list-tile-content>
+                <v-list-tile-content>Last Volume:</v-list-tile-content>
+                <v-list-tile-content class="align-end">
+                  <v-btn flat >
+                    <H4>{{ props.item.LASTVOLUME }}</H4><br><h6>{{selectedCoin.symbol}}</h6>
+                  </v-btn>
+                </v-list-tile-content>
               </v-list-tile>
               <v-list-tile>
-                <v-list-tile-content>Volume US$:</v-list-tile-content>
-                <v-list-tile-content class="align-end">{{ props.item.volumeUsd }}</v-list-tile-content>
+                <v-list-tile-content>Volume (24h):</v-list-tile-content>
+                <v-list-tile-content class="align-end">
+                  <v-btn flat >
+                    <H4>{{ props.item.VOLUME24HOUR }}</H4> 
+                  </v-btn>
+                </v-list-tile-content>
               </v-list-tile>
               <v-list-tile>
-                <v-list-tile-content>Circulating Supply:</v-list-tile-content>
-                <v-list-tile-content class="align-end">{{ props.item.totalSupply }}</v-list-tile-content>
+                <v-list-tile-content>Open (24h):</v-list-tile-content>
+                <v-list-tile-content class="align-end">
+                  <v-btn flat >
+                    <H4>{{ props.item.OPEN24HOUR }}</H4>
+                  </v-btn>
+                </v-list-tile-content>
               </v-list-tile>
               <v-list-tile>
-                <v-list-tile-content>Change (24h)%:</v-list-tile-content>
-                <v-list-tile-content class="align-end">{{ props.item.dayPercVar }}</v-list-tile-content>
+                <v-list-tile-content>Low (24h):</v-list-tile-content>
+                <v-list-tile-content class="align-end">
+                  <v-btn flat >
+                    <v-icon color="green" left class="fas fa-long-arrow-alt-down"></v-icon> <H4>{{ props.item.LOW24HOUR }}</H4>
+                  </v-btn>
+                </v-list-tile-content>
               </v-list-tile>
               <v-list-tile>
-                <v-list-tile-content>Change (7d)%:</v-list-tile-content>
-                <v-list-tile-content class="align-end">{{ props.item.weekPercVar }}</v-list-tile-content>
+                <v-list-tile-content>High (24h):</v-list-tile-content>
+                <v-list-tile-content class="align-end ">
+                  <v-btn flat >
+                    <v-icon color="red" left class="fas fa-long-arrow-alt-up"></v-icon> <H4>{{ props.item.HIGH24HOUR }}</H4> 
+                  </v-btn>
+                </v-list-tile-content>
+              </v-list-tile>
+              <v-list-tile>
+                <v-list-tile-content>Change (24h):</v-list-tile-content>
+                <v-list-tile-content class="align-end">
+                  <v-btn flat v-if="props.item.POSITIVE"> 
+                      <h3 class="green--text">{{props.item.CHANGEPCT24HOUR}}</h3>
+                  </v-btn>
+                  <v-btn flat v-else="!props.item.POSITIVE"> 
+                      <h3 class="red--text">{{props.item.CHANGEPCT24HOUR}}</h3> 
+                  </v-btn>
+                </v-list-tile-content>
               </v-list-tile>
             </v-list>
           </v-card>
         </v-flex>
       </v-data-iterator>
     </v-container>
-    <!-- <v-card-title>
-        Quick search:
-        <v-spacer></v-spacer>
-        <v-text-field
-          append-icon="search"
-          label="Search"
-          single-line
-          hide-details
-          v-model="search"
-        ></v-text-field>
-        </v-card-title>
-        <v-data-table
-            v-bind:headers="coinTableHeader"
-            v-bind:items="filteredItems"
-            v-bind:search="search"
-            :rows-per-page-items="[10,20,30,50,100]"
-          >
-          <template slot="items" slot-scope="props">
-            <td class="text-xs-left pl-0" v-model="props.item.name" counter>
-              <v-btn color="grey" small flat dark>
-                <img :src="props.item.imageUrl" height="30">
-              </v-btn>              
-              {{ props.item.name }}
-            </td>
-            <td class="text-xs-right">{{ props.item.priceUsd }}</td>
-            <td class="text-xs-right">{{ props.item.priceAud }}</td>
-            <td class="text-xs-right">{{ props.item.marketCapUsd }}</td>
-            <td class="text-xs-right">{{ props.item.volumeUsd }}</td>
-            <td class="text-xs-right">{{ props.item.totalSupply }}</td>
-            <td class="text-xs-right pr-2">
-              <v-btn color="error" class="white--text center" v-if="isNegative(props.item.dayPercVar)">{{ props.item.dayPercVar }}</v-btn>
-              <v-btn color="green" class="white--text" v-else ="!isNegative(props.item.dayPercVar)">{{ props.item.dayPercVar }}</v-btn>
-            </td>
-            <td class="text-xs-right pr-2">
-              <v-btn color="error" class="white--text" v-if="isNegative(props.item.weekPercVar)">{{ props.item.weekPercVar }}</v-btn>
-              <v-btn color="green" class="white--text" v-else ="!isNegative(props.item.weekPercVar)">{{ props.item.weekPercVar }}</v-btn>
-            </td>
-            
-          </template>
-          <template slot="pageText" slot-scope="{ pageStart, pageStop }">
-            From {{ pageStart }} to {{ pageStop }}
-          </template>
-        </v-data-table> -->
-   <!-- <v-data-table v-bind:headers="coinTableHeader" v-bind:items="allCoinsTableItems" v-bind:search="search" rows-per-page-text="10" rows-per-page-items="[5,10,15,{'fsjh', value: -1}]">
-      <template slot="items" slot-scope="props">
-        <td class="text-xs-left pl-0">
-          <v-btn color="grey" small flat dark>
-            <img :src="props.item.imageUrl" height="30">
-          </v-btn>              
-          {{ props.item.name }}
-        </td>
-        <td class="text-xs-right">{{ props.item.priceUsd }}</td>
-        <td class="text-xs-right">{{ props.item.priceAud }}</td>
-        <td class="text-xs-right">{{ props.item.marketCapUsd }}</td>
-        <td class="text-xs-right">{{ props.item.volumeUsd }}</td>
-        <td class="text-xs-right">{{ props.item.totalSupply }}</td>
-        <td class="text-xs-right pr-2">
-          <v-btn color="error" class="white--text center" v-if="isNegative(props.item.dayPercVar)">{{ props.item.dayPercVar }}</v-btn>
-          <v-btn color="green" class="white--text center" v-else ="!isNegative(props.item.dayPercVar)">{{ props.item.dayPercVar }}</v-btn>
-        </td>
-        <td class="text-xs-right pr-2">
-          <v-btn color="error" class="white--text center" v-if="isNegative(props.item.weekPercVar)">{{ props.item.weekPercVar }}</v-btn>
-          <v-btn color="green" class="white--text center" v-else ="!isNegative(props.item.weekPercVar)">{{ props.item.weekPercVar }}</v-btn>
-        </td>
-      </template>
-      <template slot="pageText" slot-scope="{ pageStart, pageStop }">
-        From {{ pageStart }} to {{ pageStop }}
-      </template>
-    </v-data-table> -->
-
-
   </v-card>
 </template>
 
 <script>
   import {mapActions} from 'vuex'
   import {mapGetters} from 'vuex'
+  
+
+
   export default {
     computed: {
       ...mapGetters([
-        'coinTableHeader',
-        'coinTableItems',
-        'allCoinsTableItems'
+        ''
       ]),
+      coinsForSearch: function(){
+        let coinsForSearch = []
+        let obj = {name:'', symbol: ''}
+        this.allCoinsTableItems.map((item) => {
+          obj.name = item.name
+          obj.symbol = item.symbol
+          coinsForSearch.push(obj)
+          obj = {name:'', symbol: ''}
+        })
+        return coinsForSearch
+      },
+      selectedPair: {
+        get: function () {
+          return this.$store.getters.selectedPair
+        },
+        set: function (newValue) {
+          this.queryAndIndeterminate()
+          this.$store.dispatch("UPDATE_PAIR", newValue)
+        }
+      },      
+      selectedCoin: {
+        get: function () {
+          return this.$store.getters.selectedCoin
+        },
+        set: function (newValue) {
+          this.queryAndIndeterminate()
+          this.$store.dispatch("UPDATE_COIN", newValue)
+        }
+      }, 
+       marketCoinItems: {
+        get: function () {  
+          return this.$store.getters.marketCoinItems
+        },
+        set: function (newValue) {
+          this.$store.dispatch("fetchCoinMarkets", 'MARKET')
+        }
+      }, 
+      allCoinsTableItems: {
+        get: function () {  
+          return this.$store.getters.allCoinsTableItems          
+        },
+        set: function (newValue) {
+          this.$store.dispatch("fetchAllCoins")
+        }
+      },
       calledFromCoinsPath: function(){
         return this.getRoutePath() === '/coins'
       },
@@ -192,41 +311,84 @@
       },
       filteredItems: function(){
         if (this.search.length <= 0) {
-          return this.allCoinsTableItems
-          console.log(this.search)
-          console.log(filter)
-        }else{
-          console.log(this.search)
+          return this.marketCoinItems
         }
-        let filter = this.allCoinsTableItems.filter( (i) => {
-          return i.name.toLowerCase().includes(this.search.toLowerCase())  //this.search.toLowerCase())
+        let filter = this.marketCoinItems.filter( (i) => {
+          return i.symbol.toUpperCase() === this.selectedCoin.symbol
         }) 
-        console.log(filter)
-        console.log(this.allCoinsTableItems)
         return filter
+      },
+      exchangesSelectedCoin: function(){
+        //console.log(this.filteredItems[0].exchanges.length)
+        return this.filteredItems[0].exchanges
       }
     },
     data(){
       return{
-        tmp: '',
-        search: '',
+        messageLoading: "Fetching real time data...",
+        value: 0,
+        query: false,
+        show: true,
+        interval: 0,
+/*         tmp: '',
+        noData: false,
+        finishLoading: false, */
+        search: 'BTC',
         pagination: {},
-        rowsPerPageItems: [1],
+        rowsPerPageItems: [8,16,24,48],
         pagination: {
-          rowsPerPage: 48
-        }
+          rowsPerPage: 8
+        },
+        pairs:[
+          {name: 'Australian Dollar', symbol: 'AUD'},
+          {name: 'American Dollar', symbol: 'USD'}
+        ]
       }
     },
     methods: {
-      max25chars: (v) => v.length <= 10 || 'Input too long!',
-
+      /* max25chars: (v) => v.length <= 25 || 'Input too long!', */
+      print: ()=>{
+        console.log(this.coinsForSearch)
+        console.log(this.allCoinsTableItems)
+      },
       isNegative: (number) =>{
         return number < 0 ? true : false
       },
       getRoutePath: ()=>{
         return window.location.pathname
       },
-    }
+      queryAndIndeterminate () {
+        this.query = true
+        this.show = true
+        this.value = 0
+        this.query = false
+
+        this.interval = setInterval(() => {
+          if(this.exchangesSelectedCoin.length > 1){
+          /* if (this.value === 100) { */
+            clearInterval(this.interval)
+            this.show = false
+            //return setTimeout(this.queryAndIndeterminate, 2000)
+          }else{
+            //this.messageLoading = "No data available...Try change the pair. :)"
+          }
+          this.value += 20
+        }, 2000)
+      }
+    },
+    watch:{
+      
+    },
+    created(){
+      this.print()
+    },
+    mounted(){
+      this.queryAndIndeterminate()
+    },
+    beforeDestroy () {
+      //clearInterval(this.interval)
+    },
+    
   }
 </script>
 
@@ -240,9 +402,56 @@
   padding-top: 10px;
 
 }
-/* .item:nth-child(1){
-  order: 1
+.coins-title{
+  font-size: 36px;
+  font-weight: 600;
+  font-family: 'Roboto', sans-serif;
+}
+
+.card-coins{
+  margin: 05px;
+  transition: .15s all ease-in-out;
+}
+/* .card-coins:hover {
+ transform: scale(1.03); 
 } */
+.card-subtitle{
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  font-weight: 500
+}
+.card-content{
+  font-family: 'Roboto', sans-serif;
+  font-size: 17px;
+  font-weight: 400
+}
+.cards-info{
+  text-align: left
+}
+#layout-bottom-coin-info h2{
+  font-size: 13px;
+  font-weight: 500;
+  font-family: 'Roboto', sans-serif;
+  display:block;
+  line-height: 2em;
+}
+#layout-bottom-coin-info h2 span{
+  font-size: 22px;
+  font-weight: 600;
+  font-family: 'Roboto', sans-serif;
+  display:block
+}
+#first-left-flex, #second-left-flex{
+  max-width: 120px;
+}
+#first-select-flex, #second-select-flex{
+  max-width: 170px;
+}
+.container-title{
+  margin: 20px;
+  font-size: 30px
+}
 
 </style>
+
 

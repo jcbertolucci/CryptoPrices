@@ -13,6 +13,7 @@ import { store } from './store/store'
 //Components
 import Home from './components/Home.vue'
 import SignUp from './components/SignUp.vue'
+import SignIn from './components/SignIn.vue'
 import HomeVuetify from './components/HomeVuetify.vue'
 import Coins from './components/Coins.vue'
 import colors from 'vuetify/es5/util/colors'
@@ -45,6 +46,7 @@ const routes = [
   { path: '/', component: HomeVuetify },  
   { path: '/signup', component: SignUp },
   { path: '/coins', component: Coins },
+  { path: '/signin', component: SignIn },
 ]
 
 const router = new VueRouter({

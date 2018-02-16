@@ -1,6 +1,73 @@
 <template>
-  <v-card height="350px">
-    <v-navigation-drawer permanent absolute v-model="drawer">
+  <v-card>
+    <v-container fluid grid-list-md>
+      <v-text-field
+        append-icon="search"
+        label="Search Coin"
+        single-line
+        hide-details
+        v-model="search"
+      ></v-text-field>
+      <br>
+      <v-data-iterator
+        content-tag="v-layout"
+        row
+        wrap
+        :items="filteredItems"
+        :rows-per-page-items="rowsPerPageItems"
+        :pagination.sync="pagination"
+      >
+        <v-flex
+          slot="item"
+          slot-scope="props"
+          xs12
+          sm6
+          md4
+          lg3
+        >
+          <v-card>
+            <v-card-title class="pa-3 ma-0">
+              <v-btn small flat dark class="pa-0 ma-0">
+                <img class="pa-0 ma-0" :src="props.item.imageUrl" height="30">
+              </v-btn> 
+              <h4>{{ props.item.name }}</h4>
+            </v-card-title>
+            <v-divider></v-divider>
+            <v-list dense>
+              <v-list-tile>
+                <v-list-tile-content>Price US$:</v-list-tile-content>
+                <v-list-tile-content class="align-end">{{ props.item.priceUsd }}</v-list-tile-content>
+              </v-list-tile>
+              <v-list-tile>
+                <v-list-tile-content>Price A$:</v-list-tile-content>
+                <v-list-tile-content class="align-end">{{ props.item.priceAud }}</v-list-tile-content>
+              </v-list-tile>
+              <v-list-tile>
+                <v-list-tile-content>Market Cap US$:</v-list-tile-content>
+                <v-list-tile-content class="align-end">{{ props.item.marketCapUsd }}</v-list-tile-content>
+              </v-list-tile>
+              <v-list-tile>
+                <v-list-tile-content>Volume US$:</v-list-tile-content>
+                <v-list-tile-content class="align-end">{{ props.item.volumeUsd }}</v-list-tile-content>
+              </v-list-tile>
+              <v-list-tile>
+                <v-list-tile-content>Circulating Supply:</v-list-tile-content>
+                <v-list-tile-content class="align-end">{{ props.item.totalSupply }}</v-list-tile-content>
+              </v-list-tile>
+              <v-list-tile>
+                <v-list-tile-content>Change (24h)%:</v-list-tile-content>
+                <v-list-tile-content class="align-end">{{ props.item.dayPercVar }}</v-list-tile-content>
+              </v-list-tile>
+              <v-list-tile>
+                <v-list-tile-content>Change (7d)%:</v-list-tile-content>
+                <v-list-tile-content class="align-end">{{ props.item.weekPercVar }}</v-list-tile-content>
+              </v-list-tile>
+            </v-list>
+          </v-card>
+        </v-flex>
+      </v-data-iterator>
+    </v-container>
+    <v-navigation-drawer permanent v-model="drawer">
       <v-toolbar flat class="transparent">
         <v-list class="padding">
           <v-list-tile avatar >

@@ -13,10 +13,10 @@
             @click="goHome"
           >
             <v-icon >home</v-icon>
-          </v-btn>  
+          </v-btn>
           <v-layout align-center justify-center>
             <v-snackbar
-              :timeout="5000"
+              :timeout="10000"
               :top="true"
               v-model="snackbar"
             >
@@ -27,30 +27,13 @@
               <v-form v-model="valid" ref="form" lazy-validation>
                 <v-card class="elevation-12">
                   <v-toolbar dark color="accent">
-                    <v-toolbar-title>Please Register</v-toolbar-title>
-                    <v-spacer></v-spacer>
-                    <v-tooltip bottom>
-                      <v-btn
-                        icon
-                        large
-                        :href="source"
-                        target="_blank"
-                        slot="activator"
-                      >
-                        <v-icon large>code</v-icon>
-                      </v-btn>
-                      <span>Source</span>
-                    </v-tooltip>
+                    <v-toolbar-title>Please Log In</v-toolbar-title>
                   </v-toolbar>
                   <v-card-text>
                     
                     </v-snackbar>
                     <v-form>
                       <v-progress-circular v-if="loading" indeterminate :size="50" color="primary"></v-progress-circular>
-                      <v-text-field prepend-icon="person" name="login" label="Full Name" type="text" v-model="fullName" :rules="nameRules" :counter="10"
-                                    required>
-                      </v-text-field>
-
                       <v-text-field prepend-icon="person" name="login" label="Email" type="email" v-model="email"
                                     :rules="emailRules" required></v-text-field>
 
@@ -65,8 +48,7 @@
                   <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn @click="clear">clear</v-btn>
-                    <v-btn color="primary" @click="signUserUp" :disabled="!valid">Sign Up</v-btn>
-                  
+                    <v-btn color="primary" @click="signUserIp" :disabled="!valid">Sign In</v-btn>
                   </v-card-actions>
                 </v-card>
               </v-form>  
@@ -92,17 +74,13 @@ import {mapGetters} from 'vuex'
       return{
         loader: null,
         loading : false,
-        loginMsg : "Thanks for registring!",
+        loginMsg : "Your are logged in!",
         snackbar: false,
         fullName: '',
         email: '',
         password:  '',
         passwordConf: '',
         valid: true,
-        nameRules: [
-          v => !!v || 'Name is required',
-          v => (v && v.length <= 20) || 'Name must be less than 20 characters'
-        ],
         emailRules: [
           v => !!v || 'E-mail is required',
           v => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'E-mail must be valid'
@@ -119,7 +97,7 @@ import {mapGetters} from 'vuex'
       }
     },
     methods: {
-      signUserUp(){
+      signUserIn(){
         if (this.$refs.form.validate()) {
           this.snackbar = false
           this.loading = true
@@ -148,10 +126,8 @@ import {mapGetters} from 'vuex'
       goHome(){
         this.$router.push(this.$route.query.redirect || '/')
       },
-      redirectUser(){
-        this.$router.push(this.$route.query.redirect || '/signin')
-      },
       clear() {
+        console.log('clear')
         this.$refs.form.reset()
       }
     },

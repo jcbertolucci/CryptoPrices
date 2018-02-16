@@ -21,6 +21,30 @@ Utils.USFormat = function(num){
       numberTemp = numberTemp.format()
       return numberTemp
 }
+Utils.USFormat5 = function(num){
+      let numberTemp = numeral(num)
+      numeral.defaultFormat('0,0.00000')
+      numberTemp = numberTemp.format()
+      return numberTemp
+}
+Utils.USFormat3 = function(num){
+      let numberTemp = numeral(num)
+      numeral.defaultFormat('0,0.000')
+      numberTemp = numberTemp.format()
+      return numberTemp
+}
+Utils.USFormat2 = function(num){
+      let numberTemp = numeral(num)
+      numeral.defaultFormat('0,0.00')
+      numberTemp = numberTemp.format()
+      return numberTemp
+}
+Utils.Percent = function(num){
+      let numberTemp = numeral(num)
+      numeral.defaultFormat('0.000%')
+      numberTemp = numberTemp.format()
+      return numberTemp
+}
 Utils.fetchCoinImg = function(coinShortName){
   let id = ''
   let objKeys = []

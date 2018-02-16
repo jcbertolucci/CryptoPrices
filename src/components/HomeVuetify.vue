@@ -1,10 +1,11 @@
 <!-- HTML -->
 <template>
   <v-app app class="white">
-    <v-toolbar flat app color="accent" height="85px" class="elevation-4">
+    <!-- <v-toolbar flat app color="accent" height="85px" class="elevation-4">
       <vue-menu></vue-menu>
     </v-toolbar>
-    <v-content flat class="text-xs-center mt-3 pt-3">
+    <v-content flat class="text-xs-center mt-3 pt-3"> -->
+      <br><br>
       <section id="theBusinness" flat xs12 class="accent lighten-3 top-block full-width" wrap justify-content-center >
         <br>
         <br>
@@ -86,7 +87,7 @@
         <v-layout class="mt-3" row wrap>
           <v-flex xs3>
             <v-avatar
-              tile="false"
+              :tile=false
               size="300px"
               class="white pt-0 mt-0"
             >
@@ -95,7 +96,7 @@
           </v-flex>
           <v-flex xs3 >
             <v-avatar
-              tile="false"
+              :tile=false
               size="180px"
               class="white pt-4 mt-5"
             >
@@ -104,7 +105,7 @@
           </v-flex>
           <v-flex xs3 >
             <v-avatar
-              tile="false"
+              :tile=false
               size="200px"
               class="white pt-4 mt-4"
             >
@@ -113,7 +114,7 @@
           </v-flex>
           <v-flex xs3 >
             <v-avatar
-              tile="false"
+              :tile=false
               size="250px"
               class="white pt-2 mt-2"
             >
@@ -150,30 +151,46 @@
       <vue-twitterfeed></vue-twitterfeed> -->
     </v-content>
     <br><br><br><br><br><br>
-    <vue-footer class="full-width "></vue-footer>
+    <!-- <v-btn
+        color="primary"
+        dark
+        fab
+        fixed
+        bottom
+        right
+        class="mb-5 pb-5"
+      >
+        <v-icon @click="topPage()">keyboard_arrow_up</v-icon>
+      </v-btn> -->
+    <!-- <vue-footer class="full-width" name="footer"></vue-footer> -->
   </v-app>
   
 </template>
 
 <!-- Vue -->
 <script>
-  import MenuTemplate from './MenuVuetify.vue'
-  import SubMenuTemplate from './SubMenu.vue'
+  /* import MenuTemplate from './MenuVuetify.vue'
+  import SubMenuTemplate from './SubMenu.vue' */
   import TopCoinsTemplate from './TopCoins.vue'
   import TwitterTemplate from './TwitterFeed.vue'
-  import FooterTemplate from './Footer.vue'
+  /* import FooterTemplate from './Footer.vue' */
   import ParallaxTemplate from './Parallax.vue'
   import {mapActions} from 'vuex'
   import {mapGetters} from 'vuex'
   
   export default {
     components: {
-      'vue-menu': MenuTemplate,
-      'vue-submenu': SubMenuTemplate,
-      'vue-topcoins': TopCoinsTemplate,
-      'vue-twitterfeed': TwitterTemplate,
-      'vue-footer': FooterTemplate,
+      /* 'vue-menu': MenuTemplate, */
+      /* 'vue-submenu': SubMenuTemplate, */
+      /* 'vue-topcoins': TopCoinsTemplate, */
+      /* 'vue-twitterfeed': TwitterTemplate, */
+      /* 'vue-footer': FooterTemplate, */
       'vue-parallax': ParallaxTemplate
+    },
+    computed:{
+      ...mapGetters([
+        'user'
+      ])
     },
     data(){
       return{
@@ -184,16 +201,17 @@
       }
     },
     methods:{
-      onResize () {
-        this.windowSize = { x: window.innerWidth, y: window.innerHeight }
-      }      
+      /* topPage: function() {
+        document.body.scrollTop = 0; // For Safari
+        document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+      } */
     },
     created(){
-      //this.drawChart()
-    },
+      console.log(this.user.email)
+    }/* ,
     mounted(){
-      this.onResize()
-    }
+      this.topPage()
+    } */
   }
  
 </script>
@@ -221,7 +239,6 @@
   margin: auto;
   margin-left: -100px;
   margin-right: -100px;
-
 }
 .top-block{
   background-image: url('../../src/assets/gradient1.jpg');
