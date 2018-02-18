@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import utils from '../../src/utils/utils.js'
+import * as firebase from 'firebase'
 
 Vue.use(Vuex)
 
@@ -27,12 +28,27 @@ export const store = new Vuex.Store({
     marketCoinItems:[],
     coinMarkets:[],
     totalCoins: 0,
-    user: {id: '',  email: '' }
-
+    user: null,
+    userAuth : false,
+    firebaseMsg: '',
+    activatedMsgSnack: false,
+    topPortfolioCoins: []
   },
   getters:{
+    topPortfolioCoins: state => {
+      return state.topPortfolioCoins
+    },
+    activatedMsgSnack: state => {
+      return state.activatedMsgSnack
+    },
     marketCoinItems: state => {
       return state.marketCoinItems
+    },
+    firebaseMsg: state => {
+      return state.firebaseMsg
+    },
+    userAuth: state => {
+      return state.userAuth
     },
     user: state => {
       return state.user
@@ -74,7 +90,25 @@ export const store = new Vuex.Store({
    },
   mutations:{
     setUser: (state, payload) => {
+      console.log('inside mutations setUser')
+      console.log(payload)
       state.user = payload
+    },
+    setTopPortfolioCoins: (state, payload) => {
+      state.topPortfolioCoins = payload
+    },
+    setactivatedMsgSnack: (state, payload) => {
+      console.log('inside mutations setactivatedMsgSnack')
+      console.log(payload)
+      state.activatedMsgSnack = payload
+    },
+    setUserAuth: (state, payload) => {
+      state.userAuth = payload
+    },
+    setFirebaseMsg: (state, payload) => {
+      console.log('inside mutations setFirebaseMsg')
+      console.log(payload)
+      state.firebaseMsg = payload
     },
     setMarketCoinItems: (state, payload) => {
       state.marketCoinItems = payload
@@ -102,6 +136,53 @@ export const store = new Vuex.Store({
         payload.isActive = true;
         //set the currentCoin to bind it to child component
         state.currentCoin = payload;
+    },
+    fetchPortfolioCoins: (state, payload) => {
+        let coins = []
+        let coinsFinale =  []
+        let coin = {}
+        let limitCoins = payload ? payload : '20'
+        let baseImageUrl = ''
+        let proxyUrl = 'https://cors-anywhere.herokuapp.com/'
+        let urlCoinList = `${proxyUrl}https://min-api.cryptocompare.com/data/all/coinlist`
+        
+        fetch(urlCoinList)
+        .then(response => response.json())
+        .then(function(data){ 
+          baseImageUrl = data.BaseImageUrl
+          console.log(data)
+          Object.keys(data.Data).forEach(function(key) {
+            /* if(data.Data[key].IsTrading === true){ */
+              coin = {}
+              coin.sortOrder = data.Data[key].SortOrder
+              coin.id = data.Data[key].Id
+              coin.name = data.Data[key].Name
+              coin.coinName = data.Data[key].CoinName
+              coin.fullName = data.Data[key].FullName
+              coin.imageUrl = baseImageUrl + data.Data[key].ImageUrl
+              coins.push(coin)
+            /* } */
+          }) 
+          return coins
+          /* commit('setTopPortfolioCoins', coins) */
+        }).then((coins) => {
+          //Sort coins
+           coins.sort(function (a,b){
+            return parseFloat(a.sortOrder) - parseFloat(b.sortOrder)
+          })
+          console.log(coins)
+
+          coinsFinale = coins.filter((item) => {
+            return parseFloat(item.sortOrder) <= parseFloat(limitCoins)
+          })
+          console.log(coinsFinale)
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+
+
+
     },
     fetchTopCoins: (state, payload) => {
         let requestData = [];
@@ -286,8 +367,69 @@ export const store = new Vuex.Store({
     }    
   },
   actions: {
-    UPDATE_USER: (context, payload) => {
-      context.commit('setUser', payload)
+    SIGN_USER_IN: ({commit}, payload) => {
+      firebase.auth().signInWithEmailAndPassword(payload.email, payload.password)
+        .then(
+          user => {
+            const newUser = {
+              id: user.uid,
+              email: user.email, 
+              name: '',
+              savedCoins: []//TODO TO GET THE COINS
+            }
+            console.log('SIGN_USER_IN')
+            commit('setUser', newUser)
+            commit('setFirebaseMsg', 'Login success!')
+            commit('setactivatedMsgSnack', true)
+          }
+        )
+        .catch(
+        error => {
+          //TREAT ERROR
+          console.log('SIGN_USER_IN: error')
+          commit('setFirebaseMsg', error.message)
+          commit('setactivatedMsgSnack', true)
+        }
+      )
+
+    },
+    UPDATE_USERAUTH: (context, payload) => {
+      context.commit('setUserAuth', payload)
+    },
+    SIGN_USER_UP: ({commit}, payload) => {
+      console.log('inside SIGN_USER_UP')
+      firebase.auth().createUserWithEmailAndPassword(payload.email, payload.password)
+      .then(user => {
+         const newUser = {
+           id: user.uid,
+           email: user.email, 
+           name: '',
+           savedCoins: []
+         }
+         console.log('SIGN_USER_UP')
+         commit('setUser', newUser)
+         commit('setFirebaseMsg', 'Registration success!')
+         commit('setactivatedMsgSnack', true)
+         
+      })
+      .catch(
+        error => {
+          //TREAT ERROR
+          console.log('SIGN_USER_UP: error')
+          console.log(error.message)
+          commit('setFirebaseMsg', error.message)
+          commit('setactivatedMsgSnack', true)
+        }
+      )
+    },
+    /* CLEAR_MESSAGE_SNACK: (context, payload) => {
+      context.commit('setFirebaseError', payload)
+    }, */
+    setactivatedMsgSnack: (context, payload) => {
+      context.commit('activatedMsgSnack', payload)
+    },
+    FETCH_PORTFOLIO_COINS: (context, payload) => {
+      context.commit('fetchPortfolioCoins', payload)
     },
     UPDATE_PAIR: (context, payload) => {
       context.commit('setSelectedPair', payload)

@@ -28,6 +28,7 @@ import NavigationDrawer from './NavigationDrawer.vue'
 import ChartTemplate from './Chart.vue'
 import {mapActions} from 'vuex'
 import {mapGetters} from 'vuex'
+import * as firebase from 'firebase'
 
 export default {
   components: {
@@ -42,6 +43,9 @@ export default {
     return {
 
     }
+  },
+  created(){
+    console.log(firebase.auth().currentUser)
   }
 }
 </script>

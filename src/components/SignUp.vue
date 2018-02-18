@@ -14,22 +14,32 @@
           >
             <v-icon >home</v-icon>
           </v-btn>  
-          <v-layout align-center justify-center>
-            <v-snackbar
+          <v-snackbar
               :timeout="5000"
               :top="true"
               v-model="snackbar"
-            >
-              {{ loginMsg }}
-              <v-btn flat color="pink" @click="redirectUser">Close</v-btn>
+              >
+              {{ firebaseMsg }}
+               <v-btn flat color="pink" @click="snackbar = false">Close</v-btn>
             </v-snackbar>  
-            <v-flex xs12 sm8 md4>
+
+          <v-layout align-center justify-center>
+
+            <!-- Successfully logged in -->
+            <v-flex v-if="userLoggedIn" xs12 sm8 md4>
+              <v-card class="elevation-12 card-registered">
+                <h1 class="registered-message primary--text">Thanks for registering</h1>
+              </v-card>  
+            </v-flex>  
+
+            <!-- Not yet logged in -->
+            <v-flex xs12 sm8 md4 v-if="!userLoggedIn">
               <v-form v-model="valid" ref="form" lazy-validation>
                 <v-card class="elevation-12">
                   <v-toolbar dark color="accent">
                     <v-toolbar-title>Please Register</v-toolbar-title>
                     <v-spacer></v-spacer>
-                    <v-tooltip bottom>
+                    <!-- <v-tooltip bottom>
                       <v-btn
                         icon
                         large
@@ -40,11 +50,9 @@
                         <v-icon large>code</v-icon>
                       </v-btn>
                       <span>Source</span>
-                    </v-tooltip>
+                    </v-tooltip> -->
                   </v-toolbar>
                   <v-card-text>
-                    
-                    </v-snackbar>
                     <v-form>
                       <v-progress-circular v-if="loading" indeterminate :size="50" color="primary"></v-progress-circular>
                       <v-text-field prepend-icon="person" name="login" label="Full Name" type="text" v-model="fullName" :rules="nameRules" :counter="10"
@@ -63,10 +71,10 @@
                   </v-card-text>
                   </v-btn>
                   <v-card-actions>
+                    <p class="ml-4">Have an account already? <router-link to="/signin">Log In</router-link> </p>
                     <v-spacer></v-spacer>
                     <v-btn @click="clear">clear</v-btn>
                     <v-btn color="primary" @click="signUserUp" :disabled="!valid">Sign Up</v-btn>
-                  
                   </v-card-actions>
                 </v-card>
               </v-form>  
@@ -91,13 +99,15 @@ import {mapGetters} from 'vuex'
     data(){
       return{
         loader: null,
+        userLoggedIn: false,
         loading : false,
-        loginMsg : "Thanks for registring!",
         snackbar: false,
+        snackMsg : '',
         fullName: '',
         email: '',
         password:  '',
         passwordConf: '',
+        /* activatedMsgSnack: '', */
         valid: true,
         nameRules: [
           v => !!v || 'Name is required',
@@ -106,71 +116,74 @@ import {mapGetters} from 'vuex'
         emailRules: [
           v => !!v || 'E-mail is required',
           v => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'E-mail must be valid'
-        ],
-        select: null,
+        ]
       }
     },
     computed: {
       ...mapGetters([
-        'user'
+        'user',
+        'userAuth',
+        'firebaseMsg',
       ]),
       comparePasswords () {
         return this.password !== this.confirmPassword ? 'Passwords do not match' : ''
+      }
+    },  
+    watch:{
+      user(value){
+        if(value !== null && value !== undefined){
+          this.$router.push('/signin')
+        }
+      },
+      firebaseMsg(value){
+        this.snackbar = true
+        console.log(value)
       }
     },
     methods: {
       signUserUp(){
         if (this.$refs.form.validate()) {
-          this.snackbar = false
-          this.loading = true
-
-          firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
-          .then(user => {
-            this.$store.dispatch('UPDATE_USER', user)
-            this.loading = false
-            this.loginMsg = "Thanks for registring"
-            this.snackbar = true
-            /* console.log(this.user.uid)
-            console.log(this.user.email) */
-            
+          new Promise((resolve, reject) => {
+            this.$store.dispatch('SIGN_USER_UP', {email: this.email, password: this.password})
+            resolve('Success')
+            reject('Error')
           })
-          .catch(
-            error => {
-              this.loading = false
-              this.loginMsg = error.message
+          .then((val) => {
+            if(user === null && user === undefined)
               this.snackbar = true
-            }
-          )
-          
+              /* if(this.firebaseMsg !== '' || (this.firebaseMsg !== null || this.firebaseMsg !== undefined)){
+                this.snackbar = true
+              } */
+              /* this.$router.push(this.$route.query.redirect || '/signin') */
+          }).catch((val) => {
+            console.log(val)
+          })
+          //this.$router.push(this.$route.query.redirect || '/signin')
         }
-
       },
       goHome(){
         this.$router.push(this.$route.query.redirect || '/')
       },
-      redirectUser(){
-        this.$router.push(this.$route.query.redirect || '/signin')
+      consoleError(){
+
       },
       clear() {
         this.$refs.form.reset()
       }
     },
-    watch: {
-      loader () {
-        const l = this.loader
-        this[l] = !this[l]
-
-        setTimeout(() => (this[l] = false), 3000)
-
-        this.loader = null
-      }
-    },
-    components:{
-      'title-vue': TitlesTemplate
+    created(){
     }
   }
 </script>
 
 <style>
+.card-registered{
+  min-height: 400px;
+  min-width: 600px
+}
+.registered-message{
+  font-family: 'Roboto', sans-serif;
+  font-size: 50px;
+}
 </style>
 

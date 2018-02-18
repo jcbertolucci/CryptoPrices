@@ -3,12 +3,12 @@
 import Vue from 'vue'
 import App from './App'
 import VueResource from 'vue-resource'
-import VueRouter from 'vue-router'
 import * as firebase from 'firebase'
 import Vuetify from 'vuetify'
 import('../node_modules/vuetify/dist/vuetify.min.css') // Ensure you are using css-loader
 import Vuex from 'vuex'
 import { store } from './store/store'
+import router from './router/router'
 
 //Components
 import Home from './components/Home.vue'
@@ -22,12 +22,13 @@ import Chartkick from 'chartkick'
 import VueChartkick from 'vue-chartkick'
 import Chart from 'chart.js'
 
+Vue.config.productionTip = false
+
 Vue.use(VueChartkick, { Chartkick })
 Vue.use(Trend);
 Vue.use(Vuex)
 Vue.use(VueResource)
-Vue.use(VueRouter)
-Vue.config.productionTip = false
+Vue.use(router)
 Vue.use(Vuetify,{
   theme: {
     primary: colors.deepOrange.accent4,
@@ -39,26 +40,11 @@ Vue.use(Vuetify,{
     success: colors.green.base
   }
 })
-
-const routes = [
-  //{ path: '/', component: Home }
-  //{ path: '/login', component: Login },
-  { path: '/', component: HomeVuetify },  
-  { path: '/signup', component: SignUp },
-  { path: '/coins', component: Coins },
-  { path: '/signin', component: SignIn },
-]
-
-const router = new VueRouter({
-  routes,
-  mode: 'history'
-})
-
 /* eslint-disable*/
 new Vue({
   store:store,
-  el: '#app',
   router,
+  el: '#app',
   template: '<App/>',
   components: {App},
   created(){
@@ -70,5 +56,5 @@ new Vue({
       storageBucket: 'inclitibeta.appspot.com',
       messagingSenderId: '1037154318940'
     })
-  }
+  }  
 })

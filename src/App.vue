@@ -3,9 +3,9 @@
     <v-app app class="white">
       <v-content flat class="text-xs-center mt-3 pt-3">
         <v-toolbar flat app color="accent" height="85px" class="elevation-4">
-          <vue-menu></vue-menu>
+          <vue-menu :store="this.$store"></vue-menu>
         </v-toolbar>
-        <router-view></router-view>   
+        <router-view></router-view>
         <vue-footer></vue-footer>
       </v-content> 
     </v-app>    

@@ -177,6 +177,7 @@
   import ParallaxTemplate from './Parallax.vue'
   import {mapActions} from 'vuex'
   import {mapGetters} from 'vuex'
+  import * as firebase from 'firebase'
   
   export default {
     components: {
@@ -207,11 +208,14 @@
       } */
     },
     created(){
-      console.log(this.user.email)
-    }/* ,
+      /* console.log(this.user.email)
+      console.log(firebase.auth().currentUser)
+      console.log(this.$router) */
+    },/* ,
     mounted(){
       this.topPage()
     } */
+    
   }
  
 </script>

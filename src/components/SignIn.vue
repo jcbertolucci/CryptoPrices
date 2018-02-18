@@ -18,10 +18,11 @@
             <v-snackbar
               :timeout="10000"
               :top="true"
-              v-model="snackbar"
+              v-model="activateMsgSnack"
             >
-              {{ loginMsg }}
-              <v-btn flat color="pink" @click="redirectUser">Close</v-btn>
+              {{ firebaseMsg }}
+              <!-- <v-btn flat color="pink" @click="redirectUser">Close</v-btn> -->
+              <v-btn flat color="pink">Close</v-btn>
             </v-snackbar>  
             <v-flex xs12 sm8 md4>
               <v-form v-model="valid" ref="form" lazy-validation>
@@ -40,15 +41,16 @@
                       <v-text-field prepend-icon="lock" name="password" label="Password" id="password" type="password" v-model="password" :rules="[v => !!v || 'Item is required']"
                                     required></v-text-field>
 
-                      <v-text-field prepend-icon="lock" name="password" label="Confirm Password" id="confirmPassword" type="password" v-model="passwordConf" :rules="[v => !!v || 'Item is required']" 
-                                    required></v-text-field>
+                     <!--  <v-text-field prepend-icon="lock" name="password" label="Confirm Password" id="confirmPassword" type="password" v-model="passwordConf" :rules="[v => !!v || 'Item is required']" 
+                                    required></v-text-field> -->
                     </v-form>
                   </v-card-text>
                   </v-btn>
                   <v-card-actions>
-                    <v-spacer></v-spacer>
+                    <p class="ml-4">Don't have an account? <router-link to="/signup">Register</router-link> </p>
+                    <v-spacer></v-spacer>             
                     <v-btn @click="clear">clear</v-btn>
-                    <v-btn color="primary" @click="signUserIp" :disabled="!valid">Sign In</v-btn>
+                    <v-btn color="primary" @click="onSignUp" :disabled="!valid">Sign In</v-btn>
                   </v-card-actions>
                 </v-card>
               </v-form>  
@@ -72,73 +74,58 @@ import {mapGetters} from 'vuex'
     },
     data(){
       return{
-        loader: null,
+        /* loader: null, */
         loading : false,
         loginMsg : "Your are logged in!",
         snackbar: false,
-        fullName: '',
+        /* fullName: '', */
         email: '',
         password:  '',
-        passwordConf: '',
+        /* passwordConf: '', */
         valid: true,
         emailRules: [
           v => !!v || 'E-mail is required',
           v => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'E-mail must be valid'
         ],
-        select: null,
+        select: null
       }
     },
     computed: {
-      ...mapGetters([
-        'user'
-      ]),
-      comparePasswords () {
-        return this.password !== this.confirmPassword ? 'Passwords do not match' : ''
+      user(){
+        return this.$store.getters.user
+      },
+      firebaseMsg(){
+        return this.$store.getters.firebaseMsg
+      },
+      activateMsgSnack(){
+        return this.$store.getters.activateMsgSnack
       }
     },
-    methods: {
-      signUserIn(){
-        if (this.$refs.form.validate()) {
-          this.snackbar = false
-          this.loading = true
-
-          firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
-          .then(user => {
-            this.$store.dispatch('UPDATE_USER', user)
-            this.loading = false
-            this.loginMsg = "Thanks for registring"
-            this.snackbar = true
-            /* console.log(this.user.uid)
-            console.log(this.user.email) */
-            
-          })
-          .catch(
-            error => {
-              this.loading = false
-              this.loginMsg = error.message
-              this.snackbar = true
-            }
-          )
-          
+    watch: {
+      user(value) {
+        if(value !== null && value !== undefined) {
+          this.$router.push('/portfolio')
         }
+      },
+      firebaseMsg(value){
+        console.log(value)
+        return value
+      },
+      activateMsgSnack(value){
+        console.log(value)
+        return true
+      }
 
+    },
+    methods: {
+      onSignUp(){
+        this.$store.dispatch('SIGN_USER_IN', {email: this.email, password: this.password})
       },
       goHome(){
         this.$router.push(this.$route.query.redirect || '/')
       },
       clear() {
-        console.log('clear')
         this.$refs.form.reset()
-      }
-    },
-    watch: {
-      loader () {
-        const l = this.loader
-        this[l] = !this[l]
-
-        setTimeout(() => (this[l] = false), 3000)
-
-        this.loader = null
       }
     },
     components:{
