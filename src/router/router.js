@@ -7,6 +7,7 @@ import SignIn from '@/components/SignIn.vue'
 import HomeVuetify from '@/components/HomeVuetify.vue'
 import Coins from '@/components/Coins.vue'
 import Portfolio from '@/components/Portfolio.vue'
+import Dashboard from '@/components/Dashboard.vue'
 
 Vue.use(VueRouter)
 
@@ -16,6 +17,7 @@ const routes = [
   { path: '/signup', name: 'Sign Up', component: SignUp },
   { path: '/coins', name: 'Coins', component: Coins },
   { path: '/portfolio', name: 'Portfolio', component: Portfolio, meta: { requiresAuth: true } },
+  { path: '/dashboard', name: 'Dashboard', component: Dashboard, meta: { requiresAuth: true } },
   { path: '/signin', name: 'SignIn', component: SignIn }
 ]
 const router = new VueRouter({

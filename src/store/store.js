@@ -1,7 +1,10 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import utils from '../../src/utils/utils.js'
-import * as firebase from 'firebase'
+import {firebaseApp} from '../database/firebaseInit'
+import {firestore} from '../database/firebaseInit'
+import {firestoreAuth} from '../database/firebaseInit'
+import {provider} from '../database/firebaseInit'
 
 Vue.use(Vuex)
 
@@ -19,7 +22,7 @@ export const store = new Vuex.Store({
       { text: 'Change (7d)', value: 'weekPercVar'}
     ],
     currentCoin: {},
-    selectedPair: {name: 'Australian Dollar', symbol: 'AUD'},
+    selectedPair: {name: 'American Dollar', symbol: 'USD'},
     selectedCoin: {name: 'Bitcoin', symbol: 'BTC'},
     currentCurrency: 'AUD',
     topCoins: [],
@@ -32,9 +35,31 @@ export const store = new Vuex.Store({
     userAuth : false,
     firebaseMsg: '',
     activatedMsgSnack: false,
-    topPortfolioCoins: []
+    topPortfolioCoins: [],
+    loading: false,
+    error: null,
+    coinsUser: null,
+    newsArticles:[]
   },
   getters:{
+    newsArticles(state){
+      return state.newsArticles
+    },
+    getCalculatedValue: (state) => {
+      state.coinsUser.forEach((item) =>{
+        console.log(item)
+      })
+      return state.coinsUser
+    },
+    loading(state){
+      return state.loading
+    },
+    coinsUser(state){
+      return state.coinsUser
+    },
+    error(state){
+      return state.error
+    },
     topPortfolioCoins: state => {
       return state.topPortfolioCoins
     },
@@ -89,25 +114,34 @@ export const store = new Vuex.Store({
     },
    },
   mutations:{
+    setNewsArticles(state, payload){
+      state.newsArticles = payload
+    },
+    setLoading(state, payload){
+      state.loading = payload
+    },
+    setError(state, payload){
+      state.error = payload
+    },
+    clearError(state){
+      state.error = null
+    },
+    clearUser(state){
+      state.user = null
+    },
     setUser: (state, payload) => {
-      console.log('inside mutations setUser')
-      console.log(payload)
       state.user = payload
     },
     setTopPortfolioCoins: (state, payload) => {
       state.topPortfolioCoins = payload
     },
     setactivatedMsgSnack: (state, payload) => {
-      console.log('inside mutations setactivatedMsgSnack')
-      console.log(payload)
       state.activatedMsgSnack = payload
     },
     setUserAuth: (state, payload) => {
       state.userAuth = payload
     },
     setFirebaseMsg: (state, payload) => {
-      console.log('inside mutations setFirebaseMsg')
-      console.log(payload)
       state.firebaseMsg = payload
     },
     setMarketCoinItems: (state, payload) => {
@@ -138,51 +172,22 @@ export const store = new Vuex.Store({
         state.currentCoin = payload;
     },
     fetchPortfolioCoins: (state, payload) => {
-        let coins = []
-        let coinsFinale =  []
-        let coin = {}
-        let limitCoins = payload ? payload : '20'
-        let baseImageUrl = ''
-        let proxyUrl = 'https://cors-anywhere.herokuapp.com/'
-        let urlCoinList = `${proxyUrl}https://min-api.cryptocompare.com/data/all/coinlist`
-        
-        fetch(urlCoinList)
-        .then(response => response.json())
-        .then(function(data){ 
-          baseImageUrl = data.BaseImageUrl
-          console.log(data)
-          Object.keys(data.Data).forEach(function(key) {
-            /* if(data.Data[key].IsTrading === true){ */
-              coin = {}
-              coin.sortOrder = data.Data[key].SortOrder
-              coin.id = data.Data[key].Id
-              coin.name = data.Data[key].Name
-              coin.coinName = data.Data[key].CoinName
-              coin.fullName = data.Data[key].FullName
-              coin.imageUrl = baseImageUrl + data.Data[key].ImageUrl
-              coins.push(coin)
-            /* } */
-          }) 
-          return coins
-          /* commit('setTopPortfolioCoins', coins) */
-        }).then((coins) => {
-          //Sort coins
-           coins.sort(function (a,b){
-            return parseFloat(a.sortOrder) - parseFloat(b.sortOrder)
-          })
-          console.log(coins)
-
-          coinsFinale = coins.filter((item) => {
-            return parseFloat(item.sortOrder) <= parseFloat(limitCoins)
-          })
-          console.log(coinsFinale)
+      let coinsUser = []
+      let db = firebaseApp.firestore()
+      db.collection('coins').get().then((querySnapshot) => {
+        querySnapshot.forEach(doc => {
+          if(doc.data().userId === state.user.id){
+            coinsUser.push(doc.data().coin)
+          }
         })
-        .catch((error) => {
-          console.log(error)
-        })
+      })    
 
-
-
+      state.coinsUser = coinsUser
+    },
+    saveCoinFirebase: (state, payload) =>{
+      let db = firebaseApp.firestore()
+      db.collection('coins').add({coin: payload, userId: state.user.id})
+      state.coinsUser.push(payload)
     },
     fetchTopCoins: (state, payload) => {
         let requestData = [];
@@ -249,11 +254,12 @@ export const store = new Vuex.Store({
         })
     },
     fetchAllCoins: (state, payload) => {
+      let selectedPair = state.selectedPair
       let requestData = [];
       let coinsCryptoCompare = []
       let coins = []
       let coin = {}
-      let currency = 'AUD';
+      let currency = state.selectedPair.symbol;
       let baseImageUrl = ''
       let url = `https://api.coinmarketcap.com/v1/ticker/?convert=${currency}&limit=2000`//TODO
       let proxyUrl = 'https://cors-anywhere.herokuapp.com/'
@@ -283,7 +289,7 @@ export const store = new Vuex.Store({
           coin.totalSupply = utils.USFormat(item.total_supply);
           coin.volumeUsd = utils.formatNumbers(item['24h_volume_usd'])
           coin.imageUrl = ''
-          coin.exchanges = []
+          coin.exchanges = [] 
           coin.coinInfo = {}
 
           coins.push(coin);
@@ -310,8 +316,7 @@ export const store = new Vuex.Store({
           return coins
         })
         .then(coins => {
-
-           if(payload === 'MARKET') {//Just for Coins that need Market infos */
+          if(payload === 'MARKET') {//Just for Coins that need Market infos */
             let proxyUrl = 'https://cors-anywhere.herokuapp.com/'
             let url = ""
             let symbol = ""
@@ -319,18 +324,17 @@ export const store = new Vuex.Store({
             Object.keys(coins).forEach( (key) => {
               symbol = coins[key].symbol.toUpperCase()
               
-              if (state.selectedCoin.symbol.toUpperCase() === coins[key].symbol.toUpperCase()
-                  || state.selectedCoin.symbol.toUpperCase() === coins[key].name.toUpperCase()){
-              //url = `${proxyUrl}https://min-api.cryptocompare.com/data/top/exchanges/full?fsym=${symbol}&tsym=${state.currentCurrency}`
-                url = `${proxyUrl}https://min-api.cryptocompare.com/data/top/exchanges/full?fsym=${state.selectedCoin.symbol}&tsym=${state.selectedPair.symbol}`
+              //Commented because no longer used when inside dashboard
+              /* if (state.selectedCoin.symbol.toUpperCase() === coins[key].symbol.toUpperCase()
+                  || state.selectedCoin.symbol.toUpperCase() === coins[key].name.toUpperCase()){ */
+                url = `${proxyUrl}https://min-api.cryptocompare.com/data/top/exchanges/full?fsym=${symbol}&tsym=${currency}`
+
                 fetch(url)
                 .then(response => response.json())
                 .then(data => {
-                    if(data.Message === "No exchanges available"){
-                      coins[key].exchanges = []
+                    if(data.Message === "No exchanges available" || (data.Data.AggregatedData === undefined) ){
+                      coins[key].exchanges = [] 
                     }else{
-                      /* console.log(data.Data)
-                      console.log(data.Data.Exchanges) */
                       data.Data.AggregatedData.PRICE = utils.formatNumbersCents(data.Data.AggregatedData.PRICE)
                       data.Data.AggregatedData.LASTVOLUME = utils.USFormat3(data.Data.AggregatedData.LASTVOLUME)
                       data.Data.AggregatedData.VOLUMEDAY = utils.USFormat3(data.Data.AggregatedData.VOLUMEDAY)
@@ -341,7 +345,10 @@ export const store = new Vuex.Store({
                       data.Data.AggregatedData.CHANGEPCTDAY = utils.USFormat2(data.Data.AggregatedData.CHANGEPCTDAY) + '%'
                       
                       coins[key].coinInfo = data.Data.AggregatedData
+
                       data.Data.Exchanges.map( (exchange) => {
+                        exchange.RAWPRICE = exchange.PRICE
+                        exchange.RAWVOLUME = exchange.VOLUME24HOUR
                         exchange.PRICE = utils.formatNumbersCents(exchange.PRICE)
                         exchange.LASTVOLUME = utils.USFormat3(exchange.LASTVOLUME)
                         exchange.VOLUME24HOUR = utils.USFormat3(exchange.VOLUME24HOUR)
@@ -353,80 +360,134 @@ export const store = new Vuex.Store({
                       })
                       coins[key].exchanges = data.Data.Exchanges
                     } 
+                  return data  
                 })
-              } 
+              //} 
             })
-            state.marketCoinItems = coins
           }   
           return coins          
         })
-        state.marketCoinItems = coins
-        state.allCoinsTableItems = coins
+        .then(coins => {
+          let coin1 = coins.filter(coin => coin.name === 'Bitcoin')
+          console.log(coin1)
+          state.marketCoinItems = coins
+          state.allCoinsTableItems = coins
+          return coins 
+        })
         return coins        
       })
     }    
   },
   actions: {
+    FETCH_NEWS_ARTICLES({commit}){
+      var newsArticles = []
+      var filterArticles = []
+      fetch('https://newsapi.org/v2/top-headlines?sources=crypto-coins-news&apiKey=e07d207ff3204ba380935338b1acf48f')
+      .then(response => response.json())
+      .then((response) =>{
+
+        filterArticles = response.articles.filter(function(article){
+          return article.description.length > 3 //to avoid "..." description
+        });
+
+        function getNewsObject(item, index) {
+          var obj = {
+            title: item.title,
+            description: item.description,
+            urlToImage: item.urlToImage,
+            url: item.url
+          }
+          return obj;
+        }
+        commit('setNewsArticles', filterArticles.map(getNewsObject))
+      })
+    },
+    SAVE_COIN_FIREBASE ({commit}, payload){
+      commit('saveCoinFirebase', payload)
+    },
+    CLEAR_ERROR ({commit}){
+      commit('clearError')
+    },
     SIGN_USER_IN: ({commit}, payload) => {
-      firebase.auth().signInWithEmailAndPassword(payload.email, payload.password)
+      commit('setLoading', true)
+      commit('clearError')
+      firebaseApp.auth().signInWithEmailAndPassword(payload.email, payload.password)
         .then(
           user => {
+            commit('setLoading', false)
             const newUser = {
               id: user.uid,
               email: user.email, 
               name: '',
               savedCoins: []//TODO TO GET THE COINS
             }
-            console.log('SIGN_USER_IN')
             commit('setUser', newUser)
-            commit('setFirebaseMsg', 'Login success!')
-            commit('setactivatedMsgSnack', true)
           }
         )
         .catch(
         error => {
-          //TREAT ERROR
-          console.log('SIGN_USER_IN: error')
-          commit('setFirebaseMsg', error.message)
-          commit('setactivatedMsgSnack', true)
+          commit('setLoading', false)
+          commit('setError', error)
         }
       )
-
     },
     UPDATE_USERAUTH: (context, payload) => {
       context.commit('setUserAuth', payload)
     },
-    SIGN_USER_UP: ({commit}, payload) => {
-      console.log('inside SIGN_USER_UP')
-      firebase.auth().createUserWithEmailAndPassword(payload.email, payload.password)
-      .then(user => {
-         const newUser = {
+    LOG_USER_OUT: (context, payload)=>{
+      firebaseApp.auth().signOut()
+      context.commit('clearUser')    
+      payload.push('/')  
+    },
+    SIGN_USER_IN_GOOGLE: ({commit}, payload) => {
+      commit('setLoading', true)
+      commit('clearError')
+       // Using a popup.
+      provider.addScope('profile');
+      provider.addScope('email');
+      firestoreAuth.signInWithPopup(provider).then(function(result) {
+      commit('setLoading', false)
+      // This gives you a Google Access Token.
+      var token = result.credential.accessToken;
+      // The signed-in user info.
+      var user = result.user;
+      const newUser = {
            id: user.uid,
            email: user.email, 
-           name: '',
+           name: user.displayName,
+           imgUrl: user.photoURL,
            savedCoins: []
          }
-         console.log('SIGN_USER_UP')
-         commit('setUser', newUser)
-         commit('setFirebaseMsg', 'Registration success!')
-         commit('setactivatedMsgSnack', true)
-         
+        commit('setUser', newUser)
       })
       .catch(
         error => {
-          //TREAT ERROR
-          console.log('SIGN_USER_UP: error')
-          console.log(error.message)
-          commit('setFirebaseMsg', error.message)
-          commit('setactivatedMsgSnack', true)
+          commit('setLoading', false)
+          commit('setError', error)
         }
       )
     },
-    /* CLEAR_MESSAGE_SNACK: (context, payload) => {
-      context.commit('setFirebaseError', payload)
-    }, */
-    setactivatedMsgSnack: (context, payload) => {
-      context.commit('activatedMsgSnack', payload)
+    SIGN_USER_UP: ({commit}, payload) => {
+      commit('setLoading', true)
+      commit('clearError')
+      firebaseApp.auth().createUserWithEmailAndPassword(payload.email, payload.password)
+      .then(user => {
+        commit('setLoading', false)
+        const newUser = {
+          id: user.uid,
+          email: user.email,
+          //name: user.displayName,
+          name: '',
+          savedCoins: []
+        }
+        commit('setUser', newUser)
+      })
+      .catch(
+        error => {
+          commit('setLoading', false)
+          commit('setError', error)
+        }
+      )
     },
     FETCH_PORTFOLIO_COINS: (context, payload) => {
       context.commit('fetchPortfolioCoins', payload)

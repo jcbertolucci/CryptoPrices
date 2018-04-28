@@ -1,6 +1,11 @@
 <template>
   <v-app id="inspire">
       <v-content>
+        <v-layout row id="alert-component" v-if="error">
+          <v-flex xs12 sm6 offset-sm3>
+            <app-alert @dismissed="onDismissed" :text="error.message"></app-alert>
+          </v-flex>
+        </v-layout> 
         <v-container fluid fill-height>
           <v-btn
             color="primary"
@@ -14,47 +19,18 @@
           >
             <v-icon >home</v-icon>
           </v-btn>  
-          <v-snackbar
-              :timeout="5000"
-              :top="true"
-              v-model="snackbar"
-              >
-              {{ firebaseMsg }}
-               <v-btn flat color="pink" @click="snackbar = false">Close</v-btn>
-            </v-snackbar>  
-
-          <v-layout align-center justify-center>
-
-            <!-- Successfully logged in -->
-            <v-flex v-if="userLoggedIn" xs12 sm8 md4>
-              <v-card class="elevation-12 card-registered">
-                <h1 class="registered-message primary--text">Thanks for registering</h1>
-              </v-card>  
-            </v-flex>  
+          <v-layout justify-center>
 
             <!-- Not yet logged in -->
-            <v-flex xs12 sm8 md4 v-if="!userLoggedIn">
+            <v-flex xs12 sm8 md4>
               <v-form v-model="valid" ref="form" lazy-validation>
                 <v-card class="elevation-12">
                   <v-toolbar dark color="accent">
                     <v-toolbar-title>Please Register</v-toolbar-title>
                     <v-spacer></v-spacer>
-                    <!-- <v-tooltip bottom>
-                      <v-btn
-                        icon
-                        large
-                        :href="source"
-                        target="_blank"
-                        slot="activator"
-                      >
-                        <v-icon large>code</v-icon>
-                      </v-btn>
-                      <span>Source</span>
-                    </v-tooltip> -->
                   </v-toolbar>
                   <v-card-text>
                     <v-form>
-                      <v-progress-circular v-if="loading" indeterminate :size="50" color="primary"></v-progress-circular>
                       <v-text-field prepend-icon="person" name="login" label="Full Name" type="text" v-model="fullName" :rules="nameRules" :counter="10"
                                     required>
                       </v-text-field>
@@ -93,21 +69,12 @@ import {mapActions} from 'vuex'
 import {mapGetters} from 'vuex'
 
   export default{
-    props: {
-      source: String
-    },
     data(){
       return{
-        loader: null,
-        userLoggedIn: false,
-        loading : false,
-        snackbar: false,
-        snackMsg : '',
         fullName: '',
         email: '',
         password:  '',
         passwordConf: '',
-        /* activatedMsgSnack: '', */
         valid: true,
         nameRules: [
           v => !!v || 'Name is required',
@@ -123,8 +90,11 @@ import {mapGetters} from 'vuex'
       ...mapGetters([
         'user',
         'userAuth',
-        'firebaseMsg',
+        'firebaseMsg'
       ]),
+      error(){
+        return this.$store.getters.error
+      },
       comparePasswords () {
         return this.password !== this.confirmPassword ? 'Passwords do not match' : ''
       }
@@ -141,7 +111,11 @@ import {mapGetters} from 'vuex'
       }
     },
     methods: {
+      onDismissed(){
+        this.$store.dispatch('CLEAR_ERROR')
+      },
       signUserUp(){
+        
         if (this.$refs.form.validate()) {
           new Promise((resolve, reject) => {
             this.$store.dispatch('SIGN_USER_UP', {email: this.email, password: this.password})
@@ -149,23 +123,14 @@ import {mapGetters} from 'vuex'
             reject('Error')
           })
           .then((val) => {
-            if(user === null && user === undefined)
-              this.snackbar = true
-              /* if(this.firebaseMsg !== '' || (this.firebaseMsg !== null || this.firebaseMsg !== undefined)){
-                this.snackbar = true
-              } */
-              /* this.$router.push(this.$route.query.redirect || '/signin') */
+            /* this.$router.push(this.$route.query.redirect || '/signin') */
           }).catch((val) => {
             console.log(val)
           })
-          //this.$router.push(this.$route.query.redirect || '/signin')
         }
       },
       goHome(){
         this.$router.push(this.$route.query.redirect || '/')
-      },
-      consoleError(){
-
       },
       clear() {
         this.$refs.form.reset()
@@ -178,8 +143,8 @@ import {mapGetters} from 'vuex'
 
 <style>
 .card-registered{
-  min-height: 400px;
-  min-width: 600px
+  min-height: 100px;
+  min-width: 500px
 }
 .registered-message{
   font-family: 'Roboto', sans-serif;

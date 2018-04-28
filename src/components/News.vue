@@ -1,27 +1,41 @@
 <template id="NewsTemplate">
-    <div class="reset-space wrapper">
-      <div class="card reset-space image" v-for="news in newsArray" >
-        <img class="reset-space" :src="news.urlToImage" alt="Card image cap">
-        <div class="media-content">
-          <p class="card-header-title">John Smith</p>
-          <p class="subtitle is-6">@johnsmith</p>
-        </div>
-      </div>
+  <div class="mt-4 news-wrapper">
+    <div class="news">
+      <v-card v-for="(item, index) in newsArticles" :key="index" class="mb-2 mr-1">
+        <v-card-media :src="item.urlToImage" height="120px">
+        </v-card-media>
+        <v-card-title primary-title>
+          <div>
+            <div class="custom-headline">{{item.title}}</div>
+            <div class="custom-content">{{item.description}}</div>
+          </div>
+        </v-card-title>
+        <v-card-actions>
+          <v-btn right flat color="primary" :href="item.url" target="_blank">Go to Page </v-btn>
+        </v-card-actions>
+      </v-card>
     </div>
+  </div>
 </template>
 
 <script>
 /* eslint-disable */
+import {mapGetters} from 'vuex'
+
 export default {
   data () {
     return {
       msg:'News',
       newsArray: [],
-      newsArray2: []
     }
   },
+  computed:{
+    ...mapGetters([
+      'newsArticles'
+    ])
+  },
   methods:{
-    fecthApiGuardian: function(){
+    /* fecthApiGuardian: function(){
       //let self=this;
       let today = new Date();
       let searchMonth = today.getMonth()+1
@@ -29,22 +43,10 @@ export default {
       let dateSearchFrom = searchYear + '-' + searchMonth + '-' + '01'
       let apiKey = 'a27dfb18-0f44-413b-a569-956b74a5127a';
       let url = `https://content.guardianapis.com/search?q=crypto/blockchain/bitcoin&format=json&from-date=${dateSearchFrom}&show-tags=contributor&show-fields=starRating,headline,thumbnail,short-url&order-by=relevance&api-key=${apiKey}`
-
-      this.$http.get(url).then(function(data){ this.newsArray2 = data.body.response.results });            
-    },
-    fetchApiNews: function(){
-      this.$http.get('https://newsapi.org/v2/top-headlines?sources=crypto-coins-news&apiKey=e07d207ff3204ba380935338b1acf48f')
-      .then(function(data){
-        this.newsArray = data.body.articles.filter(function(article){
-          return article.description.length > 3 //to avoid "..." description
-        });
-        console.log(this.newsArray);
-      })
-    }   
-  },
-  mounted(){
-    this.fetchApiNews();
-    this.fecthApiGuardian();
+      this.$http.get(url).then(function(data){ this.newsArray.push(data.body.response.results) }).catch(error => {console.log(error)});   
+      console.log("fecthApiGuardian")
+      
+    } */
   }
 }
 </script>
@@ -54,6 +56,23 @@ export default {
   padding: 0px;
   margin: 0px;
   border: 0px;
+}
+.news{
+  position: fixed;
+  width: 20%;
+  height: 85%;
+  overflow-y: auto;
+}
+.custom-headline{
+  font-weight: bold;
+  line-height: 22px;
+  line-height: 1.5;
+  padding-bottom: 2%;
+  text-align: left;
+}
+.custom-content{
+  line-height: 20px;
+  text-align: justify;
 }
 
 </style>

@@ -35,13 +35,6 @@
 
   <!-- If called from Coins page -->
   <v-card v-else-if="calledFromCoinsPath"> 
-    <!-- <v-container grid-list-md text-xs-center>
-      <v-layout row wrap mx-auto justify-space-around>
-        <v-flex xs1 v-for="coin in coinTableItems" v-bind:data="coin" v-bind:key="coin.name">
-          <v-btn outline color="primary" @click="selectedCoin(coin.name)">{{ coin.name }}</v-btn>
-        </v-flex>         
-      </v-layout>  
-    </v-container> -->
     <v-card class="pb-3">
       <v-layout column></v-layout>
       <v-layout row justify-left align-center pa-0 ma-0>
@@ -82,14 +75,8 @@
               item-value="symbol"
               return-object
             ></v-select>
-            <!-- <v-text-field
-              append-icon="search"
-              label="Search Coin"
-              single-line
-              hide-details
-              v-model="search"
-            ></v-text-field> -->
           </v-flex>
+          
           <v-flex xs1 offset-xs0 class="cards-info" pa-0 ma-0 pl-5 ml-4 v-if="exchangesSelectedCoin.length > 1">
             <h2>LAST PRICE<span>{{filteredItems[0].coinInfo.PRICE}}</span></h2>
           </v-flex>
@@ -123,27 +110,17 @@
         </v-layout>
       </v-layout>
     </v-card>   
-    <v-container dark fluid grid-list-md>
-        <!-- <v-layout row justify-left align-center>
-          <v-flex xs1 offset-xs0>
-            <v-subheader>Currency pair:</v-subheader>
-          </v-flex>
-          <v-flex xs1 offset-xs0>
-            <v-select
-              :items="items"
-              v-model="selectedCurrency"
-              label="Select"
-              single-line
-              bottom
-            ></v-select>
-          </v-flex>
-          <v-flex xs9 offset-xs1>
-            <v-subheader class="coins-title">{{filteredItems[0].name}}({{filteredItems[0].symbol}})/TODO</v-subheader>
-          </v-flex>
-        </v-layout>   -->
-        
-      <h1 v-if="exchangesSelectedCoin.length > 1" class="container-title">Exchanges for pair: {{filteredItems[0].symbol}}/{{selectedPair.symbol}}</h1>
-      <br>
+
+    <v-container dark  grid-list-md justify-left >
+      <v-layout row justify-left pa-0 ma-0 >
+        <v-flex xs4 text-left justify-left text-left>  
+          <h1 v-if="exchangesSelectedCoin.length > 1" class="container-title text-left">Exchanges for pair: {{filteredItems[0].symbol}}/{{selectedPair.symbol}}</h1>
+        </v-flex>
+        <v-flex xs8 text-left justify-left >
+          <h1 v-if="exchangesSelectedCoin.length > 1" class="container-title">Best price: <span class="primary--text">{{bestPriceExchange.MARKET}}</span></h1>
+          <h1 v-if="exchangesSelectedCoin.length > 1" class="container-title --text">Best volume: <span class="primary--text">{{bestVolumeExchange.MARKET}}</span></h1>
+        </v-flex>  
+      </v-layout>  
       <template>
         <v-progress-linear
           :indeterminate="query"
@@ -171,9 +148,6 @@
         >
           <v-card class="card-coins">
             <v-card-title class="pa-3 ma-0 ">
-              <!-- <v-btn small flat @click="refresh(props)"> 
-                <img class="pa-0 ma-0" :src="props.item.MARKET" height="55">
-              </v-btn>  -->
               <h4 class="title">{{ props.item.MARKET }}</h4>
             </v-card-title>
             <v-divider></v-divider>
@@ -192,7 +166,7 @@
                 <v-list-tile-content>Last Volume:</v-list-tile-content>
                 <v-list-tile-content class="align-end">
                   <v-btn flat >
-                    <H4>{{ props.item.LASTVOLUME }}</H4><br><h6>{{selectedCoin.symbol}}</h6>
+                    <H4>{{ props.item.LASTVOLUME }}</H4><br><h6 class="space-between">{{selectedCoin.symbol}}</h6>
                   </v-btn>
                 </v-list-tile-content>
               </v-list-tile>
@@ -200,7 +174,7 @@
                 <v-list-tile-content>Volume (24h):</v-list-tile-content>
                 <v-list-tile-content class="align-end">
                   <v-btn flat >
-                    <H4>{{ props.item.VOLUME24HOUR }}</H4> 
+                    <H4>{{ props.item.VOLUME24HOUR }}</H4><br><h6 class="space-between">{{selectedCoin.symbol}}</h6>
                   </v-btn>
                 </v-list-tile-content>
               </v-list-tile>
@@ -250,8 +224,6 @@
 <script>
   import {mapActions} from 'vuex'
   import {mapGetters} from 'vuex'
-  
-
 
   export default {
     computed: {
@@ -304,10 +276,14 @@
         }
       },
       calledFromCoinsPath: function(){
+        //TODO
+
         return this.getRoutePath() === '/coins'
+        /* return this.getRoutePath() === '/dashboard' */
       },
       calledFromHomePath: function(){
-        return this.getRoutePath() === '/'
+         return this.getRoutePath() === '/' 
+ 
       },
       filteredItems: function(){
         if (this.search.length <= 0) {
@@ -319,12 +295,30 @@
         return filter
       },
       exchangesSelectedCoin: function(){
-        //console.log(this.filteredItems[0].exchanges.length)
+        let cheapestExchange = {}
+        let biggestVolexchange = {}
+
+        //Get cheapest exchange
+        this.filteredItems[0].exchanges.sort(function(a,b){
+          return a.RAWPRICE - b.RAWPRICE
+        })        
+        this.bestPriceExchange = this.filteredItems[0].exchanges[0]
+
+        //Get top volume exchange
+        this.filteredItems[0].exchanges.sort(function(a,b){
+          return b.RAWVOLUME - a.RAWVOLUME
+        })         
+        this.bestVolumeExchange = this.filteredItems[0].exchanges[0]
+
+        console.log(this.filteredItems[0].exchanges)
+
         return this.filteredItems[0].exchanges
       }
     },
     data(){
       return{
+        bestPriceExchange: {},
+        bestVolumeExchange: {},
         messageLoading: "Fetching real time data...",
         value: 0,
         query: false,
@@ -364,7 +358,7 @@
         this.query = false
 
         this.interval = setInterval(() => {
-          if(this.exchangesSelectedCoin.length > 1){
+          if(this.exchangesSelectedCoin.length > 0){
           /* if (this.value === 100) { */
             clearInterval(this.interval)
             this.show = false
@@ -377,6 +371,10 @@
       }
     },
     watch:{
+      /* cheapestExchange: function(){
+
+        return name
+      } */
       
     },
     created(){
@@ -449,7 +447,11 @@
 }
 .container-title{
   margin: 20px;
-  font-size: 30px
+  font-size: 30px;
+  text-align: left
+}
+.space-between{
+  padding-left: 2px
 }
 
 </style>

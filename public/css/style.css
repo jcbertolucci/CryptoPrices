@@ -1,0 +1,107 @@
+/*Fonts*/
+@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro|Roboto+Mono|Source+Sans+Pro:b|Lato:700|Open+Sans|Roboto:thin');
+
+/*Elements*/
+
+/*Classes*/
+.wrapper{
+  display: grid;
+  grid-template-columns:repeat(2, 1fr);
+  grid-gap: 2em;
+}
+
+.div-main{
+    padding-top: 70px;
+}
+.no-padding{
+    padding: 0px 0px 0px 0px;
+}
+.no-padding-left-right{
+    padding-left: 0px;
+    padding-right: 0px;
+}
+.font-orange{
+    --color: rgb(224, 65, 7);
+}
+.cool-link {
+    display: inline-block;
+    color: rgb(224, 65, 7);
+    --color: hsla(13, 100%, 50%, 0.719);
+    text-decoration: none;
+}
+.cool-link::after {
+    content: '';
+    display: block;
+    width: 0;
+    height: 2px;
+    background: rgb(224, 65, 7);
+    transition: width .3s;
+}
+.cool-link:hover{
+    color: rgb(224, 65, 7);
+}
+.cool-link:hover::after {
+    width: 100%;
+    transition: width .3s;    
+}
+
+/*Ids*/
+ #btnSignIn{
+    padding-right: 14px;
+    color: rgb(224, 65, 7);
+    cursor: pointer;
+    font-size: 14px;
+    font-family: 'Source Sans Pro'
+}
+#btnSignIn:hover{
+    padding-right: 14px;
+    color: rgb(224, 65, 7);
+}
+#btnSignUp{
+    color: rgb(224, 65, 7);
+    border: 2px solid rgb(224, 65, 7);
+    background-color: white;
+    -webkit-transition-duration: 0.4s; 
+    transition-duration: 0.4s;
+    cursor: pointer;
+    font-size: 15px;
+    font-family: 'Source Sans Pro'
+}
+#btnSignUp:hover {
+    background-color: rgb(224, 65, 7);
+    color: white;
+} */
+#nav-menu{
+    font-family: 'Source Sans Pro'
+}
+#footer > #div-footer{
+  display: grid;
+  grid-template-columns:repeat(2, 1fr);
+}
+#div-footer li{
+  list-style-type: none;
+  padding: 10px 50px 5px 0px;
+}
+#div-footer li{
+  color: rgb(250, 245, 245);
+  text-align: left;
+  font-family: 'Roboto';
+  font-size: 14px;
+}
+#div-footer li a{
+  color: rgb(250, 245, 245);
+  text-align: left;
+  font-family: 'Roboto';
+  font-size: 14px;
+  padding: 2px 5px 0px 70px;
+}
+.footer-heading{
+  color: rgb(221, 19, 19);
+  font-weight: bold;
+  font-size: 19px;
+}
+#footer div{
+  background: hsl(256, 67%, 10%);
+}
+
+

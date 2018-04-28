@@ -1,6 +1,11 @@
 <template>
   <v-app id="inspire">
       <v-content>
+        <v-layout row id="alert-component" v-if="error">
+          <v-flex xs12 sm6 offset-sm3>
+            <app-alert @dismissed="onDismissed" :text="error.message"></app-alert>
+          </v-flex>
+        </v-layout> 
         <v-container fluid fill-height>
           <v-btn
             color="primary"
@@ -14,7 +19,7 @@
           >
             <v-icon >home</v-icon>
           </v-btn>
-          <v-layout align-center justify-center>
+          <v-layout  justify-center>
             <v-snackbar
               :timeout="10000"
               :top="true"
@@ -46,11 +51,14 @@
                     </v-form>
                   </v-card-text>
                   </v-btn>
+                  <v-btn outline color="primary" @click="onSignInGoogle">
+                    <i class="fab fa-google"></i>
+                  </v-btn>
                   <v-card-actions>
                     <p class="ml-4">Don't have an account? <router-link to="/signup">Register</router-link> </p>
-                    <v-spacer></v-spacer>             
+                    <v-spacer></v-spacer>      
                     <v-btn @click="clear">clear</v-btn>
-                    <v-btn color="primary" @click="onSignUp" :disabled="!valid">Sign In</v-btn>
+                    <v-btn color="primary" @click="onSignIn" :disabled="!valid">Sign In</v-btn>
                   </v-card-actions>
                 </v-card>
               </v-form>  
@@ -91,6 +99,9 @@ import {mapGetters} from 'vuex'
       }
     },
     computed: {
+      error(){
+        return this.$store.getters.error
+      },
       user(){
         return this.$store.getters.user
       },
@@ -104,7 +115,8 @@ import {mapGetters} from 'vuex'
     watch: {
       user(value) {
         if(value !== null && value !== undefined) {
-          this.$router.push('/portfolio')
+          /* this.$router.push('/portfolio') */
+          this.$router.push('/dashboard')
         }
       },
       firebaseMsg(value){
@@ -118,8 +130,14 @@ import {mapGetters} from 'vuex'
 
     },
     methods: {
-      onSignUp(){
+      onDismissed(){
+        this.$store.dispatch('CLEAR_ERROR')
+      },
+      onSignIn(){
         this.$store.dispatch('SIGN_USER_IN', {email: this.email, password: this.password})
+      },
+      onSignInGoogle(){
+        this.$store.dispatch('SIGN_USER_IN_GOOGLE')
       },
       goHome(){
         this.$router.push(this.$route.query.redirect || '/')
