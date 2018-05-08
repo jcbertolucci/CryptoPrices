@@ -63,7 +63,6 @@
 
 <script>
 /* eslint-disable */
-import TitlesTemplate from './Titles.vue'
 import * as firebase from 'firebase'
 import {mapActions} from 'vuex'
 import {mapGetters} from 'vuex'

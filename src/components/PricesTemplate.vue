@@ -21,8 +21,6 @@
         </v-flex>  
       </v-layout>  
     </v-container>  
-      
-    
     <v-container id="container" fluid grid-list-md pa-0 ma-0>
       <v-data-iterator
         content-tag="v-layout"
@@ -42,13 +40,17 @@
         >
           <v-card>
             <v-card-title>
-              <h4>{{ props.item.name }}</h4>
+              <v-avatar size="34" class="pr-3">
+                <img :src="props.item.imageUrl">
+              </v-avatar>
+              <h3>{{ props.item.name }}</h3>
             </v-card-title>
             <v-divider></v-divider>
             <v-list dense>
               <v-list-tile>
                 <v-list-tile-content>Price:</v-list-tile-content>
-                <v-list-tile-content class="align-end">{{ props.item.priceAud }}</v-list-tile-content>
+                <v-list-tile-content class="align-end" v-if="selectedPair.symbol === 'AUD'">{{ props.item.priceAud }}</v-list-tile-content>
+                <v-list-tile-content class="align-end" v-else-if="selectedPair.symbol === 'USD'">{{ props.item.priceUsd }}</v-list-tile-content>
               </v-list-tile>
               <v-list-tile>
                 <v-list-tile-content>Change day(%):</v-list-tile-content>
@@ -83,8 +85,7 @@
               <v-list-tile-content>{{ item.MARKET }}</v-list-tile-content>
               <v-list-tile-content class="align-end">{{ item.PRICE }}</v-list-tile-content>
             </v-list-tile>
-          </v-list>  
- 
+          </v-list>   
         </v-flex>
       </v-data-iterator>
     </v-container>
@@ -97,7 +98,7 @@
     data: () => ({
       dialog: false,
       pairs:[
-        /* {name: 'Australian Dollar', symbol: 'AUD'}, */
+        {name: 'Australian Dollar', symbol: 'AUD'},
         {name: 'American Dollar', symbol: 'USD'}
       ],
       rowsPerPageItems: [5],
@@ -125,7 +126,7 @@
           return this.$store.getters.selectedPair
         },
         set: function (newValue) {
-          console.log(newValue)
+          console.log(newValue) 
           this.$store.dispatch("UPDATE_PAIR", newValue)
         }
       }

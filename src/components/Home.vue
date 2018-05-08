@@ -17,7 +17,6 @@
 import MenuTemplate from './Menu.vue'
 import CoinsTemplate from './Coins.vue'
 import NewsTemplate from './News.vue'
-import TitlesTemplate from './Titles.vue'
 import TableComponent from './Table.vue'
 import Coin from '../models/Coin'
 import CoinList from '../models/CoinList'
@@ -31,7 +30,6 @@ export default {
     'coins-template': CoinsTemplate,
     'news-template': NewsTemplate,
     'menu-template': MenuTemplate,
-    'titles-template': TitlesTemplate,
     'table-vue': TableComponent,
     'twiterfeed-vue': TwitterFeedTemplate
   },  
