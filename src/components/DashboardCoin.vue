@@ -9,12 +9,13 @@
         ></v-text-field>
     </div>
     <div id="content-coin1">
-      <prices-template :searchText="search"></prices-template>
+      <v-progress-circular v-if="loading" :size="100" indeterminate color="primary" id="loading-circular"></v-progress-circular>
+      <prices-template v-else-if="!loading" :searchText="search"></prices-template>
     </div>
     <div id="content-news">
       <news-template></news-template>
     </div>
-   </div>  
+  </div>  
 </template>
 
 <script>
@@ -29,6 +30,16 @@
     data(){
       return{
         search:""
+      }
+    },
+    computed:{
+      loading: function(newValue){
+        return this.$store.getters.loading
+      }
+    },
+    watch:{
+      loading: function(newValue){
+        return newValue
       }
     }
   }
@@ -49,6 +60,7 @@
     grid-area: 1 / 2;
   }
   #content-coin1{
+    position: relative;
     grid-area:content1;
     margin-left: 2%;
   } 
@@ -65,6 +77,13 @@
     margin-left: 2%;
     margin-bottom: 2%;
   } 
+  #loading-circular{
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
 
 </style>
 

@@ -2,7 +2,7 @@
   <div id="app">
     <v-app app class="white">
       <v-content flat class="text-xs-center">
-        <v-toolbar flat app color="accent" height="85px" class="elevation-6">
+        <v-toolbar flat app color="white" height="85px" class="elevation-1">
           <app-menu :logOutProp="logOut"></app-menu>
         </v-toolbar>
         <router-view class="padding-bottom"></router-view>

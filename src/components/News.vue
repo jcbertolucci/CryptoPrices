@@ -4,15 +4,15 @@
       <v-card v-for="(item, index) in newsArticles" :key="index" class="mb-2 mr-1">
         <v-card-media :src="item.urlToImage" height="120px">
         </v-card-media>
-        <v-card-title primary-title>
+        <v-card-title primary-title class="mt-0 pt-3">
           <div>
-            <div class="custom-headline">{{item.title}}</div>
+            <div class="custom-headline pb-3"><a :href="item.url" target="_blank">{{item.title}}</a></div>
             <div class="custom-content">{{item.description}}</div>
           </div>
         </v-card-title>
-        <v-card-actions>
+         <!--<v-card-actions>
           <v-btn right flat color="primary" :href="item.url" target="_blank">Go to Page </v-btn>
-        </v-card-actions>
+        </v-card-actions> -->
       </v-card>
     </div>
   </div>
@@ -65,14 +65,19 @@ export default {
 }
 .custom-headline{
   font-weight: bold;
-  line-height: 22px;
   line-height: 1.5;
   padding-bottom: 2%;
-  text-align: left;
+  text-align:justify;
+  text-decoration: none;
+  font-size: 16px;
+}
+.custom-headline a{
+  text-decoration: none;
 }
 .custom-content{
   line-height: 20px;
   text-align: justify;
+  font-size: 14px;
 }
 
 </style>

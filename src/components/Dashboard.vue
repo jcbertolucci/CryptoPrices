@@ -1,8 +1,8 @@
 <template>
   <div id="parent">
     <div id="menu">
-        <v-navigation-drawer permanent v-model="drawer">
-          <v-toolbar id="toolbar" color="deep-orange accent-3">
+        <v-navigation-drawer permanent v-model="drawer" >
+          <v-toolbar id="toolbar" color="primary">
             <v-list class="pa-0">
               <v-list-tile avatar>
                 <v-list-tile-avatar>
@@ -14,9 +14,9 @@
               </v-list-tile>
             </v-list>
           </v-toolbar>
-          <v-list class="pt-0">
+          <v-list class="pt-0" color="accent">
             <v-divider></v-divider>
-            <v-list-tile v-for="item in items" :key="item.title" @click="changeView">
+            <v-list-tile v-for="item in screens" :key="item.title" @click="changeView">
               <v-list-tile-action>
                 <v-icon>{{ item.icon }}</v-icon>
               </v-list-tile-action>
@@ -27,8 +27,11 @@
           </v-list>
         </v-navigation-drawer>
     </div>
-    <div id="content">
+    <div v-show="screenName === 'Coins'" id="dashboard-coin">
       <dashboard-coin></dashboard-coin>
+    </div>
+    <div v-show="screenName === 'Wallet'" id="dashboard-wallet">
+      <dashboard-wallet></dashboard-wallet>
     </div>
   </div>
 
@@ -36,27 +39,29 @@
 
 <script>
  import DashboardCoin from './DashboardCoin.vue' 
+ import DashboardWallet from './DashboardWallet.vue'
  
   export default {
     components: {
-      'dashboard-coin': DashboardCoin
+      'dashboard-coin': DashboardCoin,
+      'dashboard-wallet': DashboardWallet
     }, 
     data () {
       return {
         drawer: true,
-        screenName: 'Screen Name',
-        items: [
-          { title: 'Coins', icon: 'dashboard' },
-          { title: 'Wallet', icon: 'account_balance_wallet' },
-          { title: 'Porfolio', icon: 'reorder' },
-          { title: 'Charts', icon: 'assessment' },
-          { title: 'News', icon: 'chrome_reader_mode' }
+        screenName: 'Coins',
+        screens: [
+          { title: 'Coins', icon: 'dashboard', selected: true },
+          { title: 'Wallet', icon: 'account_balance_wallet', selected: false },
+          { title: 'Porfolio', icon: 'reorder', selected: false },
+          { title: 'Charts', icon: 'assessment', selected: false }
         ],
         right: null
       }
     },
     methods: {
       changeView: function(event){
+        console.log(event.target)
         this.screenName = event.target.textContent
       }
     },
@@ -73,6 +78,7 @@
 
 <style>
   #parent{
+    font-family: Roboto,"Helvetica Neue",sans-serif;
     display:grid;
     grid-template-columns:15% 1fr;
     min-height: 100%;
@@ -80,12 +86,14 @@
   #toolbar-content{
     color: white;
     font-size: 18px
+  }
+  #dashboard-coin{
+    background-color: rgb(241, 240, 240);
+  }
+  #dashboard-wallet{
+    background-color: rgb(241, 240, 240);
+  }
 
-  }
-  #content{
-    background-color: whitesmoke;
-  }
- 
   @media screen and (max-width:600px){
     #parent{
       display:grid;

@@ -265,11 +265,13 @@ export const store = new Vuex.Store({
       let proxyUrl = 'https://cors-anywhere.herokuapp.com/'
       let urlCoinList = `${proxyUrl}https://www.cryptocompare.com/api/data/coinlist/`
       
-      
+      console.log(url)
       //this.$http.get(url)
       fetch(url)
       .then(response => response.json())
       .then(function(data){ 
+        console.log(currency)
+ /*        state.setLoading = true */
         requestData = data;
         requestData.forEach( function (item){
           
@@ -328,7 +330,6 @@ export const store = new Vuex.Store({
               /* if (state.selectedCoin.symbol.toUpperCase() === coins[key].symbol.toUpperCase()
                   || state.selectedCoin.symbol.toUpperCase() === coins[key].name.toUpperCase()){ */
                 url = `${proxyUrl}https://min-api.cryptocompare.com/data/top/exchanges/full?fsym=${symbol}&tsym=${currency}`
-
                 fetch(url)
                 .then(response => response.json())
                 .then(data => {
@@ -374,6 +375,7 @@ export const store = new Vuex.Store({
           state.allCoinsTableItems = coins
           return coins 
         })
+        state.setLoading = false
         return coins        
       })
     }    

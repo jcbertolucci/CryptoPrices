@@ -19,7 +19,7 @@
           >
             <v-icon >home</v-icon>
           </v-btn>
-          <v-layout  justify-center>
+          <v-layout justify-center>
             <v-snackbar
               :timeout="10000"
               :top="true"
@@ -31,7 +31,7 @@
             </v-snackbar>  
             <v-flex xs12 sm8 md4>
               <v-form v-model="valid" ref="form" lazy-validation>
-                <v-card class="elevation-12">
+                <v-card class="elevation-6">
                   <v-toolbar dark color="accent">
                     <v-toolbar-title>Please Log In</v-toolbar-title>
                   </v-toolbar>
@@ -53,8 +53,9 @@
                   </v-btn>
                   <v-btn outline color="primary" @click="onSignInGoogle">
                     <i class="fab fa-google"></i>
+                    <v-card-text>Login with google</v-card-text>                   
                   </v-btn>
-                  <v-card-actions>
+                  <v-card-actions class="mt-4">
                     <p class="ml-4">Don't have an account? <router-link to="/signup">Register</router-link> </p>
                     <v-spacer></v-spacer>      
                     <v-btn @click="clear">clear</v-btn>
@@ -71,7 +72,6 @@
 
 <script>
 /* eslint-disable */
-import TitlesTemplate from './Titles.vue'
 import * as firebase from 'firebase'
 import {mapActions} from 'vuex'
 import {mapGetters} from 'vuex'
@@ -145,13 +145,13 @@ import {mapGetters} from 'vuex'
       clear() {
         this.$refs.form.reset()
       }
-    },
-    components:{
-      'title-vue': TitlesTemplate
     }
   }
 </script>
 
 <style>
+/* #google-icon{
+  margin: 0 10px 0 0;
+  border: 0 10px 0 0;
+} */
 </style>
-
