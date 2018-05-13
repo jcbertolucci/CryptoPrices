@@ -1,30 +1,43 @@
 <template>
-  <div class="wrapper ma-0 pa-0">
-    <v-container fluid ma-0>
-      <v-layout row>
-        <v-flex xs2>
-          <h3>Currency:</h3>
-        </v-flex>
-        <v-flex xs10>
-          <v-select
-          single-line
-          bottom
-          :items="pairs"
-          v-model="selectedPair"
-          v-bind:label="selectedPair.name"
-          single-line
-          item-text="name"
-          item-value="symbol"
-          return-object
-          class="wrapper ma-0 pa-0"
-        ></v-select>
-        </v-flex>  
-      </v-layout>  
-    </v-container>  
+  <div class="wrapper">
+    <div class="titles">
+      <h2>Coins</h2>
+      <h4>
+        <span class="field-title">Cryptocurrencies</span> <span class="field-value">1604</span>
+        <span class="field-title">Markets:</span> <span class="field-value">10837</span>
+        <span class="field-title">Market Cap:</span> <span class="field-value">$15.6789987,00</span>
+        <span class="field-title">24h Volume:</span> <span class="field-value">$15.6789987,00</span>
+      </h4>
+    </div>
+    <div id="search-bar-container">
+      <v-text-field 
+        id="search-bar"
+        solo
+        append-icon="search"
+        label="Search Coin"
+        v-model="searchText"
+        >
+      </v-text-field>
+      <v-select
+        id="combo-pair"
+        single-line
+        bottom
+        :items="pairs"
+        v-model="selectedPair"
+        v-bind:label="selectedPair.name"
+        single-line
+        item-text="name"
+        item-value="symbol"
+        return-object
+        class="wrapper"
+      >
+      </v-select>
+    </div>
     <v-container id="container" fluid grid-list-md pa-0 ma-0>
       <v-data-iterator
         content-tag="v-layout"
         row
+        wrap
         :search="searchText"
         :items="marketCoinItems"
         :rows-per-page-items="rowsPerPageItems"
@@ -38,54 +51,62 @@
           md4
           lg3
         >
-          <v-card>
+          <v-card id="card">
             <v-card-title>
               <v-avatar size="34" class="pr-3">
                 <img :src="props.item.imageUrl">
               </v-avatar>
-              <h3>{{ props.item.name }}</h3>
+              <h2>{{ props.item.name }}</h2>
             </v-card-title>
             <v-divider></v-divider>
             <v-list dense>
               <v-list-tile>
-                <v-list-tile-content>Price:</v-list-tile-content>
-                <v-list-tile-content class="align-end" v-if="selectedPair.symbol === 'AUD'">{{ props.item.priceAud }}</v-list-tile-content>
-                <v-list-tile-content class="align-end" v-else-if="selectedPair.symbol === 'USD'">{{ props.item.priceUsd }}</v-list-tile-content>
+                <v-list-tile-content class="card-content-left">Price:</v-list-tile-content>
+                <v-list-tile-content class="card-content-right-bigger align-end" v-if="selectedPair.symbol === 'AUD'">{{ props.item.priceAud }}</v-list-tile-content>
+                <v-list-tile-content class="card-content-right-bigger align-end" v-else-if="selectedPair.symbol === 'USD'">{{ props.item.priceUsd }}</v-list-tile-content>
               </v-list-tile>
               <v-list-tile>
-                <v-list-tile-content>Change day(%):</v-list-tile-content>
-                <v-list-tile-content class="align-end">{{ props.item.coinInfo.CHANGEPCTDAY }}</v-list-tile-content>
+                <v-list-tile-content class="card-content-left">Change day(%):</v-list-tile-content>
+                <v-list-tile-content v-if="isNegative(props.item.coinInfo.CHANGEPCTDAY)" class="card-content-right-smaller align-end red--text">{{ props.item.coinInfo.CHANGEPCTDAY }}</v-list-tile-content>
+                <v-list-tile-content v-else-if="!isNegative(props.item.coinInfo.CHANGEPCTDAY)" class="card-content-right-smaller align-end green--text">{{ props.item.coinInfo.CHANGEPCTDAY }}</v-list-tile-content>
               </v-list-tile>
               <v-list-tile>
-                <v-list-tile-content>Low Day:</v-list-tile-content>
-                <v-list-tile-content class="align-end">{{ props.item.coinInfo.LOWDAY }}</v-list-tile-content>
+                <v-list-tile-content class="card-content-left">Low Day:</v-list-tile-content>
+                <v-list-tile-content class="card-content-right-smaller align-end">{{ props.item.coinInfo.LOWDAY }}</v-list-tile-content>
               </v-list-tile>
               <v-list-tile>
-                <v-list-tile-content>High Day:</v-list-tile-content>
-                <v-list-tile-content class="align-end">{{ props.item.coinInfo.HIGHDAY }}</v-list-tile-content>
+                <v-list-tile-content class="card-content-left">High Day:</v-list-tile-content>
+                <v-list-tile-content class="card-content-right-smaller align-end">{{ props.item.coinInfo.HIGHDAY }}</v-list-tile-content>
               </v-list-tile>
               <v-list-tile>
-                <v-list-tile-content>Volume Day:</v-list-tile-content>
-                <v-list-tile-content class="align-end">{{ props.item.coinInfo.VOLUMEDAY }}</v-list-tile-content>
+                <v-list-tile-content class="card-content-left">Volume Day:</v-list-tile-content>
+                <v-list-tile-content class="card-content-right-smaller align-end">{{ props.item.coinInfo.VOLUMEDAY }}</v-list-tile-content>
               </v-list-tile>
-              <v-card-title><h4>Chart</h4></v-card-title>
+              <!-- <v-card-title><h4>Chart</h4></v-card-title>
               <v-divider></v-divider>
               <v-list-tile>
                 <v-list-tile-content>To be implemented</v-list-tile-content>
                 <v-list-tile-content class="align-end">{{ props.item.iron }}</v-list-tile-content>
-              </v-list-tile>
+              </v-list-tile> -->
             </v-list>
+            <v-divider></v-divider>
+            <br>
+            <!--EXCHANGES -->
+            <h3>Exchanges</h3>
+            <v-list id="exchanges-list" dense>
+              <v-list-tile v-for="item in props.item.exchanges" :key="item.MARKET">
+                <v-list-tile-content class="card-content-left">{{ item.MARKET }}</v-list-tile-content>
+                <v-list-tile-content class="card-content-right-smaller align-end">{{ item.PRICE }}</v-list-tile-content>
+              </v-list-tile>
+            </v-list> 
+            <v-divider></v-divider>
+            <v-list id="exchanges-summary" dense>
+              <v-list-tile>
+                <v-list-tile-content class="card-content-left">Cheapest:</v-list-tile-content>
+                <v-list-tile-content class="align-end">BtcMarkets</v-list-tile-content>
+              </v-list-tile>
+            </v-list> 
           </v-card>
-          <!--EXCHANGES -->
-          <br>
-          <br>
-          <h4>Exchanges</h4>
-          <v-list dense>
-            <v-list-tile v-for="item in props.item.exchanges" :key="item.MARKET">
-              <v-list-tile-content>{{ item.MARKET }}</v-list-tile-content>
-              <v-list-tile-content class="align-end">{{ item.PRICE }}</v-list-tile-content>
-            </v-list-tile>
-          </v-list>   
         </v-flex>
       </v-data-iterator>
     </v-container>
@@ -94,31 +115,59 @@
 
 <script>
   export default {
-    props: ['searchText'],
     data: () => ({
       dialog: false,
+      searchText:"",
       pairs:[
         {name: 'Australian Dollar', symbol: 'AUD'},
         {name: 'American Dollar', symbol: 'USD'}
       ],
       rowsPerPageItems: [5],
       pagination: {
-        rowsPerPage: 5
+        rowsPerPage: 100
       }
       
     }),
+    methods:{
+      isNegative: (number)=>{
+        let convNumber = 0
+        if (typeof number === "string"){
+          convNumber  = parseFloat(number)
+        }
+        return convNumber < 0 ? true : false
+      }/* ,
+      sortASCExchangesPrices: (exchanges)=>{
+        let sortedExchanges = exchanges.sort((a,b) => {
+          return parseFloat(a.PRICE) - parseFloat(b.PRICE)
+        });
+        return sortedExchanges
+      } */
+    },
     watch:{
-      searchText: function(newVal, oldVal) { // watch it
+      searchText: function(newVal, oldVal) {
+        return newVal
+      },
+      selectedPair: function(newVal, oldVal) {
         return newVal
       },
       marketCoinItems: function(newVal, oldVal){
         let coinsWithExchanges = newVal.filter(coin=> coin.exchanges.length > 0)
+        /* coinsWithExchanges.map((item) => {
+          item.exchanges.sort((a,b) => {
+            return parseFloat(a.PRICE) - parseFloat(b.PRICE)
+          });
+        }) */
         return coinsWithExchanges
       }
     },
     computed:{
       marketCoinItems() {
         let coinsWithExchanges = this.$store.getters.marketCoinItems.filter(coin=> coin.exchanges.length > 0)
+        coinsWithExchanges.map((item) => {
+          item.exchanges.sort((a,b) => {
+            return parseFloat(a.PRICE) - parseFloat(b.PRICE)
+          });
+        })
         return coinsWithExchanges
       },
       selectedPair: {
@@ -130,34 +179,87 @@
           this.$store.dispatch("UPDATE_PAIR", newValue)
         }
       }
+      
     }  
   }
 </script>
 
 <style>
+#search-bar-container{
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  padding-bottom: 2%;
+}
+#search-bar{
+  flex: 1;
+}
+#combo-pair{
+  padding-left: 5%;
+  flex: 2;
+}
 .wrapper{
   min-height: 100%;
 }
-#container{
-  height: stretch;
+.titles{
+  border-bottom: 1px solid grey;
+  margin-bottom: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
 }
-#progress-circular{
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  z-index: 1;
+.titles h2{  
+  align-self: baseline;
+  font-size: 30px;
+  /* color: rgba(247, 241, 241, 0.473) */
 }
-#container h4{
-  font-weight: 500;
-  display:block;
+.field-title{  
+  font-size: 15px;
+  padding-left: 10px;
+  color: rgb(100, 100, 100);
 }
-#container h4 span{
-  padding-left: 50%;
+.field-value{  
+  font-size: 20px;
   font-weight: 600;
-  text-align: right;
-  display:block
+  color: #DD2C00;
 }
-
-
+.card{
+  height: 900px;
+}
+.card-content-left{
+  font-size: 13px;
+  font-weight: 600;
+  color: rgb(100, 100, 100);
+}
+.card-content-right-bigger{
+  font-size: 18px;
+  font-weight: 600;
+}
+.card-content-right-smaller{
+  font-size: 14px;
+  font-weight: 500;
+}
+#exchanges-list .card-content-left{
+  font-size: 14px;
+  font-weight: 600;
+  color: black;
+}
+#exchanges-summary .align-end{
+  font-size: 15px;
+  font-weight: 600;
+  color: #DD2C00;
+}
+#card{
+  margin-bottom: 15px;
+}
+#container h3{
+  font-size: 17px;
+  font-weight: 600;
+}
+#container h2{
+  font-size: 19px;
+  font-weight: 600;
+}
 </style>
 

@@ -1,10 +1,11 @@
 <template>
   <div id="app">
-    <v-app app class="white">
-      <v-content flat class="text-xs-center">
-        <v-toolbar flat app color="white" height="85px" class="elevation-1">
+    <v-app app class="white" id="main-outter-container">
+      <v-content flat class="text-xs-center" >
+        <app-menu :logOutProp="logOut"></app-menu>
+        <!-- <v-toolbar flat app color="accent" class="elevation-1">
           <app-menu :logOutProp="logOut"></app-menu>
-        </v-toolbar>
+        </v-toolbar> -->
         <router-view class="padding-bottom"></router-view>
         <!-- <vue-footer id="footer"></vue-footer> -->
       </v-content> 
@@ -13,16 +14,15 @@
 </template>
 
 <script>
-import FooterTemplate from './components/Footer.vue'
+/* import FooterTemplate from './components/Footer.vue' */
 
 
 export default {
   /* eslint-disable */
   name: 'app',
   
-
   components:{
-    'vue-footer': FooterTemplate
+
   },
   computed:{
     user(){
@@ -63,15 +63,10 @@ export default {
 </script>
 
 <style scoped>
-.padding-bottom{
+#main-outter-container{
+  background-color: aquamarine;
+}
+/* .padding-bottom{
   padding-bottom: 20px
-}
-#footer{
-  /* position:absolute;
-  left:0px;
-  bottom: 0px;
-  height: 70px;
-  width:100%; */
-}
-
+} */
 </style>

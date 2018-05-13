@@ -163,7 +163,7 @@
   /* import MenuTemplate from './MenuVuetify.vue'
   import SubMenuTemplate from './SubMenu.vue' */
   import TopCoinsTemplate from './TopCoins.vue'
-  import TwitterTemplate from './TwitterFeed.vue'
+  /* import TwitterTemplate from './TwitterFeed.vue' */
   /* import FooterTemplate from './Footer.vue' */
   import ParallaxTemplate from './Parallax.vue'
   import {mapActions} from 'vuex'

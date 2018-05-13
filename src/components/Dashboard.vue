@@ -1,8 +1,8 @@
 <template>
   <div id="parent">
-    <div id="menu">
-        <v-navigation-drawer permanent v-model="drawer" >
-          <v-toolbar id="toolbar" color="primary">
+    <div id="menu-child">
+        <v-navigation-drawer :mini-variant.sync="mini" v-model="drawer" dark stateless hide-overlay>
+          <v-toolbar id="toolbar">
             <v-list class="pa-0">
               <v-list-tile avatar>
                 <v-list-tile-avatar>
@@ -11,6 +11,11 @@
                 <v-list-tile-content id="toolbar-content">
                   <v-list-tile-title>{{user.name}}</v-list-tile-title>
                 </v-list-tile-content>
+                <v-list-tile-action>
+                  <v-btn icon @click.native.stop="mini = !mini">
+                    <v-icon color="white">chevron_left</v-icon>
+                  </v-btn>
+                </v-list-tile-action>
               </v-list-tile>
             </v-list>
           </v-toolbar>
@@ -27,12 +32,15 @@
           </v-list>
         </v-navigation-drawer>
     </div>
-    <div v-show="screenName === 'Coins'" id="dashboard-coin">
-      <dashboard-coin></dashboard-coin>
+    <div id="content-child">
+      <div v-show="screenName === 'Coins'" id="dashboard-coin">
+        <dashboard-coin></dashboard-coin>
+      </div>
+      <div v-show="screenName === 'Wallet'" id="dashboard-wallet">
+        <dashboard-wallet></dashboard-wallet>
+      </div>
     </div>
-    <div v-show="screenName === 'Wallet'" id="dashboard-wallet">
-      <dashboard-wallet></dashboard-wallet>
-    </div>
+    
   </div>
 
 </template>
@@ -48,6 +56,7 @@
     }, 
     data () {
       return {
+        mini: true,
         drawer: true,
         screenName: 'Coins',
         screens: [
@@ -78,26 +87,35 @@
 
 <style>
   #parent{
-    font-family: Roboto,"Helvetica Neue",sans-serif;
-    display:grid;
-    grid-template-columns:15% 1fr;
-    min-height: 100%;
+    display:flex;
+    flex-direction: row;
+    height: 100%;
+    background-color: rgb(241, 240, 240);
+    justify-content:space-around;
+  }
+  #menu-child{
+    flex: 70px;
+  }
+  #content-child{
+    flex:12;
+    padding: 15px 100px 0 100px;
   }
   #toolbar-content{
     color: white;
-    font-size: 18px
+    font-size: 15px;
   }
   #dashboard-coin{
-    background-color: rgb(241, 240, 240);
+    /* background-color: rgb(241, 240, 240) */
   }
   #dashboard-wallet{
-    background-color: rgb(241, 240, 240);
+    /* background-color: rgb(241, 240, 240); */
   }
 
   @media screen and (max-width:600px){
     #parent{
       display:grid;
       grid-template-columns: 1fr;
+      grid-template-rows: 1fr 1fr;
       grid-gap: 2%;
       min-height: 100%;      
     }

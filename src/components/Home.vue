@@ -8,7 +8,7 @@
       <titles-template title="Market"></titles-template>
       </br>
       <titles-template title="Twitter"></titles-template>
-      <twiterfeed-vue></twiterfeed-vue>
+      <!-- <twiterfeed-vue></twiterfeed-vue> -->
     </div>  
   </div>
 </template>
@@ -21,7 +21,7 @@ import TableComponent from './Table.vue'
 import Coin from '../models/Coin'
 import CoinList from '../models/CoinList'
 import Util from '../utils/utils'
-import TwitterFeedTemplate from './TwitterFeed'
+
 
 
 export default {
@@ -31,7 +31,6 @@ export default {
     'news-template': NewsTemplate,
     'menu-template': MenuTemplate,
     'table-vue': TableComponent,
-    'twiterfeed-vue': TwitterFeedTemplate
   },  
   data(){
     return{
