@@ -63,9 +63,7 @@ export default {
 </script>
 
 <style scoped>
-#main-outter-container{
-  background-color: aquamarine;
-}
+
 /* .padding-bottom{
   padding-bottom: 20px
 } */
