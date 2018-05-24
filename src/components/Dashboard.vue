@@ -70,7 +70,6 @@
     },
     methods: {
       changeView: function(event){
-        console.log(event.target)
         this.screenName = event.target.textContent
       }
     },
@@ -80,7 +79,7 @@
       }
     },
     mounted(){
-      console.log(this.user)
+      
     }
   }
 </script>
@@ -103,12 +102,6 @@
   #toolbar-content{
     color: white;
     font-size: 15px;
-  }
-  #dashboard-coin{
-    /* background-color: rgb(241, 240, 240) */
-  }
-  #dashboard-wallet{
-    /* background-color: rgb(241, 240, 240); */
   }
 
   @media screen and (max-width:600px){

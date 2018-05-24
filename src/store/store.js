@@ -46,9 +46,8 @@ export const store = new Vuex.Store({
       return state.newsArticles
     },
     getCalculatedValue: (state) => {
-      state.coinsUser.forEach((item) =>{
-        console.log(item)
-      })
+      /* state.coinsUser.forEach((item) =>{
+      }) */
       return state.coinsUser
     },
     loading(state){
@@ -265,12 +264,10 @@ export const store = new Vuex.Store({
       let proxyUrl = 'https://cors-anywhere.herokuapp.com/'
       let urlCoinList = `${proxyUrl}https://www.cryptocompare.com/api/data/coinlist/`
       
-      console.log(url)
       //this.$http.get(url)
       fetch(url)
       .then(response => response.json())
       .then(function(data){ 
-        console.log(currency)
  /*        state.setLoading = true */
         requestData = data;
         requestData.forEach( function (item){
@@ -370,7 +367,6 @@ export const store = new Vuex.Store({
         })
         .then(coins => {
           let coin1 = coins.filter(coin => coin.name === 'Bitcoin')
-          console.log(coin1)
           state.marketCoinItems = coins
           state.allCoinsTableItems = coins
           return coins 

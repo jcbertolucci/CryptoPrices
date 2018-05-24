@@ -1,0 +1,17 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "Exchange Accounts Requests",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Julio Cesar Bertolucc",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "btc-markets": "^1.0.5",
+    "express": "^4.16.3"
+  },
+  "devDependencies": {}
+}

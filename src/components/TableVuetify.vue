@@ -227,9 +227,6 @@
 
   export default {
     computed: {
-      ...mapGetters([
-        ''
-      ]),
       coinsForSearch: function(){
         let coinsForSearch = []
         let obj = {name:'', symbol: ''}
