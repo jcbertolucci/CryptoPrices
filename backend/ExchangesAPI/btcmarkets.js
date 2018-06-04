@@ -26,7 +26,6 @@ class BtcMarkets{
       orderHistory = await this.client.getOrderHistory(this.instrument, this.currency, this.limit, null);
       return orderHistory.orders;
     }catch(error){
-      console.log(error)
       return error;
     }
   }

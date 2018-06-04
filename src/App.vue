@@ -3,19 +3,13 @@
     <v-app app class="white" id="main-outter-container">
       <v-content flat class="text-xs-center" >
         <app-menu :logOutProp="logOut"></app-menu>
-        <!-- <v-toolbar flat app color="accent" class="elevation-1">
-          <app-menu :logOutProp="logOut"></app-menu>
-        </v-toolbar> -->
         <router-view class="padding-bottom"></router-view>
-        <!-- <vue-footer id="footer"></vue-footer> -->
       </v-content> 
     </v-app>    
   </div>
 </template>
 
 <script>
-/* import FooterTemplate from './components/Footer.vue' */
-
 
 export default {
   /* eslint-disable */
@@ -55,8 +49,6 @@ export default {
   },
   created(){
     this.fetchNewsArticles();
-    /* this.fetchTopCoins(); */
-    /* this.fetchAllCoins(); */
     this.marketCoins();
   }
 }
@@ -64,7 +56,4 @@ export default {
 
 <style scoped>
 
-/* .padding-bottom{
-  padding-bottom: 20px
-} */
 </style>

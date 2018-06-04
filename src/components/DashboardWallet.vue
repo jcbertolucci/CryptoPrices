@@ -30,92 +30,97 @@
                 </v-avatar> -->
                 <h2>BTC Markets</h2>
                 <div class="content-middle-card-container-inside-card">
-                <v-card id="card-account">
-                    <v-icon color="primary" class="padding-text" size="35px">account_balance_wallet</v-icon>
-                    <span>Account Summary</span>
-                    <v-data-table
-                        :headers="headerAccount"
-                        :items="userBalance"
-                        hide-actions
-                        class="elevation-1"
-                        id="data-table"
-                    >
-                        <template slot="items" slot-scope="props">
-                            <td class="text-xs-left">{{ props.item.currency }}</td>
-                            <td class="text-xs-left">{{ props.item.balance }}</td>
-                            <td class="text-xs-left">{{ props.item.pendingFunds }}</td>
-                        </template>
-                        <template slot="no-data">
-                            <v-alert outline :value="true" color="error" icon="warning">
-                                Sorry, nothing to display here :(
-                            </v-alert>
-                        </template>
-                        <template slot="footer">
-                            <td colspan="100%">
-                                <strong>Total Equity in AUD (Est.): $451.56</strong>
-                            </td>
-                        </template>
-                    </v-data-table>
-                    <div class="data-table-bottom">
-                      <h1>Blabla</h1>
-                    </div>
-                </v-card>
-                <v-card id="card-buy">
-                    <v-icon class="padding-text" color="primary" size="40px">swap_horiz</v-icon>
-                    <span>Buy</span>
-                    <div class="card-buy-sell-field-wrapper">
-                      <div class="card-buy-sell-column-left">
-                        <h6 class="mt-0">Available AUD:</h6>
-                        <h6 id="order-type">Order Type:</h6>
-                        <h6>Volume:</h6>
-                        <h6>Price:</h6>
+                  <v-card id="card-account">
+                      <v-icon color="primary" class="padding-text" size="35px">account_balance_wallet</v-icon>
+                      <span>Account Summary</span>
+                      <div v-if="loading1" class="no-data-available">
+                        <v-progress-circular id="circular-progress" :size="100" :width="5" :indeterminate="true" color="primary"></v-progress-circular>
                       </div>
-                      <div class="card-buy-sell-column-middle">
-                        <h6 class="mt-0">{{getAmountCurrency('AUD')}}</h6>
-                        <v-radio-group class="pt-0 ma-0" v-model="row" row>
-                          <v-radio label="Market" class="pa-0 ma-0" color="primary" value="radio-market" ></v-radio>
-                          <v-radio label="Limit" class="pa-0 ma-0" color="primary" value="radio-limit"></v-radio>
-                        </v-radio-group>
-                        <v-text-field
-                          class="pa-0 ma-0"
-                          value="0.0000000"
-                          prefix="XXX"
-                        ></v-text-field>
-                        <v-text-field
-                          class="no-padding"
-                          value="0"
-                          prefix="AUD"
-                        ></v-text-field>
+                      <div v-if="!loading1" class="data-available">
+                        <v-data-table
+                          :headers="headerAccount"
+                          :items="userBalance"
+                          hide-actions
+                          class="elevation-0"
+                          id="data-table-account"
+                        >
+                            <template slot="items" slot-scope="props">
+                                <td class="text-xs-left">{{ props.item.currency }}</td>
+                                <td class="text-xs-left">{{ props.item.balance }}</td>
+                                <td class="text-xs-left">{{ props.item.pendingFunds }}</td>
+                            </template>
+                            <!-- <template slot="footer">
+                                <td colspan="100%">
+                                    <strong>Total Equity in AUD (Est.): $451.56</strong>
+                                </td>
+                            </template> -->
+                        </v-data-table>
                       </div>
-                      <div class="card-buy-sell-column-right">Right</div>
-                    </div>
-                </v-card>
-                <v-card id="card-sell">
-                    <v-icon class="padding-text" color="primary" size="40px">swap_horiz</v-icon>
-                    <span>Sell</span>
-                </v-card>
-                <v-card id="card-table">
-                    <v-icon class="padding-text" color="primary" size="40px">subject</v-icon>
-                    <span>Order History</span>
-                    <v-data-table
-                        :headers="headerHistory"
-                        :items="orderHistory"
-                        hide-actions
-                        class="elevation-0 data-table"
-                    >
-                        <template slot="items" slot-scope="props">
-                            <td class="text-xs-left">{{ props.item.currency }}</td>
-                            <td class="text-xs-left">{{ props.item.instrument }}</td>
-                            <td class="text-xs-left">{{ props.item.price }}</td>
-                        </template>
-                        <template slot="no-data">
-                            <v-alert outline :value="true" color="error" icon="warning">
-                                Sorry, nothing to display here :(
-                            </v-alert>
-                        </template>
-                    </v-data-table>
-                </v-card>                   
-               </div>
+                  </v-card>
+                  <v-card id="card-buy">
+                      <v-icon class="padding-text" color="primary" size="40px">swap_horiz</v-icon>
+                      <span>Buy</span>
+                      <div class="card-buy-sell-field-wrapper">
+                        <div class="card-buy-sell-column-left">
+                          <h6 class="mt-0">Available AUD:</h6>
+                          <h6 id="order-type">Order Type:</h6>
+                          <h6>Volume:</h6>
+                          <h6>Price:</h6>
+                        </div>
+                        <div class="card-buy-sell-column-middle">
+                          <h6 class="mt-0">{{getAmountCurrency('AUD')}}</h6>
+                          <v-radio-group class="pt-0 ma-0" v-model="row" row>
+                            <v-radio label="Market" class="pa-0 ma-0" color="primary" value="radio-market" ></v-radio>
+                            <v-radio label="Limit" class="pa-0 ma-0" color="primary" value="radio-limit"></v-radio>
+                          </v-radio-group>
+                          <v-text-field
+                            class="pa-0 ma-0"
+                            value="0.0000000"
+                            prefix="XXX"
+                          ></v-text-field>
+                          <v-text-field
+                            class="no-padding"
+                            value="0"
+                            prefix="AUD"
+                          ></v-text-field>
+                        </div>
+                        <div class="card-buy-sell-column-right">Right</div>
+                      </div>
+                  </v-card>
+                  <v-card id="card-sell">
+                      <v-icon class="padding-text" color="primary" size="40px">swap_horiz</v-icon>
+                      <span>Sell</span>
+                  </v-card>
+                  <v-card id="card-table">
+                      <v-icon class="padding-text" color="primary" size="40px">subject</v-icon>
+                      <span>Order History</span>
+                      <div v-if="loading2" class="no-data-available">
+                        <v-progress-circular id="circular-progress" :size="100" :width="5" :indeterminate="true" color="primary"></v-progress-circular>
+                      </div>
+                      <div v-if="!loading2" class="data-available">
+                        <v-data-table
+                            :headers="headerHistory"
+                            :items="orderHistory"
+                            hide-actions
+                            class="elevation-0"
+                            id="data-table-history"
+
+                        >
+                            <template slot="items" slot-scope="props">
+                                <td class="text-xs-left">{{ props.item.id }}</td>
+                                <td class="text-xs-left">{{ convertMiliToDate(props.item.creationTime) }}</td>
+                                <td class="text-xs-left">{{ props.item.instrument }}</td>
+                                <td class="text-xs-left">{{ props.item.side }}</td>
+                                <td class="text-xs-left">{{ props.item.currency }}</td>
+                                <td class="text-xs-left">{{ convertIE8(props.item.price) }}</td>
+                                <td class="text-xs-left">{{ convertIE8(props.item.volume).toPrecision(6) }}</td>
+                                <td class="text-xs-left">{{ convertIE8(props.item.fee) }}</td>
+                                <td class="text-xs-left">{{ props.item.orderId }}</td>
+                            </template>
+                        </v-data-table>
+                      </div>  
+                  </v-card>       
+                </div>              
             </div>
             <div v-else-if="!hasAnyExchange" class="content-middle-card-no-data">
                 <h1>No Exchanges</h1>
@@ -128,13 +133,15 @@
 <script>
 import BtcMarketsAPI from '../BackendAPI/BtcMarkets.js'
 import { ClientResponse } from 'http';
+import privateInfos from '../utils/PrivateInfo.js'
 
 export default {
   data(){
     return{
-      publicKey: '5cb5d045-6241-45cd-b03b-37b66b21b927',
-      privateKey: 'M2tRRLJmS8lrYfx6E4/+Qjqplmi1NYWTKLyKlHs+BRk3oruBaW/9ohFprTyn58hs3vm5n0Ib+1WF27kv6l3nIg==',
-      loading: true,
+      publicKey: privateInfos.btcMarkets.publicKey,
+      privateKey: privateInfos.btcMarkets.privateKey,
+      loading1: true,
+      loading2: true,
       orderHistoryPairs: [],
       orderHistory:[],
       userBalance:[],
@@ -148,9 +155,15 @@ export default {
           {text: "Funds in Order", sortable: false, value: 'pendingFunds'},
       ],
       headerHistory: [
+          {text: "Trade Id", sortable: false, value: 'tradeId'},
+          {text: "Date & Time", sortable: false, value: 'dateTime'},
+          {text: "Instrument", sortable: false, value: 'instrument'},
+          {text: "Side", sortable: false, value: 'side'},
           {text: "Currency", sortable: false, value: 'currency'},
-          {text: "Balance", sortable: false, value: 'balance'},
-          {text: "Funds in Order", sortable: false, value: 'funds_orders'},
+          {text: "Price", sortable: false, value: 'price'},
+          {text: "Volume", sortable: false, value: 'volume'},
+          {text: "Fee(inc GST)", sortable: false, value: 'fee'},
+          {text: "Order Ref.", sortable: false, value: 'orderRef'}
       ]
     }
   },
@@ -182,9 +195,21 @@ export default {
     },
     orderHistoryPairs: function(newValue){
       this.fetchOrderHistory(newValue);
+    },
+    orderHistory: (newValue) => {
+      console.log(newValue)
     }
   },
   methods:{
+    convertIE8: (value)=>{
+      let converter = 100000000;
+      let val = Number(value)
+      return val / converter
+    },
+    convertMiliToDate: (value) =>{
+      let date = new Date(value);
+      return date.toUTCString();
+    },
     getAmountCurrency: function(currency){
       let amount = 0;
       let balanceCurrency = [];
@@ -208,30 +233,57 @@ export default {
         this.error = error.message
       })
       .finally(() => {
-        this.loading = false
+        this.loading1 = false
       });
     },
     fetchOrderHistory: function(pairs){
-      let ordersHistory=[];
-      let orders =[];
+      let blabla = [];
+      let orders = [];
+      let flattenedOrder=[]
       pairs.map((pair) =>{
-        pair.map((item) =>{
-          ordersHistory.push(
-            BtcMarketsAPI.getOrderHistory(this.publicKey, this.privateKey, item.instrument, item.currency)
-            .then(response => response.json())
-            .then((response) =>{
-              this.orderHistory.push(response)
+            pair.map((item) =>{
+                BtcMarketsAPI.getOrderHistory(this.publicKey, this.privateKey, item.instrument, item.currency)
+                  .then(response => response.json())
+                  .then((response) =>{
+                    let orders = response.map((order)=>{
+                      if(order){//if not empty
+                        //Add some info from order to the order trades
+                        order.trades.map((t)=>{
+                          t.currency = order.currency;
+                          t.instrument = order.instrument;
+                          t.ordertype = order.ordertype;
+                        })
+                        console.log(order.trades)
+                        return order.trades
+                      }
+                    })
+                    //Creates one single array of orders
+                    flattenedOrder = orders.reduce((acc, cur)=>{ 
+                      return acc.concat(cur)
+                    }, [])
+                    //Pushes orders to final array
+                    flattenedOrder.map((item) => {
+                      this.orderHistory.push(item)
+                    })
+                    //Sorts by date descending
+                    this.orderHistory.sort((a, b)=> b.creationTime - a.creationTime)
+                  })
+                  .catch((error) => {
+                    this.error = error.message
+                  })
+                  .finally(() => {
+                    this.loading2 = false
+                  })
+              //)
             })
-            .catch((error) => {
-              this.error = error.message
-            })
-            .finally(() => {
-              this.loading = false
-            })
-          )
         })
-      })
-      this.orderHistory.map(item => console.log(item))
+      /*
+      //reduce to flatten in one array allo trades of all orders
+      flattenedOrder = ordersHistory.reduce((acc, cur)=>{ 
+        return acc.concat(cur)
+      }, [])
+      //assign to final variable
+      console.log(flattenedOrder)  */
     }
   },
   created(){
@@ -242,19 +294,17 @@ export default {
 <style>
 .content-middle-card-container-inside-card{
     display: grid;
-    grid-template-rows: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 0.5fr 1fr;
     grid-template-columns: 1fr 1fr;
-    grid-template-areas: "account buy"
-                         "account sell"
+    grid-template-areas: "account account"
+                         "buy sell"
                          "tablee tablee";
-/*     padding: 10px;      */   
     text-align: left;        
     grid-gap: 5px;     
     padding-top: 10px;                          
 }
 #card-account{
     grid-area:account;
-    text-align: left;
 }
 #card-buy{
     grid-area:buy;
@@ -340,6 +390,27 @@ export default {
 .data-table-bottom h1{
   width: 10%;
   margin: 0 auto;
+}
+#data-table-account th{
+  font-size: 14px;
+  color: rgb(26, 25, 25)
+}
+#data-table-history th{
+  font-size: 14px;
+  color: rgb(26, 25, 25)
+}
+#data-table-history td{
+  font-size: 12px;
+  color: rgb(26, 25, 25)
+}
+.no-data-available{
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center
+}
+.no-data-available #circular-progress{
+  margin-bottom: 15%;
 }
 
 </style>
