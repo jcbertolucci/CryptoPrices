@@ -28,7 +28,6 @@
                 <!-- <v-avatar size="50" class="pr-3">
                   <img src="data:image/png;base64,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">
                 </v-avatar> -->
-                <h2>BTC Markets</h2>
                 <div class="content-middle-card-container-inside-card">
                   <v-card id="card-account">
                       <v-icon color="primary" class="padding-text" size="35px">account_balance_wallet</v-icon>
@@ -69,22 +68,52 @@
                         </div>
                         <div class="card-buy-sell-column-middle">
                           <h6 class="mt-0">{{getAmountCurrency('AUD')}}</h6>
-                          <v-radio-group class="pt-0 ma-0" v-model="row" row>
-                            <v-radio label="Market" class="pa-0 ma-0" color="primary" value="radio-market" ></v-radio>
-                            <v-radio label="Limit" class="pa-0 ma-0" color="primary" value="radio-limit"></v-radio>
+                          <v-radio-group class="pt-0 ma-0" v-model="buyRadioMarket" :mandatory="false" row>
+                            <v-radio label="Market" class="pa-0 ma-0 mt-1" color="primary" value="market"></v-radio>
+                            <v-radio label="Limit" class="pa-0 ma-0 mt-1" color="primary" value="limit"></v-radio>
+                            <!-- <a class="pa-0 ma-0 tool-tip" href="#" :data-tool-tip="toolTip">?</a> -->
                           </v-radio-group>
                           <v-text-field
                             class="pa-0 ma-0"
-                            value="0.0000000"
-                            prefix="XXX"
+                            v-model="buyVolume"
+                            prefix="BTC"
+                            :append-icon="e1 ? 'visibility' : 'visibility_off'"
+                            :append-icon-cb="() => (e1 = !e1)"
                           ></v-text-field>
                           <v-text-field
-                            class="no-padding"
-                            value="0"
+                            class="pt-0 mt-0"
+                            v-model="buyPrice"
                             prefix="AUD"
                           ></v-text-field>
                         </div>
-                        <div class="card-buy-sell-column-right">Right</div>
+                        <div class="card-buy-sell-column-right">
+                          <div class="div-top">
+                            <h5>Spend Total: {{ buySpendTotal }}</h5>
+                          </div>
+                          <div class="div-middle">
+                            <!-- <div>
+                              <v-btn color="primary" small flat>
+                                <v-icon left dark>clear_all</v-icon>
+                                Spend All
+                              </v-btn>
+                            </div>
+                            <div>
+                              <v-btn color="primary" small flat>
+                                <v-icon left dark>attach_money</v-icon>
+                                Best Sell Price
+                              </v-btn>
+                            </div> -->
+                          </div>
+                          <div class="div-bottom">
+                            <v-btn 
+                              block
+                              outline
+                              color="primary"
+                              @click.native="consoleInfo()"
+                            >Buy</v-btn>
+                          </div>
+                          
+                        </div>
                       </div>
                   </v-card>
                   <v-card id="card-sell">
@@ -138,6 +167,12 @@ import privateInfos from '../utils/PrivateInfo.js'
 export default {
   data(){
     return{
+      e1: false,
+      toolTip: 'Market Order - Buy immediately at the best available price (easy). Limit Order - Place order at a specific price (advanced). If you place a buy limit order above the market rate our system will execute the order for the market rate.',
+      buySpendTotal: '0',
+      buyRadioMarket: 'market',
+      buyVolume: "0.0000000",
+      buyPrice: "0",
       publicKey: privateInfos.btcMarkets.publicKey,
       privateKey: privateInfos.btcMarkets.privateKey,
       loading1: true,
@@ -197,10 +232,18 @@ export default {
       this.fetchOrderHistory(newValue);
     },
     orderHistory: (newValue) => {
-      console.log(newValue)
+      
+    }
+  },
+  computed:{
+    buyAvailable: function (){
+      return this.getAmountCurrency('AUD')
     }
   },
   methods:{
+    consoleInfo: function (){
+
+    },
     convertIE8: (value)=>{
       let converter = 100000000;
       let val = Number(value)
@@ -253,7 +296,6 @@ export default {
                           t.instrument = order.instrument;
                           t.ordertype = order.ordertype;
                         })
-                        console.log(order.trades)
                         return order.trades
                       }
                     })
@@ -411,6 +453,49 @@ export default {
 }
 .no-data-available #circular-progress{
   margin-bottom: 15%;
+}
+/* .radio-limit::after{
+  position: absolute;
+  padding-left: 4em;
+  padding-bottom: 1em;
+  content: 'O';
+} */
+.tool-tip{
+  text-decoration: none;
+}
+.tool-tip[data-tool-tip]::after{
+  content: attr(data-tool-tip);
+  display:block;
+  position: absolute;
+  background-color: rgb(255, 60, 0);
+  color: white;
+  padding: 1em 1em;
+  font-size: .5em;
+  border-radius: 5px;
+  left: 105%;
+  width: 90%;
+  transform: scale(0);
+}
+.tool-tip[data-tool-tip]:hover::after{
+  transform: scale(1);
+}
+.card-buy-sell-column-right{
+  margin-left: 10%;
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid rgba(65, 62, 62, 0.13);
+}
+.div-top{
+  flex-grow: 1;
+  margin: 3%;
+}
+.div-middle{
+  flex-grow: 2;
+  text-align: left;
+}
+.div-bottom{
+  padding: 3%;
+  flex-grow: 1;
 }
 
 </style>
