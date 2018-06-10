@@ -1,11 +1,6 @@
 <template>
   <v-app id="inspire">
       <v-content>
-        <v-layout row id="alert-component" v-if="error">
-          <v-flex xs12 sm6 offset-sm3>
-            <app-alert @dismissed="onDismissed" :text="error.message"></app-alert>
-          </v-flex>
-        </v-layout> 
         <v-container fluid fill-height>
           <v-btn
             color="primary"
@@ -19,21 +14,31 @@
           >
             <v-icon >home</v-icon>
           </v-btn>
-          <v-layout justify-center>
-            <v-snackbar
+          <v-layout align-center justify-center>
+            <!-- <v-snackbar
               :timeout="10000"
               :top="true"
               v-model="activateMsgSnack"
             >
               {{ firebaseMsg }}
-              <!-- <v-btn flat color="pink" @click="redirectUser">Close</v-btn> -->
+               <v-btn flat color="pink" @click="redirectUser">Close</v-btn> 
               <v-btn flat color="pink">Close</v-btn>
-            </v-snackbar>  
+            </v-snackbar>   -->
+            <!-- <v-layout row id="alert-component" v-if="error">
+                <v-flex xs12 sm6 offset-sm3>
+                  <app-alert @dismissed="onDismissed" :text="error.message"></app-alert>
+                </v-flex>
+              </v-layout> -->
             <v-flex xs12 sm8 md4>
+              
+              <v-layout row id="alert-component" v-if="error">
+                  <app-alert @dismissed="onDismissed" :text="error.message"></app-alert>
+              </v-layout>
+
               <v-form v-model="valid" ref="form" lazy-validation>
-                <v-card class="elevation-6">
-                  <v-toolbar dark color="accent">
-                    <v-toolbar-title>Please Log In</v-toolbar-title>
+                <v-card class="elevation-12" align-center>
+                  <v-toolbar dark color="primary">
+                    <v-toolbar-title>Log In</v-toolbar-title>
                   </v-toolbar>
                   <v-card-text>
                     
@@ -51,10 +56,14 @@
                     </v-form>
                   </v-card-text>
                   </v-btn>
-                  <v-btn outline color="primary" @click="onSignInGoogle">
-                    <i class="fab fa-google"></i>
-                    <v-card-text>Login with google</v-card-text>                   
-                  </v-btn>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn outline color="primary" @click="onSignInGoogle">
+                      <i class="fab fa-google"></i>
+                      <v-card-text>Login with google</v-card-text>                   
+                    </v-btn>
+                    <v-spacer></v-spacer>
+                  </v-card-actions>  
                   <v-card-actions class="mt-4">
                     <p class="ml-4">Don't have an account? <router-link to="/signup">Register</router-link> </p>
                     <v-spacer></v-spacer>      
@@ -154,4 +163,7 @@ import {mapGetters} from 'vuex'
   margin: 0 10px 0 0;
   border: 0 10px 0 0;
 } */
+#alert-component{
+  padding-bottom: 5px;
+}
 </style>

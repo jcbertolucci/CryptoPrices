@@ -444,19 +444,19 @@ export const store = new Vuex.Store({
       provider.addScope('profile');
       provider.addScope('email');
       firestoreAuth.signInWithPopup(provider).then(function(result) {
-      commit('setLoading', false)
-      // This gives you a Google Access Token.
-      var token = result.credential.accessToken;
-      // The signed-in user info.
-      var user = result.user;
-      const newUser = {
-           id: user.uid,
-           email: user.email, 
-           name: user.displayName,
-           imgUrl: user.photoURL,
-           savedCoins: []
-         }
-        commit('setUser', newUser)
+        commit('setLoading', false)
+        // This gives you a Google Access Token.
+        var token = result.credential.accessToken;
+        // The signed-in user info.
+        var user = result.user;
+        const newUser = {
+            id: user.uid,
+            email: user.email, 
+            name: user.displayName,
+            imgUrl: user.photoURL,
+            savedCoins: []
+          }
+          commit('setUser', newUser)
       })
       .catch(
         error => {

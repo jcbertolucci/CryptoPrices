@@ -4,7 +4,8 @@ import * as firebase from 'firebase'
 
 import SignUp from '@/components/SignUp.vue'
 import SignIn from '@/components/SignIn.vue'
-import HomeVuetify from '@/components/HomeVuetify.vue'
+/* import HomeVuetify from '@/components/HomeVuetify.vue' */
+import HomeBeta from '@/components/HomeBeta.vue'
 import Coins from '@/components/Coins.vue'
 import Portfolio from '@/components/Portfolio.vue'
 import Dashboard from '@/components/Dashboard.vue'
@@ -13,10 +14,11 @@ Vue.use(VueRouter)
 
 const routes = [
 /*   { path: '*', redirect: 'Home'}, */
-  { path: '/', name: 'Home', component: HomeVuetify }, 
+  /* { path: '/', name: 'Home', component: HomeVuetify }, */ 
+  { path: '/', name: 'Home', component: HomeBeta },
   { path: '/signup', name: 'Sign Up', component: SignUp },
-  { path: '/coins', name: 'Coins', component: Coins },
-  { path: '/portfolio', name: 'Portfolio', component: Portfolio, meta: { requiresAuth: true } },
+/*   { path: '/coins', name: 'Coins', component: Coins },
+  { path: '/portfolio', name: 'Portfolio', component: Portfolio, meta: { requiresAuth: true } }, */
   { path: '/dashboard', name: 'Dashboard', component: Dashboard, meta: { requiresAuth: true } },
   { path: '/signin', name: 'SignIn', component: SignIn }
 ]
@@ -32,5 +34,4 @@ router.beforeEach((to, from, next) => {
   else next()
   
 })
-
 export default router

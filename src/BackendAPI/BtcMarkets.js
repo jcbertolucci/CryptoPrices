@@ -1,23 +1,58 @@
 import { error } from "util";
 
 export default{
-  getBalance(publicId, privateId){
-    this.publicId = encodeURIComponent(publicId);
-    this.privateId = encodeURIComponent(privateId);
-    /* const proxyUrl = 'https://cors-anywhere.herokuapp.com/' */
-    const url = `http://localhost:8082/btc/balance/${this.publicId}/${this.privateId}`;
+  getBalance(params){
+    /*=================================
+     params = {publicKey, privateKey}
+    
+     Generates a String to form the parameters for URL
+        e.g  publicKey=xxxxxxxx&privateKey=yyyyyyyyyyy
+    ===================================================*/
+    const paramStr = this.generateUrlParam(params);
+    
+    
+
+    const url = `http://localhost:8082/btc/balance?${paramStr}`;
+
     return fetch(url)
       .then(response => response)
       .catch(error => error)
   },
-  getOrderHistory(publicId, privateId, instrument, currency){
-    this.publicId = encodeURIComponent(publicId);
-    this.privateId = encodeURIComponent(privateId);
-    this.instrument = instrument;
-    this.currency = currency;
-    const url = `http://localhost:8082/btc/orderHistory/${this.instrument}/${this.currency}/${this.publicId}/${this.privateId}`;
+  getOrderHistory(params){
+     /*=================================
+     params = {publicKey, privateKey, instrument, currency}
+    
+     Generates a String to form the parameters for URL
+        e.g  publicKey=xxxxxxxx&privateKey=yyyyyyyyyyy&instrument=BTC&currency=AUD
+    ===================================================*/
+    const paramStr = this.generateUrlParam(params);
+
+    const url = `http://localhost:8082/btc/orderHistory?${paramStr}`;
+
     return fetch(url)
       .then(response => response)
       .catch(error => error)
+  },
+  createOrder(params){
+    /*=================================
+     params = {publicKey, privateKey, instrument, currency}
+    
+     Generates a String to form the parameters for URL
+        e.g  publicKey=xxxxxxxx&privateKey=yyyyyyyyyyy&instrument=BTC&currency=AUD
+    ===================================================*/
+    const paramStr = this.generateUrlParam(params);
+    const proxyUrl = 'https://cors-anywhere.herokuapp.com/'
+
+    const url = `http://localhost:8082/btc/createOrder?${paramStr}`;
+    
+    return fetch(url)
+      .then((response) => {
+        return response
+      })
+      .catch(error => error)
+  },
+  generateUrlParam(params){
+    const paramStr = Object.keys(params).map(key => key + '=' + encodeURIComponent(params[key])).join('&');
+    return paramStr;
   }
 }

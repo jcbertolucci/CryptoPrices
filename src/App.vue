@@ -1,12 +1,14 @@
 <template>
   <div id="app">
-    <v-app app class="white" id="main-outter-container">
+    <!-- <v-app app class="white" id="main-outter-container">
       <v-content flat class="text-xs-center" >
         <app-menu :logOutProp="logOut"></app-menu>
         <router-view class="padding-bottom"></router-view>
       </v-content> 
-    </v-app>    
+    </v-app>   -->  
+    <router-view></router-view>
   </div>
+
 </template>
 
 <script>
@@ -15,9 +17,6 @@ export default {
   /* eslint-disable */
   name: 'app',
   
-  components:{
-
-  },
   computed:{
     user(){
       return this.$store.getters.user
@@ -48,7 +47,7 @@ export default {
     }
   },
   created(){
-    this.fetchNewsArticles();
+    /* this.fetchNewsArticles(); */
     this.marketCoins();
   }
 }

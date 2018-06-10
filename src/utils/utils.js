@@ -3,6 +3,8 @@ var http = require('http')
 
 var Utils = new Object();
 
+Utils.numberConverter = 100000000;
+
 Utils.formatNumbers = function (num){
       let numberTemp = numeral(num)
       numeral.defaultFormat('$0,0')
@@ -44,6 +46,12 @@ Utils.Percent = function(num){
       numeral.defaultFormat('0.000%')
       numberTemp = numberTemp.format()
       return numberTemp
+}
+Utils.toFinancial2 = function(num){
+  return Number.parseFloat(num).toFixed(2);
+}
+Utils.toFinancial4 = function(num){
+  return Number.parseFloat(num).toFixed(4);
 }
 Utils.fetchCoinImg = function(coinShortName){
   let id = ''

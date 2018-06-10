@@ -15,33 +15,57 @@ app.use(function(req, res, next) {
 });
 
 //BTCMarkets Balance route
-app.get('/btc/balance/:publicId/:privateId', (req, res)=>{
-  this.publicId = decodeURIComponent(req.params.publicId)
-  this.privateId = decodeURIComponent(req.params.privateId)
-  let btc = new BtcMarkets.default(this.publicId, this.privateId);
-  let response; 
+app.get('/btc/balance/', (req, res)=>{
+  const publicKey = decodeURIComponent(req.query.publicKey)
+  const privateKey = decodeURIComponent(req.query.privateKey)
+  const param = Object.assign({publicKey, privateKey})
+
+  const btc = new BtcMarkets.default(param);
+
   btc.getBalance().then((response)=>{
     if(response.name){
       res.send(response.name);
     }else{
       res.send(response);
     }
-  });
+  })
+  .catch(error => res.send(error));
 });
 //BTCMarkets Order History route
-app.get('/btc/orderhistory/:instrument/:currency/:publicId/:privateId', (req, res)=>{
-  this.currency = req.params.currency;
-  this.instrument = req.params.instrument;
-  this.limit = 50
-  this.publicId = decodeURIComponent(req.params.publicId)
-  this.privateId = decodeURIComponent(req.params.privateId)
-  let btc = new BtcMarkets.default(this.publicId, this.privateId, this.instrument, this.currency, this.limit);
-  let response; 
+app.get('/btc/orderhistory/', (req, res)=>{
+  const publicKey = decodeURIComponent(req.query.publicKey)
+  const privateKey = decodeURIComponent(req.query.privateKey)
+  const currency = decodeURIComponent(req.query.currency);
+  const instrument = decodeURIComponent(req.query.instrument);
+  const limit = 50
+  const params = Object.assign({publicKey, privateKey, currency, instrument, limit})
+
+  let btc = new BtcMarkets.default(params);
   btc.getOrderHistory().then((response)=>{
     res.send(response);
   })
-  .catch(error => console.log(error))
+  .catch(error => res.send(error));
+})
+//BTCMarkets Order History route
+app.get('/btc/createOrder/', (req, res)=>{
+  const publicKey = decodeURIComponent(req.query.publicKey)
+  const privateKey = decodeURIComponent(req.query.privateKey)
+  const currency = decodeURIComponent(req.query.currency);
+  const instrument = decodeURIComponent(req.query.instrument);
+  const volume = decodeURIComponent(req.query.volume);
+  const price = decodeURIComponent(req.query.price);
+  const orderSide = decodeURIComponent(req.query.orderSide);
+  const orderType = decodeURIComponent(req.query.orderType);
+  
+  const params = Object.assign({publicKey, privateKey, currency, instrument, volume, price, orderSide, orderType})
+
+  let btc = new BtcMarkets.default(params);
+  btc.createOrder().then((response)=>{
+    res.send(response);
+  })
+  .catch(error => res.send(error));
 });
+
 
 
 
