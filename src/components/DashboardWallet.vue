@@ -11,23 +11,6 @@
         {{ toastMessage }}
         <v-btn flat @click.native="snackbar = false">Dismiss</v-btn>
       </v-snackbar>
-        <div id="content-top">
-            <v-card id="card-top">
-                <div id="card-top-parent">
-                    <div id="card-top-child-left">
-                        <p>Linking your exchange account below allows you checking your account overview and operating assets</p>
-                        <br>
-                        <p class="grey--text caption">We are currently accepting linking accounts with <span class="span-highlighted">Coinbase</span> and <span class="span-highlighted">BTCMarkets</span></p>                                
-                    </div>
-                    <div id="card-top-child-right">
-                        <v-btn fab dark color="primary">
-                            <v-icon dark>add</v-icon>
-                        </v-btn>
-                        <p class="grey--text ">Add a new linking account</p>                              
-                    </div>
-                </div>
-            </v-card>
-        </div>
         <div class="content-middle"  >
             <div v-if="hasAnyExchange" flat class="content-middle-card-data" tile="true">
                 <div class="content-middle-card-container-inside-card">

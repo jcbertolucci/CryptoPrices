@@ -25,6 +25,7 @@ export const store = new Vuex.Store({
     selectedPair: {name: 'American Dollar', symbol: 'USD'},
     selectedCoin: {name: 'Bitcoin', symbol: 'BTC'},
     currentCurrency: 'AUD',
+    userExchanges: [],
     topCoins: [],
     coinTableitems: [],
     allCoinsTableItems: [],
@@ -180,7 +181,6 @@ export const store = new Vuex.Store({
           }
         })
       })    
-
       state.coinsUser = coinsUser
     },
     saveCoinFirebase: (state, payload) =>{
@@ -198,7 +198,7 @@ export const store = new Vuex.Store({
         let baseImageUrl = ''
         let url = `https://api.coinmarketcap.com/v1/ticker/?convert=${currency}&limit=${limitCoins}`
         let proxyUrl = 'https://cors-anywhere.herokuapp.com/'
-        let urlCoinList = `${proxyUrl}https://www.cryptocompare.com/api/data/coinlist/`
+        let urlCoinList = `https://www.cryptocompare.com/api/data/coinlist/`
         
         
         //this.$http.get(url)
@@ -268,7 +268,7 @@ export const store = new Vuex.Store({
       fetch(url)
       .then(response => response.json())
       .then(function(data){ 
- /*        state.setLoading = true */
+        /*state.setLoading = true */
         requestData = data;
         requestData.forEach( function (item){
           
@@ -417,7 +417,7 @@ export const store = new Vuex.Store({
               id: user.uid,
               email: user.email, 
               name: '',
-              savedCoins: []//TODO TO GET THE COINS
+              savedCoins: [],//TODO TO GET THE COINS
             }
             commit('setUser', newUser)
           }
@@ -456,7 +456,7 @@ export const store = new Vuex.Store({
             imgUrl: user.photoURL,
             savedCoins: []
           }
-          commit('setUser', newUser)
+        commit('setUser', newUser)
       })
       .catch(
         error => {

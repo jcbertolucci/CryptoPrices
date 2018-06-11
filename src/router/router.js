@@ -8,7 +8,10 @@ import SignIn from '@/components/SignIn.vue'
 import HomeBeta from '@/components/HomeBeta.vue'
 import Coins from '@/components/Coins.vue'
 import Portfolio from '@/components/Portfolio.vue'
-import Dashboard from '@/components/Dashboard.vue'
+/* import Dashboard from '@/components/Dashboard.vue' */
+import Dashboard from '@/components/DashboardBeta.vue'
+import DashboardCoin from '@/components/DashboardCoin.vue' 
+ import DashboardWallet from '@/components/DashboardWallet.vue'
 
 Vue.use(VueRouter)
 
@@ -19,7 +22,23 @@ const routes = [
   { path: '/signup', name: 'Sign Up', component: SignUp },
 /*   { path: '/coins', name: 'Coins', component: Coins },
   { path: '/portfolio', name: 'Portfolio', component: Portfolio, meta: { requiresAuth: true } }, */
-  { path: '/dashboard', name: 'Dashboard', component: Dashboard, meta: { requiresAuth: true } },
+  { path: '/dashboard', name: 'Dashboard', component: Dashboard, 
+    children: [
+      {
+        // Coin will be rendered inside Dashboard's <router-view>
+        //  when /dashboard/coin is matched
+        path: 'coin',
+        component: DashboardCoin
+      },
+      {
+        // Wallet will be rendered inside Dashboard's <router-view>
+        //  when /dashboard/wallet is matched
+        path: 'wallet',
+        component: DashboardWallet
+      }
+    ],
+    meta: { requiresAuth: true } 
+  },
   { path: '/signin', name: 'SignIn', component: SignIn }
 ]
 const router = new VueRouter({
