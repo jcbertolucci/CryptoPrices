@@ -43,70 +43,73 @@ export const store = new Vuex.Store({
     newsArticles:[]
   },
   getters:{
+    userExchanges(state){
+      return state.userExchanges;
+    },
     newsArticles(state){
-      return state.newsArticles
+      return state.newsArticles;
     },
     getCalculatedValue: (state) => {
       /* state.coinsUser.forEach((item) =>{
       }) */
-      return state.coinsUser
+      return state.coinsUser;
     },
     loading(state){
-      return state.loading
+      return state.loading;
     },
     coinsUser(state){
-      return state.coinsUser
+      return state.coinsUser;
     },
     error(state){
-      return state.error
+      return state.error;
     },
     topPortfolioCoins: state => {
-      return state.topPortfolioCoins
+      return state.topPortfolioCoins;
     },
     activatedMsgSnack: state => {
-      return state.activatedMsgSnack
+      return state.activatedMsgSnack;
     },
     marketCoinItems: state => {
-      return state.marketCoinItems
+      return state.marketCoinItems;
     },
     firebaseMsg: state => {
-      return state.firebaseMsg
+      return state.firebaseMsg;
     },
     userAuth: state => {
-      return state.userAuth
+      return state.userAuth;
     },
     user: state => {
-      return state.user
+      return state.user;
     },
     selectedPair: state => {
-      return state.selectedPair
+      return state.selectedPair;
     },
     selectedCoin: state => {
-      return state.selectedCoin
+      return state.selectedCoin;
     },
     currentCurrency: state =>{
-      return state.currentCurrency
+      return state.currentCurrency;
     },
     currentCoin: state =>{
-      return state.currentCoin
+      return state.currentCoin;
     },
     coinTableHeader: state =>{
-      return state.coinTableHeader
+      return state.coinTableHeader;
     },
     coinTableItems: state =>{
-      return state.coinTableitems
+      return state.coinTableitems;
     },
     allCoinsTableItems: state =>{
-      return state.allCoinsTableItems
+      return state.allCoinsTableItems;
     },
     currentCoin: state => {
-      return state.currentCoin
+      return state.currentCoin;
     },
     topCoins: state => {
-      return state.topCoins
+      return state.topCoins;
     },
     coinMarkets: state => {
-      return state.coinMarkets
+      return state.coinMarkets;
     },
     totalCoins: state =>{
       //let ttlCoins = state.allCoinsTableItems.length
@@ -114,52 +117,56 @@ export const store = new Vuex.Store({
     },
    },
   mutations:{
+    addUserExchange(state, payload){
+      state.userExchanges = []
+      state.userExchanges.push(payload);
+    },
     setNewsArticles(state, payload){
-      state.newsArticles = payload
+      state.newsArticles = payload;
     },
     setLoading(state, payload){
-      state.loading = payload
+      state.loading = payload;
     },
     setError(state, payload){
-      state.error = payload
+      state.error = payload;
     },
     clearError(state){
-      state.error = null
+      state.error = null;
     },
     clearUser(state){
-      state.user = null
+      state.user = null;
     },
     setUser: (state, payload) => {
-      state.user = payload
+      state.user = payload;
     },
     setTopPortfolioCoins: (state, payload) => {
-      state.topPortfolioCoins = payload
+      state.topPortfolioCoins = payload;
     },
     setactivatedMsgSnack: (state, payload) => {
-      state.activatedMsgSnack = payload
+      state.activatedMsgSnack = payload;
     },
     setUserAuth: (state, payload) => {
-      state.userAuth = payload
+      state.userAuth = payload;
     },
     setFirebaseMsg: (state, payload) => {
-      state.firebaseMsg = payload
+      state.firebaseMsg = payload;
     },
     setMarketCoinItems: (state, payload) => {
-      state.marketCoinItems = payload
+      state.marketCoinItems = payload;
     },
     setSelectedPair: (state, payload) => {
       state.selectedPair = payload
-      store.dispatch('fetchCoinMarkets', 'MARKET')//TODO
+      store.dispatch('fetchCoinMarkets', 'MARKET');//TODO
     },
     setSelectedCoin: (state, payload) => {
-      state.selectedCoin = payload
-      store.dispatch('fetchCoinMarkets', 'MARKET')
+      state.selectedCoin = payload;
+      store.dispatch('fetchCoinMarkets', 'MARKET');
     },
     setCurrentCurrency: (state, payload) => {
-      state.currentCurrency = payload
+      state.currentCurrency = payload;
     },
     setCurrentCoin: (state, payload) => {
-      state.currentCoin = payload
+      state.currentCoin = payload;
     },
     activateCoin: (state, payload) =>{
         //deactivate all elements
@@ -171,6 +178,7 @@ export const store = new Vuex.Store({
         //set the currentCoin to bind it to child component
         state.currentCoin = payload;
     },
+    //WARNING - THIS BLOCK SHOULD BE AN ACTION - REDO
     fetchPortfolioCoins: (state, payload) => {
       let coinsUser = []
       let db = firebaseApp.firestore()
@@ -183,11 +191,13 @@ export const store = new Vuex.Store({
       })    
       state.coinsUser = coinsUser
     },
+    //WARNING - THIS BLOCK SHOULD BE AN ACTION - REDO
     saveCoinFirebase: (state, payload) =>{
       let db = firebaseApp.firestore()
       db.collection('coins').add({coin: payload, userId: state.user.id})
       state.coinsUser.push(payload)
     },
+    //WARNING - THIS BLOCK SHOULD BE AN ACTION - REDO
     fetchTopCoins: (state, payload) => {
         let requestData = [];
         let coinsCryptoCompare = []
@@ -199,7 +209,6 @@ export const store = new Vuex.Store({
         let url = `https://api.coinmarketcap.com/v1/ticker/?convert=${currency}&limit=${limitCoins}`
         let proxyUrl = 'https://cors-anywhere.herokuapp.com/'
         let urlCoinList = `https://www.cryptocompare.com/api/data/coinlist/`
-        
         
         //this.$http.get(url)
         fetch(url)
@@ -377,6 +386,31 @@ export const store = new Vuex.Store({
     }    
   },
   actions: {
+    FETCH_USER_EXCHANGES({ commit, state }){
+      const db = firebaseApp.firestore();
+      const exchanges = db.collection('userExchanges');
+      const userExchange = exchanges.where('userId', '==', state.user.id)
+      userExchange.onSnapshot((querySnapshot)=> {
+        querySnapshot.forEach((doc) =>{
+          if(doc.exists){
+            commit('addUserExchange', doc.data().exchange);
+          }
+          else{
+            console.log("No such document!");
+          }
+        })
+      })
+    },
+    ADD_USER_EXCHANGE({ commit, state }, payload){
+      let db = firebaseApp.firestore()
+      db.collection('userExchanges').add({userId: state.user.id, exchange: payload})
+      .then(function() {
+        commit('addUserExchange', payload);
+      })
+      .catch(function(error) {
+        console.error("Error writing document: ", error);
+      });
+    },
     FETCH_NEWS_ARTICLES({commit}){
       var newsArticles = []
       var filterArticles = []

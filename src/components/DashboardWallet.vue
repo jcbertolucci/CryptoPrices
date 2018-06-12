@@ -203,9 +203,11 @@ export default {
       sellPrice: "0.00",
       sellInstrument: 'BTC',
       sellCurrency: 'AUD',
-
+      
+      //TODO
       publicKey: privateInfos.btcMarkets.publicKey,
       privateKey: privateInfos.btcMarkets.privateKey,
+
       loading1: true,
       loading2: true,
       orderHistoryPairs: [],
@@ -302,7 +304,8 @@ export default {
 
       switch(origin){
         case 'BUY':
-          params = Object.assign({},{publicKey: this.publicKey, 
+          params = Object.assign({},{
+                        publicKey: this.publicKey, 
                         privateKey: this.privateKey, 
                         instrument: this.buyInstrument,
                         currency: this.buyCurrency,
@@ -312,7 +315,8 @@ export default {
                         orderType: this.buyOrderType});
           break;  
         case 'SELL':
-          params = Object.assign({},{publicKey: this.publicKey, 
+          params = Object.assign({},{
+                          publicKey: this.publicKey, 
                           privateKey: this.privateKey, 
                           instrument: this.sellInstrument,
                           currency: this.sellCurrency,
