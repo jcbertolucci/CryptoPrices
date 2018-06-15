@@ -14,7 +14,6 @@
     "build": "node build/build.js"
   },
   "dependencies": {
-    "btc": "file:src/BTC",
     "chart.js": "^2.7.1",
     "chartkick": "^2.2.4",
     "cheerio": "^1.0.0-rc.2",
