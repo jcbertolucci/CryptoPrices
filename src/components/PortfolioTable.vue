@@ -5,7 +5,6 @@
         <v-icon dark>add</v-icon>
       </v-btn>
       <v-card>
-
         <v-card flat class="card-header white--text" color="primary" >
           <v-layout row justify-space-around align-center>
             <v-flex xs11 ma-2 ml-3 text-left>
@@ -248,7 +247,6 @@ import utils from '../../src/utils/utils.js'
           symbol = item.name
           currency = item.currency
           url = `${proxyUrl}https://www.cryptocompare.com/api/data/coinsnapshot/?fsym=${symbol}&tsym=${currency}`
-          
           fetch(url)
           .then(response => response.json())
           .then(function(data){ 

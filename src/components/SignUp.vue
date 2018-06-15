@@ -1,11 +1,6 @@
 <template>
   <v-app id="inspire">
       <v-content>
-        <v-layout row id="alert-component" v-if="error">
-          <v-flex xs12 sm6 offset-sm3>
-            <app-alert @dismissed="onDismissed" :text="error.message"></app-alert>
-          </v-flex>
-        </v-layout> 
         <v-container fluid fill-height>
           <v-btn
             color="primary"
@@ -18,15 +13,16 @@
             @click="goHome"
           >
             <v-icon >home</v-icon>
-          </v-btn>  
-          <v-layout justify-center>
-
-            <!-- Not yet logged in -->
+          </v-btn>
+          <v-layout align-center justify-center>
             <v-flex xs12 sm8 md4>
+              <v-layout row id="alert-component" v-if="error">
+                  <app-alert @dismissed="onDismissed" :text="error.message"></app-alert>
+              </v-layout>
               <v-form v-model="valid" ref="form" lazy-validation>
                 <v-card class="elevation-12">
-                  <v-toolbar dark color="accent">
-                    <v-toolbar-title>Please Register</v-toolbar-title>
+                  <v-toolbar dark color="primary">
+                    <v-toolbar-title>Sign Up</v-toolbar-title>
                     <v-spacer></v-spacer>
                   </v-toolbar>
                   <v-card-text>
@@ -53,9 +49,10 @@
                     <v-btn color="primary" @click="signUserUp" :disabled="!valid">Sign Up</v-btn>
                   </v-card-actions>
                 </v-card>
-              </v-form>  
-            </v-flex>
+              </v-form> 
+            </v-flex>  
           </v-layout>
+
         </v-container>
       </v-content>
     </v-app>

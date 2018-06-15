@@ -23,6 +23,7 @@ export const store = new Vuex.Store({
     ],
     currentCoin: {},
     selectedPair: {name: 'American Dollar', symbol: 'USD'},
+    /* selectedPair: {name: 'Australian Dollar', symbol: 'AUD'}, */
     selectedCoin: {name: 'Bitcoin', symbol: 'BTC'},
     currentCurrency: 'AUD',
     userExchanges: [],
@@ -39,7 +40,7 @@ export const store = new Vuex.Store({
     topPortfolioCoins: [],
     loading: false,
     error: null,
-    coinsUser: null,
+    coinsUser: [],
     newsArticles:[]
   },
   getters:{
@@ -118,7 +119,6 @@ export const store = new Vuex.Store({
    },
   mutations:{
     addUserExchange(state, payload){
-      state.userExchanges = []
       state.userExchanges.push(payload);
     },
     setNewsArticles(state, payload){
@@ -185,11 +185,11 @@ export const store = new Vuex.Store({
       db.collection('coins').get().then((querySnapshot) => {
         querySnapshot.forEach(doc => {
           if(doc.data().userId === state.user.id){
-            coinsUser.push(doc.data().coin)
+            console.log(doc.data())
+            state.coinsUser.push(doc.data().coin)
           }
         })
       })    
-      state.coinsUser = coinsUser
     },
     //WARNING - THIS BLOCK SHOULD BE AN ACTION - REDO
     saveCoinFirebase: (state, payload) =>{
@@ -405,7 +405,8 @@ export const store = new Vuex.Store({
       let db = firebaseApp.firestore()
       db.collection('userExchanges').add({userId: state.user.id, exchange: payload})
       .then(function() {
-        commit('addUserExchange', payload);
+        /* commit('addUserExchange', payload); */
+        console.log("Exchange added into firestore");
       })
       .catch(function(error) {
         console.error("Error writing document: ", error);

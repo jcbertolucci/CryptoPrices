@@ -6,24 +6,56 @@
       v-model="drawer"
       app
     >
-      <v-list dense>
+      <v-list>
         <v-list-tile @click="" :to="'/dashboard/coin'">
-          <v-list-tile-action>
+          <v-list-tile-action class="ma-0 pa-0">
             <v-icon>attach_money</v-icon>
           </v-list-tile-action>
           <v-list-tile-content>
             <v-list-tile-title>Prices</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
-        <v-list-tile @click="" :to="'/dashboard/wallet'">
+        <!-- <v-list-tile @click="" :to="'/dashboard/wallet'">
           <v-list-tile-action>
             <v-icon>compare_arrows</v-icon>
           </v-list-tile-action>
           <v-list-tile-content>
             <v-list-tile-title>Trade</v-list-tile-title>
           </v-list-tile-content>
-        </v-list-tile>
-        <v-list-tile @click="">
+        </v-list-tile> -->
+        <v-list-group
+          v-model="tradesMenu.model"
+          :key="tradesMenu.text"
+          append-icon=""
+        >
+          <v-list-tile slot="activator">
+            <v-list-tile-action>
+              <v-icon>compare_arrows</v-icon>
+            </v-list-tile-action>
+            <v-list-tile-content >
+              <v-list-tile-title>
+                {{ tradesMenu.text }}
+              </v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+          <v-list-tile
+            v-for="(child, i) in tradesMenu.children"
+            :key="i"
+            :to="child.to"
+          >
+            <v-list-tile-action v-if="child.icon">
+              <v-icon>{{ child.icon }}</v-icon>
+            </v-list-tile-action>
+            <v-list-tile-content class="pl-4">
+              <v-list-tile-title>
+                {{ child.text }}
+              </v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+        </v-list-group>
+        
+        
+        <v-list-tile :to="'/dashboard/portfolio'">
           <v-list-tile-action>
             <v-icon>dashboard</v-icon>
           </v-list-tile-action>
@@ -31,14 +63,14 @@
             <v-list-tile-title>Portfolio</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
-        <v-list-tile @click="">
+        <!-- <v-list-tile @click="" :to="'/dashboard/chart'">
           <v-list-tile-action>
             <v-icon>bar_chart</v-icon>
           </v-list-tile-action>
           <v-list-tile-content>
             <v-list-tile-title>Charts</v-list-tile-title>
           </v-list-tile-content>
-        </v-list-tile>
+        </v-list-tile> -->
         <v-list-tile class="mt-3" @click="mainSheet = true">
           <v-list-tile-action>
             <v-icon color="grey darken-1">add_circle_outline</v-icon>
@@ -47,7 +79,7 @@
         </v-list-tile>
       </v-list>
     </v-navigation-drawer>
-    <v-toolbar app fixed clipped-left color="primary">
+    <v-toolbar app fixed clipped-left>
       <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
       <v-toolbar-title>{{ user.name }}</v-toolbar-title>
       <v-spacer></v-spacer>
@@ -58,8 +90,9 @@
     </v-toolbar>
     <v-content>
       <v-container fluid fill-height>
-        <v-layout justify-center align-center class="main-container">
-          <v-flex shrink>
+        <!-- <v-layout justify-center align-center class="main-container"> -->
+        <v-layout justify-center class="main-container">
+          <v-flex>
             <v-fade-transition mode="out-in">
               <router-view></router-view>
             </v-fade-transition>
@@ -90,28 +123,8 @@
             <v-list>
               <v-subheader>BtcMarkets</v-subheader>
               <v-spacer></v-spacer>
-              <!-- <v-layout row>
-                <v-flex xs4>
-                  <v-text-field
-                    v-model="btcFormPublicKey"
-                    label="Public Key"
-                    class="input-group--focused"
-                    prepend-icon="key"
-                    single-line
-                  ></v-text-field>
-                </v-flex>
-                <v-flex xs4>
-                  <v-text-field
-                    v-model="btcFormPrivateKey"
-                    label="Private Key"
-                    class="input-group--focused"
-                    prepend-icon="key"
-                    single-line
-                  ></v-text-field>
-                </v-flex>
-              </v-layout> -->
                 <v-form v-model="formValid" class="pl-3">
-                  <v-flex xs2 >
+                  <v-flex xs4>
                     <v-text-field 
                       v-model="btcMarkets.publicKey"
                       :rules="formValidation"
@@ -119,7 +132,7 @@
                       required
                     ></v-text-field>
                   </v-flex>  
-                  <v-flex xs2>
+                  <v-flex xs4>
                     <v-text-field
                       v-model="btcMarkets.privateKey"
                       :rules="formValidation"
@@ -128,13 +141,21 @@
                     ></v-text-field>
                   </v-flex> 
                 </v-form>
-              <v-btn @click="connectCoin('btc')" block :disabled=!formValid color="primary">Connect</v-btn>
+              <v-btn @click="connectCoin('btcmarkets')" block :disabled=!formValid color="primary">Connect</v-btn>
             </v-list>
           </v-bottom-sheet>
         </div>
         <!-- Bottom sheet dialog -->
       </v-container>
     </v-content>
+    <v-snackbar
+      :timeout="6000"
+      color="error"
+      v-model="hasExchangeAlert"
+    >
+      {{ exchangeAlert }}
+      <v-btn dark flat @click.native="hasExchangeAlert = false">Close</v-btn>
+    </v-snackbar>
     <v-footer app fixed>
       <span>Incliti &copy; 2017</span>
     </v-footer>
@@ -146,10 +167,21 @@ import {mapGetters} from 'vuex'
 
 export default {
   data: () => ({
+    tradesMenu: {
+      icon: 'keyboard_arrow_up',
+      'icon-alt': 'keyboard_arrow_down',
+      text: 'Trades',
+      model: false,
+      children: [
+        { text: 'BtcMarkets', to: '/dashboard/wallet' }
+      ]
+    },
     formValid: false,
     formValidation: [
       v => !!v || 'Field is required'
     ],
+    hasExchangeAlert: false,
+    exchangeAlert: 'This exchange has been added already.',
     drawer: true,
     mainSheet: false,
     btcSheet: false,
@@ -165,12 +197,14 @@ export default {
     btcMarkets: {
       exchange: 'btcmarkets',
       publicKey: '',
-      privateKey: ''
+      privateKey: '',
+      dateMili: Date.now()
     },
     coinbase: {
-      exchange: 'coinsbase',
+      exchange: 'coinbase',
       publicKey: '',
-      privateKey: ''
+      privateKey: '',
+      dateMili: Date.now()
     }
   }),
   computed: {
@@ -180,23 +214,36 @@ export default {
   },
   watch:{
     userExchanges:(oldValue, newValue)=>{
-      console.log(oldValue)
-      console.log(newValue)
     }
   },
   methods:{
     openExchangeForm: function(id){
-      //Hides main sheet
-      this.mainSheet = false;
-      if (id === 'btcmarkets'){
-        this.btcSheet = true
-      }        
-      if (id === 'coinbase'){
-        this.coinbSheet = true
-      }  
+      //verifies if exchange had been added
+      const hasExchange = (this.userExchanges.filter( exc => exc.exchange == id).length) > 0
+      console.log(hasExchange)
+
+      if(hasExchange){
+        //Hides main sheet
+        this.mainSheet = false;
+        //Opens alert
+        this.hasExchangeAlert = true;
+      }else{
+        if (id === 'btcmarkets'){
+          //Hides main sheet
+          this.mainSheet = false;
+          //Opens coin sheet
+          this.btcSheet = true
+        }        
+        if (id === 'coinbase'){
+          //Hides main sheet
+          this.mainSheet = false;
+          //Opens coin sheet
+          this.coinbSheet = true
+        }   
+      }
     },
     connectCoin(exchange){
-      if(exchange === 'btc'){
+      if(exchange === 'btcmarkets'){
         this.$store.dispatch('ADD_USER_EXCHANGE', this.btcMarkets )
         .then(() => {
           this.$store.dispatch('FETCH_USER_EXCHANGES')
@@ -210,9 +257,14 @@ export default {
     ])
   },
   beforeCreate(){
-    this.$store.dispatch('FETCH_USER_EXCHANGES')
+    this.$store.dispatch('FETCH_USER_EXCHANGES');
+    this.$store.dispatch('FETCH_PORTFOLIO_COINS');
+  },
+  created(){
+    
   },
   mounted(){
+
   },
   
 }

@@ -7,11 +7,12 @@ import SignIn from '@/components/SignIn.vue'
 /* import HomeVuetify from '@/components/HomeVuetify.vue' */
 import HomeBeta from '@/components/HomeBeta.vue'
 import Coins from '@/components/Coins.vue'
-import Portfolio from '@/components/Portfolio.vue'
+import DashboardPortfolio from '@/components/DashboardPortfolio.vue'
 /* import Dashboard from '@/components/Dashboard.vue' */
 import Dashboard from '@/components/DashboardBeta.vue'
 import DashboardCoin from '@/components/DashboardCoin.vue' 
- import DashboardWallet from '@/components/DashboardWallet.vue'
+import DashboardWallet from '@/components/DashboardWallet.vue'
+import Chart from '@/components/Chart.vue'
 
 Vue.use(VueRouter)
 
@@ -20,8 +21,8 @@ const routes = [
   /* { path: '/', name: 'Home', component: HomeVuetify }, */ 
   { path: '/', name: 'Home', component: HomeBeta },
   { path: '/signup', name: 'Sign Up', component: SignUp },
-/*   { path: '/coins', name: 'Coins', component: Coins },
-  { path: '/portfolio', name: 'Portfolio', component: Portfolio, meta: { requiresAuth: true } }, */
+/*   { path: '/coins', name: 'Coins', component: Coins },*/
+/* { path: '/portfolio', name: 'Portfolio', component: Portfolio }, */
   { path: '/dashboard', name: 'Dashboard', component: Dashboard, 
     children: [
       {
@@ -35,6 +36,10 @@ const routes = [
         //  when /dashboard/wallet is matched
         path: 'wallet',
         component: DashboardWallet
+      } ,
+      {
+        path: 'portfolio',
+        component: DashboardPortfolio
       }
     ],
     meta: { requiresAuth: true } 
