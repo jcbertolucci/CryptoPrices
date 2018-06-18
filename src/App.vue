@@ -1,11 +1,5 @@
 <template>
   <div id="app">
-    <!-- <v-app app class="white" id="main-outter-container">
-      <v-content flat class="text-xs-center" >
-        <app-menu :logOutProp="logOut"></app-menu>
-        <router-view class="padding-bottom"></router-view>
-      </v-content> 
-    </v-app>   -->  
     <router-view></router-view>
   </div>
 
@@ -23,8 +17,11 @@ export default {
     }
   },
   methods: {
+    fetchMarket(){
+      this.$store.dispatch('FETCH_MARKET')//call store action
+    },
     fetchTopCoins(){
-      this.$store.dispatch('fetchTopCoins')//call store action
+      this.$store.dispatch('FETCH_TOP_COINS')//call store action
     },
     fetchAllCoins(){
       this.$store.dispatch('fetchAllCoins')//call store action
@@ -47,12 +44,28 @@ export default {
     }
   },
   created(){
-    /* this.fetchNewsArticles(); */
+    this.fetchMarket();
+    this.fetchTopCoins();
     this.marketCoins();
   }
 }
 </script>
 
-<style scoped>
+<style>
+/*Fonts*/
+@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro|Source+Sans+Pro:b|Open+Sans|Roboto:thin');
+@import url('https://fonts.googleapis.com/css?family=Lato:200,300,400,700|Roboto:400,700');
 
+/*Elements*/
+*, ::before, ::after{
+  transition: all ease-in-out 300ms;
+  box-sizing: border-box;
+}
+body{
+  --primary: #BF360C;
+  --accent: #4A148C;
+  --lightgrey: rgb(128,128,128, 0.1);
+  --darkgrey: #263238;
+  font-family: 'Lato', sans-serif;
+}
 </style>

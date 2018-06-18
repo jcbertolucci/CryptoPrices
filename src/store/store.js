@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import utils from '../../src/utils/utils.js'
 import {firebaseApp} from '../database/firebaseInit'
-import {firestore} from '../database/firebaseInit'
+import axios from 'axios'
 import {firestoreAuth} from '../database/firebaseInit'
 import {provider} from '../database/firebaseInit'
 
@@ -39,11 +39,19 @@ export const store = new Vuex.Store({
     activatedMsgSnack: false,
     topPortfolioCoins: [],
     loading: false,
+    loadingCoin: true,
     error: null,
     coinsUser: [],
-    newsArticles:[]
+    newsArticles:[],
+    marketSummary: {}
   },
   getters:{
+    marketSummary(state){
+      return state.marketSummary;
+    },
+    topCoins(state){
+      return state.topCoins;
+    },
     userExchanges(state){
       return state.userExchanges;
     },
@@ -118,6 +126,12 @@ export const store = new Vuex.Store({
     },
    },
   mutations:{
+    setMarketSummary(state, payload){
+      state.marketSummary = payload;
+    },
+    setTopCoins(state, payload){
+      state.topCoins = payload;
+    },
     addUserExchange(state, payload){
       state.userExchanges.push(payload);
     },
@@ -185,7 +199,6 @@ export const store = new Vuex.Store({
       db.collection('coins').get().then((querySnapshot) => {
         querySnapshot.forEach(doc => {
           if(doc.data().userId === state.user.id){
-            console.log(doc.data())
             state.coinsUser.push(doc.data().coin)
           }
         })
@@ -198,69 +211,6 @@ export const store = new Vuex.Store({
       state.coinsUser.push(payload)
     },
     //WARNING - THIS BLOCK SHOULD BE AN ACTION - REDO
-    fetchTopCoins: (state, payload) => {
-        let requestData = [];
-        let coinsCryptoCompare = []
-        let coins = []
-        let coin = {}
-        let currency = 'AUD';
-        let limitCoins = '10'
-        let baseImageUrl = ''
-        let url = `https://api.coinmarketcap.com/v1/ticker/?convert=${currency}&limit=${limitCoins}`
-        let proxyUrl = 'https://cors-anywhere.herokuapp.com/'
-        let urlCoinList = `https://www.cryptocompare.com/api/data/coinlist/`
-        
-        //this.$http.get(url)
-        fetch(url)
-        .then(response => response.json())
-        .then(function(data){ 
-          requestData = data;
-          requestData.forEach( function (item){
-            
-            coin = {};
-            coin.value = false
-            coin.isActive = item.rank === "1";
-            coin.name = item.name;
-            coin.id = ''
-            coin.symbol = '';
-            coin.priceAud = utils.formatNumbersCents(item.price_aud)
-            coin.priceUsd = utils.formatNumbersCents(item.price_usd)
-            coin.weekPercVar = item.percent_change_7d;
-            coin.dayPercVar = item.percent_change_24h;
-            coin.hourPercVar = item.percent_change_1h;
-            coin.marketCapAud = utils.formatNumbers(item.market_cap_aud)
-            coin.marketCapUsd = utils.formatNumbers(item.market_cap_usd)
-            coin.totalSupply = utils.USFormat(item.total_supply);
-            coin.volumeUsd = utils.formatNumbers(item['24h_volume_usd'])
-            coin.imageUrl = ''
-
-            coins.push(coin);
-          })
-          return coins
-        })
-        //To get the coins images
-        .then(coins => {
-          fetch(urlCoinList)
-          .then(response => response.json())
-          .then(data => {
-            coins.map(coin => {
-              coin.imageUrl = data.BaseImageUrl
-            })
-            Object.keys(data.Data).forEach(function(key) {
-              coins.map(coin => {
-                //if (data.Data[key].CoinName.toLowerCase() === coin.name.toLowerCase())
-                if(data.Data[key].Symbol.toLowerCase() === coin.symbol.toLowerCase() || data.Data[key].CoinName.toLowerCase() === coin.name.toLowerCase()) {
-                  coin.imageUrl = coin.imageUrl + data.Data[key].ImageUrl
-                  coin.id = data.Data[key].Id
-                  coin.symbol = data.Data[key].Symbol
-                }
-              })
-            });
-          })
-          state.coinTableitems = coins
-          return coins
-        })
-    },
     fetchAllCoins: (state, payload) => {
       let selectedPair = state.selectedPair
       let requestData = [];
@@ -269,18 +219,18 @@ export const store = new Vuex.Store({
       let coin = {}
       let currency = state.selectedPair.symbol;
       let baseImageUrl = ''
-      let url = `https://api.coinmarketcap.com/v1/ticker/?convert=${currency}&limit=2000`//TODO
+      /* let url = `https://api.coinmarketcap.com/v1/ticker/?convert=${currency}&limit=2000`//TODO */
+      let url = `https://api.coinmarketcap.com/v1/ticker/?convert=${currency}&limit=500`//TODO
       let proxyUrl = 'https://cors-anywhere.herokuapp.com/'
-      let urlCoinList = `${proxyUrl}https://www.cryptocompare.com/api/data/coinlist/`
       
       //this.$http.get(url)
-      fetch(url)
-      .then(response => response.json())
-      .then(function(data){ 
+      /* fetch(url) */
+      axios.get(proxyUrl+url)
+      /* .then(response => response.json()) */
+      .then(data =>{ //TOTOTOTOTOOTTOTOSDOFOSTOTOSO
         /*state.setLoading = true */
-        requestData = data;
+        requestData = data.data;
         requestData.forEach( function (item){
-          
           coin = {};
           coin.value = false
           coin.isActive = item.rank === "1";
@@ -306,18 +256,20 @@ export const store = new Vuex.Store({
       })
       //To get the coins images
       .then(coins => {
-        fetch(urlCoinList)
-        .then(response => response.json())
+        let urlCoinList = `https://min-api.cryptocompare.com/data/all/coinlist`
+        axios.get(proxyUrl+urlCoinList)
         .then(data => {
+          let resultSource = data.data
+          let resultData = resultSource.Data
           coins.map(coin => {
-            coin.imageUrl = data.BaseImageUrl
+            coin.imageUrl = resultSource.BaseImageUrl
           })
-          Object.keys(data.Data).forEach(function(key) {
+          Object.keys(resultData).forEach(function(key) {
             coins.map(coin => {
-              if (data.Data[key].Symbol.toLowerCase() === coin.symbol.toLowerCase() || data.Data[key].CoinName.toLowerCase() === coin.name.toLowerCase()){
-                coin.imageUrl = coin.imageUrl + data.Data[key].ImageUrl
-                coin.id = data.Data[key].Id
-                coin.symbol = data.Data[key].Symbol
+              if (resultData[key].Symbol.toLowerCase() === coin.symbol.toLowerCase() || resultData[key].CoinName.toLowerCase() === coin.name.toLowerCase()){
+                coin.imageUrl = coin.imageUrl + resultData[key].ImageUrl
+                coin.id = resultData[key].Id
+                coin.symbol = resultData[key].Symbol
               }
             })
           });
@@ -325,7 +277,6 @@ export const store = new Vuex.Store({
         })
         .then(coins => {
           if(payload === 'MARKET') {//Just for Coins that need Market infos */
-            let proxyUrl = 'https://cors-anywhere.herokuapp.com/'
             let url = ""
             let symbol = ""
 
@@ -335,25 +286,27 @@ export const store = new Vuex.Store({
               //Commented because no longer used when inside dashboard
               /* if (state.selectedCoin.symbol.toUpperCase() === coins[key].symbol.toUpperCase()
                   || state.selectedCoin.symbol.toUpperCase() === coins[key].name.toUpperCase()){ */
-                url = `${proxyUrl}https://min-api.cryptocompare.com/data/top/exchanges/full?fsym=${symbol}&tsym=${currency}`
-                fetch(url)
-                .then(response => response.json())
+                url = `https://min-api.cryptocompare.com/data/top/exchanges/full?fsym=${symbol}&tsym=${currency}`
+                /* fetch(url)
+                .then(response => response.json()) */
+                axios.get(proxyUrl+url)
                 .then(data => {
-                    if(data.Message === "No exchanges available" || (data.Data.AggregatedData === undefined) ){
+                    let result = data.data.Data
+                    if(data.Message === "No exchanges available" || (result.AggregatedData === undefined) ){
                       coins[key].exchanges = [] 
                     }else{
-                      data.Data.AggregatedData.PRICE = utils.formatNumbersCents(data.Data.AggregatedData.PRICE)
-                      data.Data.AggregatedData.LASTVOLUME = utils.USFormat3(data.Data.AggregatedData.LASTVOLUME)
-                      data.Data.AggregatedData.VOLUMEDAY = utils.USFormat3(data.Data.AggregatedData.VOLUMEDAY)
-                      data.Data.AggregatedData.OPENDAY = utils.formatNumbersCents(data.Data.AggregatedData.OPENDAY)
-                      data.Data.AggregatedData.HIGHDAY = utils.formatNumbersCents(data.Data.AggregatedData.HIGHDAY)
-                      data.Data.AggregatedData.LOWDAY = utils.formatNumbersCents(data.Data.AggregatedData.LOWDAY)
-                      data.Data.AggregatedData.CHANGEPCTDAY >= 0 ? data.Data.AggregatedData.POSITIVE = true : data.Data.AggregatedData.POSITIVE = false
-                      data.Data.AggregatedData.CHANGEPCTDAY = utils.USFormat2(data.Data.AggregatedData.CHANGEPCTDAY) + '%'
+                      result.AggregatedData.PRICE = utils.formatNumbersCents(result.AggregatedData.PRICE)
+                      result.AggregatedData.LASTVOLUME = utils.USFormat3(result.AggregatedData.LASTVOLUME)
+                      result.AggregatedData.VOLUMEDAY = utils.USFormat3(result.AggregatedData.VOLUMEDAY)
+                      result.AggregatedData.OPENDAY = utils.formatNumbersCents(result.AggregatedData.OPENDAY)
+                      result.AggregatedData.HIGHDAY = utils.formatNumbersCents(result.AggregatedData.HIGHDAY)
+                      result.AggregatedData.LOWDAY = utils.formatNumbersCents(result.AggregatedData.LOWDAY)
+                      result.AggregatedData.CHANGEPCTDAY >= 0 ? result.AggregatedData.POSITIVE = true : result.AggregatedData.POSITIVE = false
+                      result.AggregatedData.CHANGEPCTDAY = utils.USFormat2(result.AggregatedData.CHANGEPCTDAY) + '%'
                       
-                      coins[key].coinInfo = data.Data.AggregatedData
+                      coins[key].coinInfo = result.AggregatedData
 
-                      data.Data.Exchanges.map( (exchange) => {
+                      result.Exchanges.map( (exchange) => {
                         exchange.RAWPRICE = exchange.PRICE
                         exchange.RAWVOLUME = exchange.VOLUME24HOUR
                         exchange.PRICE = utils.formatNumbersCents(exchange.PRICE)
@@ -365,7 +318,7 @@ export const store = new Vuex.Store({
                         exchange.CHANGEPCT24HOUR >= 0 ? exchange.POSITIVE = true : exchange.POSITIVE = false
                         exchange.CHANGEPCT24HOUR = utils.USFormat2(exchange.CHANGEPCT24HOUR) + '%'
                       })
-                      coins[key].exchanges = data.Data.Exchanges
+                      coins[key].exchanges = result.Exchanges
                     } 
                   return data  
                 })
@@ -386,6 +339,28 @@ export const store = new Vuex.Store({
     }    
   },
   actions: {
+    FETCH_MARKET({ commit }){
+      let url = 'https://api.coinmarketcap.com/v2/global/'
+      let proxyUrl = 'https://cors-anywhere.herokuapp.com/'
+
+      axios.get(url)
+      .then(data => {
+        commit('setMarketSummary', data.data.data)
+      })
+
+    },
+    FETCH_TOP_COINS({ commit }){
+      let currency = 'AUD';
+      let limitCoins = '5'
+      let url = `https://api.coinmarketcap.com/v1/ticker/?convert=${currency}&limit=${limitCoins}`
+      let proxyUrl = 'https://cors-anywhere.herokuapp.com/'
+      
+      axios.get(url)
+      .then(function(data){ 
+        let responseData = data.data;
+        commit('setTopCoins', responseData)
+      })
+    },
     FETCH_USER_EXCHANGES({ commit, state }){
       const db = firebaseApp.firestore();
       const exchanges = db.collection('userExchanges');

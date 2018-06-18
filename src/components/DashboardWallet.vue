@@ -332,9 +332,6 @@ export default {
     },
     orderHistoryPairs: function(newValue){
       this.fetchOrderHistory(newValue);
-    },
-    orderHistory: (newValue) => {
-      
     }
   },
   computed:{
@@ -343,9 +340,11 @@ export default {
       return coinId
     },
     getDisplayCurrencyValue: function(){
-      console.log(this.userBalance)
-      const coinId = this.shortNamesCoins.filter((coin) => coin.name.toUpperCase() === this.sellCoinsValue.toUpperCase())[0].id
-      const balance = this.userBalance.filter(coin => coin.currency.toUpperCase() === coinId.toUpperCase())[0].balance
+      let balance = 0;
+      if(this.userBalance.length > 0){
+        const coinId = this.shortNamesCoins.filter((coin) => coin.name.toUpperCase() === this.sellCoinsValue.toUpperCase())[0].id
+        balance = this.userBalance.filter(coin => coin.currency.toUpperCase() === coinId.toUpperCase())[0].balance
+      }
       return balance
     },
     buyAvailable: function (){
@@ -416,9 +415,6 @@ export default {
                           orderSide: 'Ask',
                           orderType: this.sellOrderType});
       }
-
-      console.log(params);
-
       BtcMarketsAPI.createOrder(params)
       .then((response) => {
         return response.json()
@@ -448,19 +444,16 @@ export default {
       BtcMarketsAPI.getBalance(params)
       .then(response => response.json())
       .then((response) => {
-        console.log(response)
         this.userBalance = response
       })
       .catch((error) => {
         console.log(error);
-        /* this.error = error.message */
       })
       .finally(() => {
         this.loading1 = false;
       });
     },
     fetchOrderHistory: function(pairs){
-      let blabla = [];
       let orders = [];
       let flattenedOrder=[]
       pairs.map((pair) =>{
@@ -470,6 +463,7 @@ export default {
                 BtcMarketsAPI.getOrderHistory(params)
                   .then(response => response.json())
                   .then((response) =>{
+                    console.log(response);
                     let orders = response.map((order)=>{
                       if(order){//if not null
                         //Add some info from order to the order trades
@@ -511,7 +505,6 @@ export default {
       console.log(flattenedOrder)  */
     },
     defineBuyParams: ()=>{
-      console.log(params);
       return params;
     }
   },

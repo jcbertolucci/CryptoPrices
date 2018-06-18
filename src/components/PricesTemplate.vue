@@ -3,10 +3,10 @@
     <div class="titles">
       <h2>Markets</h2>
       <h4>
-        <span class="field-title">Cryptocurrencies</span> <span class="field-value">1604</span>
-        <span class="field-title">Markets:</span> <span class="field-value">10837</span>
-        <span class="field-title">Market Cap:</span> <span class="field-value">$15.6789987,00</span>
-        <span class="field-title">24h Volume:</span> <span class="field-value">$15.6789987,00</span>
+        <span class="field-title">Cryptocurrencies</span> <span class="field-value">{{marketSummary.active_cryptocurrencies}}</span>
+        <span class="field-title">Markets:</span> <span class="field-value">{{marketSummary.active_markets}}</span>
+        <span class="field-title">Market Cap:</span> <span class="field-value">${{formatNumbers(marketSummary.quotes.USD.total_market_cap)}}</span>
+        <span class="field-title">24h Volume:</span> <span class="field-value">${{formatNumbers(marketSummary.quotes.USD.total_volume_24h)}}</span>
       </h4>
     </div>
     <div id="search-bar-container">
@@ -43,6 +43,7 @@
         :rows-per-page-items="rowsPerPageItems"
         :pagination.sync="pagination"
       >
+      <div><v-progress-linear :indeterminate="true"></v-progress-linear></div>
         <v-flex
           slot="item"
           slot-scope="props"
@@ -98,12 +99,12 @@
               </v-list-tile>
             </v-list> 
             <v-divider></v-divider>
-            <v-list id="exchanges-summary" dense color="white">
+            <!-- <v-list id="exchanges-summary" dense color="white">
               <v-list-tile>
                 <v-list-tile-content class="card-content-left">Cheapest:</v-list-tile-content>
                 <v-list-tile-content class="align-end">BtcMarkets</v-list-tile-content>
               </v-list-tile>
-            </v-list> 
+            </v-list> --> 
           </v-card>
         </v-flex>
       </v-data-iterator>
@@ -112,6 +113,9 @@
 </template>
 
 <script>
+  /* import utils from '../utils/utils.js' */
+  import utils from '../utils/utils.js'
+
   export default {
     data: () => ({
       dialog: false,
@@ -128,6 +132,9 @@
       
     }),
     methods:{
+      formatNumbers: (number) => {
+        return utils.USFormat(Number(number));
+      },
       isNegative: (number)=>{
         let convNumber = 0
         if (typeof number === "string"){
@@ -160,6 +167,12 @@
       }
     },
     computed:{
+      loadingCoin(){
+        return this.$store.getters.loadingCoin;
+      },  
+      marketSummary(){
+        return this.$store.getters.marketSummary;
+      },
       marketCoinItems() {
         let coinsWithExchanges = this.$store.getters.marketCoinItems.filter(coin=> coin.exchanges.length > 0)
         coinsWithExchanges.map((item) => {
@@ -179,6 +192,9 @@
         }
       }
       
+    },
+    created(){
+      console.log(this.marketSummary);
     }  
   }
 </script>

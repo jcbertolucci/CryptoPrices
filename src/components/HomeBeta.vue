@@ -6,12 +6,10 @@
       <div class="bar-left">
         <!--<img src="https://preview.ibb.co/mHADiT/incliti2.png" alt="Incliti">-->
       </div>
-      <div class="bar-center">
-        <v-icon class="icon" color="white">fab fa-bitcoin</v-icon><p>Bitcoin: A$7.8952,00</p>
-        <v-icon class="icon" color="white">fab fa-bitcoin</v-icon><p>Ripple: A$7.8952,00</p>
-        <v-icon class="icon" color="white">fab fa-bitcoin</v-icon><p>Litecoin: A$7.8952,00</p>
-        <v-icon class="icon" color="white">fab fa-bitcoin</v-icon><p>Ethereum: A$7.8952,00</p>
-        <v-icon class="icon" color="white">fab fa-bitcoin</v-icon><p>Bitcoin Cash: A$7.8952,00</p>
+      <div class="bar-center"> 
+        <div class="div-icons" v-for="(coin, index) in topCoins" :key="index">
+          <p color="white--text ">{{coin.name}}: A${{Number(coin.price_aud).toFixed(2)}}</p>
+        </div>
       </div>
       <div class="bar-right">
         <a href="/signin" class="btn-scope btn-awesome" to="/signin">Sign In</a>
@@ -23,7 +21,8 @@
         <div class="start-flex">
           <div class="start-flex-left">
             <h2>Incliti is a <strong>cryptocurrency portfolio and price comparison platform</strong> for traders and non-traders.</h2>
-            <h3>Here you can do wahtever you like using our platform such as charts, comparison e more.</h3>
+            <br>
+            <h3>Here you can do things such as price comparison e trading.</h3>
             <br>
             <br>
             <a href="/signup" class="btn-scope btn-normal btn-bigger">Sign Up</a>
@@ -120,12 +119,24 @@
 </template>
 
 <script>
+import {mapGetters} from 'vuex'
 export default {
-  
+  data(){
+    return{
+    }
+  },
+  computed:{
+    ...mapGetters([
+      'topCoins'      
+    ])
+  },
+  created(){
+  }
 }
 </script>
 
 <style>
+
 
   i{
     color: white;
@@ -327,11 +338,12 @@ export default {
   .bar-center{
     justify-self: center;
   }
-  .bar-center > p{
+  .div-icons > p{
     display: inline;
     color: white;
     padding-left: 5px;
     padding-right: 15px;
+    font-size: 16px;
   }
  
   .bar-center > i::first-child::last-child{
@@ -437,6 +449,50 @@ export default {
     align-content: center;
     color: white;
   }
+  .div-icons{
+    display: inline-block;
+  }
+  @media (max-width: 1260px){
+  .div-icons > p{
+    font-size: 14px;
+  }
+  .bottom-flex-top{width:55%;};
+  h1{
+    font-weight: 700;
+    font-size: 22px;
+    margin:0;
+  }
+  h2{
+    font-size: 32px;
+    font-weight: 300;
+    margin-top: 0;
+  }
+  h3{
+    font-size: 29px;
+    font-weight: 300;
+    margin-top: 0;
+  }
+  h4{
+    font-size: 15px;
+    font-weight: 400;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+  }
+  .container-scope{
+    width: 100%;
+  }
+  .start-flex{
+    grid-gap: 5em 5em;
+    padding: 5% 0;
+  }
+  .middle-flex-center .middle-flex-right > h2{
+    font-weight: 300;
+    font-size: 25px;
+  }
+  .middle-flex-bottom::before{
+    
+  }
+}
   
 </style>
 

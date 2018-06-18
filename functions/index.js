@@ -1,37 +1,104 @@
 const functions = require('firebase-functions');
+const express = require('express');
+const app = express();
+const BTCMarkets = require('btc-markets').default
+const numberConverter = 100000000;
+const cors = require('cors');
 
-// // Create and Deploy Your First Cloud Functions
-// // https://firebase.google.com/docs/functions/write-firebase-functions
-//
-// exports.helloWorld = functions.https.onRequest((request, response) => {
-//  response.send("Hello from Firebase!");
-// });
+var originsWhitelist = [
+  'https://localhost:8081',      //this is my front-end url for development
+  'https://inclitibeta.firebaseapp.com/'
+];
+var corsOptions = {
+  origin: function(origin, callback){
+        var isWhitelisted = originsWhitelist.indexOf(origin) !== -1;
+        callback(null, isWhitelisted);
+  },
+  credentials:true
+}
+// Automatically allow cross-origin requests
+/* app.use(cors()); */
 
-const ONE_HOUR = 3600000
+//BTCMarkets Balance route
+app.get('/btc/balance/', (req, res)=>{
+  const publicKey = decodeURIComponent(req.query.publicKey);
+  const privateKey = decodeURIComponent(req.query.privateKey);
 
-const URL_COIN_MARKET_CAP = "https://api.coinmarketcap.com/v1/ticker/?convert=USD&limit=10"
+  //BTCMarkets API
+  const client = new BTCMarkets(publicKey, privateKey);
 
-var Client = require('node-rest-client').Client;
-var client = new Client();
-
-const admin = require('firebase-admin');
-admin.initializeApp(functions.config().firebase);
-
-exports.fetchCoins = functions.https.onRequest((req, res) => {
-    console.log("Fetching Coin Market Website");
-    return request(URL_COIN_MARKET_CAP)
-        .then(items => console.log(items.name))
-        .then(items => response(res, items, 201))
+  getBalance(client).then((response)=>{
+    res.send(response);
+  })
+  .catch(error => res.send(error)); 
 });
-function request(url) {
-    return new Promise(function (fulfill, reject) {
-        client.get(url, function (data, response) {
-            fulfill(data)
-        })
+
+//BTCMarkets Order History route
+app.get('/btc/orderHistory/', (req, res)=>{
+  const publicKey = req.query.publicKey ? decodeURIComponent(req.query.publicKey) : "";
+  const privateKey = req.query.privateKey ? decodeURIComponent(req.query.privateKey) : "";
+  const currency = req.query.currency ? decodeURIComponent(req.query.currency) : ";"
+  const instrument = req.query.instrument ? decodeURIComponent(req.query.instrument) : "";
+  const limit = req.query.limit ? decodeURIComponent(req.query.limit) : 0;
+  const params = Object.assign({currency, instrument, limit});
+
+  //BTCMarkets API
+  const client = new BTCMarkets(publicKey, privateKey);
+  getOrderHistory(client, params).then((response)=>{
+    console.error(response);
+    res.send(response);
+  })
+  .catch(error => res.send(error)); 
+});
+//BTCMarkets Order History route
+app.get('/btc/createOrder/', (req, res)=>{
+  const publicKey = req.query.publicKey ? decodeURIComponent(req.query.publicKey) : "";
+  const privateKey = req.query.privateKey ? decodeURIComponent(req.query.privateKey) : "";
+  const currency = req.query.currency ? decodeURIComponent(req.query.currency) : ";"
+  const instrument = req.query.instrument ? decodeURIComponent(req.query.instrument) : "";
+  const volume = req.query.volume ? decodeURIComponent(req.query.volume) : 0;
+  const price = req.query.price ? decodeURIComponent(req.query.price) : 0;
+  const orderSide = req.query.orderSide ? decodeURIComponent(req.query.orderSide) : "";
+  const orderType = req.query.orderType ? decodeURIComponent(req.query.orderType) : "";
+  const clientId = req.query.clientId ? decodeURIComponent(req.query.clientId) : "13";
+
+  const params = Object.assign({currency, instrument, volume, price, orderSide, orderType, clientId})
+
+  //BTCMarkets API
+  const client = new BTCMarkets(publicKey, privateKey);
+
+  createOrder(client, params).then((response)=>{
+    res.send(response);
+  })
+  .catch(error => res.send(error)); 
+});
+
+function getBalance(client){
+  return new Promise((resolve) =>{
+    client.getAccountBalances().then((accountBalances) =>{
+      resolve(accountBalances.map(function(currency){
+        currency.balance = (currency.balance / numberConverter);
+        return currency;
+      }))
     })
+    .catch(error => error);
+  })
 }
-function response(res, items, code) {
-    return Promise.resolve(res.status(code)
-        .type('application/json')
-        .send(items))
+function getOrderHistory(client, params){
+  return new Promise((resolve) => {
+    client.getOrderHistory(params.instrument, params.currency, params.limit, null).then((orderHistory) => {
+      console.error(orderHistory);
+      resolve(orderHistory);
+    })
+    .catch(error => error);
+  })  
 }
+function createOrder(client, params){
+  return new Promise((resolve) => {
+    client.createOrder(params.instrument, params.currency, params.price * numberConverter, params.volume * numberConverter, params.orderSide, params.orderType, params.clientId).then((order) => {
+      resolve(order)
+    })
+    .catch(error => error);
+  })
+}
+exports.app = functions.https.onRequest(app);

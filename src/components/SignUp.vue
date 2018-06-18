@@ -15,7 +15,7 @@
             <v-icon >home</v-icon>
           </v-btn>
           <v-layout align-center justify-center>
-            <v-flex xs12 sm8 md4>
+            <v-flex xs12 sm8 md6  >
               <v-layout row id="alert-component" v-if="error">
                   <app-alert @dismissed="onDismissed" :text="error.message"></app-alert>
               </v-layout>

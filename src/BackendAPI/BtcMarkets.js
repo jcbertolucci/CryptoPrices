@@ -9,9 +9,10 @@ export default{
         e.g  publicKey=xxxxxxxx&privateKey=yyyyyyyyyyy
     ===================================================*/
     const paramStr = this.generateUrlParam(params);
+    const proxyUrl = 'https://cors-anywhere.herokuapp.com/'
     
     
-
+    /* const url = `https://us-central1-inclitibeta.cloudfunctions.net/app/btc/balance?${paramStr}` */
     const url = `http://localhost:8082/btc/balance?${paramStr}`;
 
     return fetch(url)
@@ -26,11 +27,16 @@ export default{
         e.g  publicKey=xxxxxxxx&privateKey=yyyyyyyyyyy&instrument=BTC&currency=AUD
     ===================================================*/
     const paramStr = this.generateUrlParam(params);
+    const proxyUrl = 'https://cors-anywhere.herokuapp.com/'
 
+    /* const url = `https://us-central1-inclitibeta.cloudfunctions.net/app/btc/orderHistory?${paramStr}` */
     const url = `http://localhost:8082/btc/orderHistory?${paramStr}`;
 
     return fetch(url)
-      .then(response => response)
+      .then(response => {
+        console.log(response)
+        return response;
+      })
       .catch(error => error)
   },
   createOrder(params){
@@ -42,7 +48,8 @@ export default{
     ===================================================*/
     const paramStr = this.generateUrlParam(params);
     const proxyUrl = 'https://cors-anywhere.herokuapp.com/'
-
+    
+    /* const url = `https://us-central1-inclitibeta.cloudfunctions.net/app/btc/createOrder?${paramStr}`; */
     const url = `http://localhost:8082/btc/createOrder?${paramStr}`;
     
     return fetch(url)

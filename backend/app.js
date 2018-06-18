@@ -1,6 +1,5 @@
 const express = require('express');
-const bodyParser = require('body-parser');
-const path = require('path');
+/* const path = require('path'); */
 const port = 8082;
 const app = express();
 const cors = require('cors')

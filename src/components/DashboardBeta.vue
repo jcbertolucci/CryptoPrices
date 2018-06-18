@@ -157,7 +157,7 @@
       <v-btn dark flat @click.native="hasExchangeAlert = false">Close</v-btn>
     </v-snackbar>
     <v-footer app fixed>
-      <span>Incliti &copy; 2017</span>
+     
     </v-footer>
   </v-app>
 </template>

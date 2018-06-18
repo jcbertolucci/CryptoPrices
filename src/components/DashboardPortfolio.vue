@@ -123,7 +123,6 @@ export default {
         symbol = item.name
         currency = item.currency
         url = `https://min-api.cryptocompare.com/data/top/exchanges/full?fsym=${symbol}&tsym=${currency}`
-        console.log(url)
         fetch(proxyUrl+url)
         .then(response => response.json())
         .then(function(data){ 
@@ -144,7 +143,6 @@ export default {
         })
       })
       /* return this.coinsUser */
-      console.log(array)
       return array
     }
   },
