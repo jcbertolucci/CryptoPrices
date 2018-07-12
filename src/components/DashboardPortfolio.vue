@@ -34,7 +34,7 @@
           <h2 class="primary--text  pl-3 pt-2 pb-2">Portfolio</h2>
         </div>
         <div class="portfolio-menu-right">
-          <<v-btn color="primary">Add Coin</v-btn>
+          <v-btn color="primary">Add Coin</v-btn>
         </div>
       </div>
       <!-- menu -->
