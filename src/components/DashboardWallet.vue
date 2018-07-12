@@ -391,8 +391,9 @@ export default {
     sendOrder: function(from){
       const origin = from.toUpperCase();
       let params;
-
+      console.log(origin);
       switch(origin){
+
         case 'BUY':
           params = Object.assign({},{
                         publicKey: this.btcPublicKey,
@@ -415,6 +416,7 @@ export default {
                           orderSide: 'Ask',
                           orderType: this.sellOrderType});
       }
+      console.log(params)
       BtcMarketsAPI.createOrder(params)
       .then((response) => {
         return response.json()
@@ -431,6 +433,7 @@ export default {
           this.color = 'success'
           this.toastMessage = 'Success - Order Id: ' + json.id;
           this.snackbar = true;
+          this.fetchBalance();
         }
       })
       .catch((error) => {
@@ -564,7 +567,7 @@ export default {
 } 
 .content-middle-card-no-data{
     padding: 10% 10% 10% 10%;
-    font-size: 80px;
+    font-size: 70px;
 }
 .content-middle-card-no-data h6{
     font-size: 25px;

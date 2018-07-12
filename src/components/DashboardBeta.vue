@@ -150,11 +150,11 @@
     </v-content>
     <v-snackbar
       :timeout="6000"
-      color="error"
+      :color="color"
       v-model="hasExchangeAlert"
     >
       {{ exchangeAlert }}
-      <v-btn dark flat @click.native="hasExchangeAlert = false">Close</v-btn>
+      <v-btn dark flat @click.native="closeMessage()">Close</v-btn>
     </v-snackbar>
     <v-footer app fixed>
      
@@ -167,6 +167,7 @@ import {mapGetters} from 'vuex'
 
 export default {
   data: () => ({
+    color: 'error',
     tradesMenu: {
       icon: 'keyboard_arrow_up',
       'icon-alt': 'keyboard_arrow_down',
@@ -246,9 +247,19 @@ export default {
       if(exchange === 'btcmarkets'){
         this.$store.dispatch('ADD_USER_EXCHANGE', this.btcMarkets )
         .then(() => {
-          this.$store.dispatch('FETCH_USER_EXCHANGES')
+          this.btcSheet = false;
+          this.mainSheet = false;
+          this.exchangeAlert = 'BtcMarkets connected to your account!';
+          this.color = 'success';
+          this.hasExchangeAlert = true;
+          this.$store.dispatch('FETCH_USER_EXCHANGES');
         })
       }
+    },
+    closeMessage(){
+      this.hasExchangeAlert = false;
+      this.exchangeAlert = 'This exchange has been added already.';
+      this.color = 'error';
     }
   },
   computed:{

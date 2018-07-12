@@ -15,7 +15,6 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
-    "btc": "file:src/BTC",
     "chart.js": "^2.7.1",
     "chartkick": "^2.2.4",
     "cheerio": "^1.0.0-rc.2",
