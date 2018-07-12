@@ -14,7 +14,7 @@
     "build": "node build/build.js"
   },
   "dependencies": {
-    "btc": "file:src/BTC",
+    "axios": "^0.18.0",
     "chart.js": "^2.7.1",
     "chartkick": "^2.2.4",
     "cheerio": "^1.0.0-rc.2",
@@ -38,7 +38,7 @@
     "vue-model": "^2.0.7",
     "vue-resource": "^1.3.4",
     "vue-router": "^3.0.1",
-    "vuetify": "^1.0.0-beta.6",
+    "vuetify": "^1.0.19",
     "vuetrend": "^0.3.2",
     "vuex": "^3.0.1"
   },

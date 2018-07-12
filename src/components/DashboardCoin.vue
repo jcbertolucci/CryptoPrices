@@ -11,12 +11,12 @@
 </template>
 
 <script>
-  import NewsTemplate from './News.vue'
+  /* import NewsTemplate from './News.vue' */
   import PricesTemplate from './PricesTemplate.vue' 
 
   export default{
     components: {
-      'news-template': NewsTemplate,
+      /* 'news-template': NewsTemplate, */
       'prices-template': PricesTemplate
     }, 
     data(){
@@ -39,13 +39,13 @@
 </script>
 
 <style>
-  #template-coin-parent{
+ /*  #template-coin-parent{
     display: flex;
-    flex-direction: column;
+    flex-direction: coln;um
   }
   #content-coin1{
     flex: 1;
-  }
+  } */
 
 </style>
 

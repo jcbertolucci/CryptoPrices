@@ -1,12 +1,12 @@
 <template>
   <div class="wrapper">
     <div class="titles">
-      <h2>Coins</h2>
+      <h2>Markets</h2>
       <h4>
-        <span class="field-title">Cryptocurrencies</span> <span class="field-value">1604</span>
-        <span class="field-title">Markets:</span> <span class="field-value">10837</span>
-        <span class="field-title">Market Cap:</span> <span class="field-value">$15.6789987,00</span>
-        <span class="field-title">24h Volume:</span> <span class="field-value">$15.6789987,00</span>
+        <span class="field-title">Cryptocurrencies</span> <span class="field-value">{{marketSummary.active_cryptocurrencies}}</span>
+        <span class="field-title">Markets:</span> <span class="field-value">{{marketSummary.active_markets}}</span>
+        <span class="field-title">Market Cap:</span> <span class="field-value">${{formatNumbers(marketSummary.quotes.USD.total_market_cap)}}</span>
+        <span class="field-title">24h Volume:</span> <span class="field-value">${{formatNumbers(marketSummary.quotes.USD.total_volume_24h)}}</span>
       </h4>
     </div>
     <div id="search-bar-container">
@@ -43,6 +43,7 @@
         :rows-per-page-items="rowsPerPageItems"
         :pagination.sync="pagination"
       >
+      <div><v-progress-linear :indeterminate="true"></v-progress-linear></div>
         <v-flex
           slot="item"
           slot-scope="props"
@@ -67,7 +68,7 @@
               </v-list-tile>
               <v-list-tile>
                 <v-list-tile-content class="card-content-left">Change day(%):</v-list-tile-content>
-                <v-list-tile-content v-if="isNegative(props.item.coinInfo.CHANGEPCTDAY)" class="card-content-right-smaller align-end red--text">{{ props.item.coinInfo.CHANGEPCTDAY }}</v-list-tile-content>
+                <v-list-tile-content v-if="isNegative(props.item.coinInfo.CHANGEPCTDAY)" class="card-content-right-smaller align-end red-text">{{ props.item.coinInfo.CHANGEPCTDAY }}</v-list-tile-content>
                 <v-list-tile-content v-else-if="!isNegative(props.item.coinInfo.CHANGEPCTDAY)" class="card-content-right-smaller align-end green--text">{{ props.item.coinInfo.CHANGEPCTDAY }}</v-list-tile-content>
               </v-list-tile>
               <v-list-tile>
@@ -82,30 +83,28 @@
                 <v-list-tile-content class="card-content-left">Volume Day:</v-list-tile-content>
                 <v-list-tile-content class="card-content-right-smaller align-end">{{ props.item.coinInfo.VOLUMEDAY }}</v-list-tile-content>
               </v-list-tile>
-              <!-- <v-card-title><h4>Chart</h4></v-card-title>
-              <v-divider></v-divider>
-              <v-list-tile>
-                <v-list-tile-content>To be implemented</v-list-tile-content>
-                <v-list-tile-content class="align-end">{{ props.item.iron }}</v-list-tile-content>
-              </v-list-tile> -->
             </v-list>
             <v-divider></v-divider>
             <br>
             <!--EXCHANGES -->
-            <h3>Exchanges</h3>
+            <h3 class="pl-3">Exchanges</h3>
             <v-list id="exchanges-list" dense>
               <v-list-tile v-for="item in props.item.exchanges" :key="item.MARKET">
                 <v-list-tile-content class="card-content-left">{{ item.MARKET }}</v-list-tile-content>
+                <v-spacer></v-spacer>
+                <v-spacer></v-spacer>
+                <v-spacer></v-spacer>
+                <v-list-tile-content v-if="item.MARKET.toUpperCase() === 'BTCMARKETS'"><v-btn color="green" small outline>Buy</v-btn></v-list-tile-content>  
                 <v-list-tile-content class="card-content-right-smaller align-end">{{ item.PRICE }}</v-list-tile-content>
               </v-list-tile>
             </v-list> 
             <v-divider></v-divider>
-            <v-list id="exchanges-summary" dense>
+            <!-- <v-list id="exchanges-summary" dense color="white">
               <v-list-tile>
                 <v-list-tile-content class="card-content-left">Cheapest:</v-list-tile-content>
                 <v-list-tile-content class="align-end">BtcMarkets</v-list-tile-content>
               </v-list-tile>
-            </v-list> 
+            </v-list> --> 
           </v-card>
         </v-flex>
       </v-data-iterator>
@@ -114,6 +113,9 @@
 </template>
 
 <script>
+  /* import utils from '../utils/utils.js' */
+  import utils from '../utils/utils.js'
+
   export default {
     data: () => ({
       dialog: false,
@@ -122,13 +124,17 @@
         {name: 'Australian Dollar', symbol: 'AUD'},
         {name: 'American Dollar', symbol: 'USD'}
       ],
-      rowsPerPageItems: [5],
+      rowsPerPageItems: [],
       pagination: {
+        /* rowsPerPage: 100 */
         rowsPerPage: 100
       }
       
     }),
     methods:{
+      formatNumbers: (number) => {
+        return utils.USFormat(Number(number));
+      },
       isNegative: (number)=>{
         let convNumber = 0
         if (typeof number === "string"){
@@ -161,6 +167,12 @@
       }
     },
     computed:{
+      loadingCoin(){
+        return this.$store.getters.loadingCoin;
+      },  
+      marketSummary(){
+        return this.$store.getters.marketSummary;
+      },
       marketCoinItems() {
         let coinsWithExchanges = this.$store.getters.marketCoinItems.filter(coin=> coin.exchanges.length > 0)
         coinsWithExchanges.map((item) => {
@@ -180,6 +192,9 @@
         }
       }
       
+    },
+    created(){
+      console.log(this.marketSummary);
     }  
   }
 </script>
@@ -215,22 +230,18 @@
   /* color: rgba(247, 241, 241, 0.473) */
 }
 .field-title{  
-  font-size: 15px;
+  font-size: 17px;
   padding-left: 10px;
-  color: rgb(100, 100, 100);
+  font-weight: 300;
 }
 .field-value{  
   font-size: 20px;
-  font-weight: 600;
-  color: #DD2C00;
-}
-.card{
-  height: 900px;
+  font-weight: 400;
+  color: rgb(255, 40, 2);
 }
 .card-content-left{
   font-size: 13px;
-  font-weight: 600;
-  color: rgb(100, 100, 100);
+  font-weight: 400;
 }
 .card-content-right-bigger{
   font-size: 18px;
@@ -240,26 +251,22 @@
   font-size: 14px;
   font-weight: 500;
 }
-#exchanges-list .card-content-left{
-  font-size: 14px;
-  font-weight: 600;
-  color: black;
+.red-text{
+  color: rgb(241, 63, 19);
 }
 #exchanges-summary .align-end{
   font-size: 15px;
   font-weight: 600;
-  color: #DD2C00;
 }
 #card{
   margin-bottom: 15px;
 }
-#container h3{
-  font-size: 17px;
+h3{
+  font-size: 20px;
   font-weight: 600;
 }
 #container h2{
-  font-size: 19px;
-  font-weight: 600;
+  font-size: 24px;
 }
 </style>
 

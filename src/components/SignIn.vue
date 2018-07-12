@@ -15,33 +15,16 @@
             <v-icon >home</v-icon>
           </v-btn>
           <v-layout align-center justify-center>
-            <!-- <v-snackbar
-              :timeout="10000"
-              :top="true"
-              v-model="activateMsgSnack"
-            >
-              {{ firebaseMsg }}
-               <v-btn flat color="pink" @click="redirectUser">Close</v-btn> 
-              <v-btn flat color="pink">Close</v-btn>
-            </v-snackbar>   -->
-            <!-- <v-layout row id="alert-component" v-if="error">
-                <v-flex xs12 sm6 offset-sm3>
-                  <app-alert @dismissed="onDismissed" :text="error.message"></app-alert>
-                </v-flex>
-              </v-layout> -->
-            <v-flex xs12 sm8 md4>
-              
+            <v-flex xs12 sm8 md6>
               <v-layout row id="alert-component" v-if="error">
                   <app-alert @dismissed="onDismissed" :text="error.message"></app-alert>
               </v-layout>
-
               <v-form v-model="valid" ref="form" lazy-validation>
                 <v-card class="elevation-12" align-center>
                   <v-toolbar dark color="primary">
                     <v-toolbar-title>Log In</v-toolbar-title>
                   </v-toolbar>
                   <v-card-text>
-                    
                     </v-snackbar>
                     <v-form>
                       <v-progress-circular v-if="loading" indeterminate :size="50" color="primary"></v-progress-circular>
@@ -50,9 +33,6 @@
 
                       <v-text-field prepend-icon="lock" name="password" label="Password" id="password" type="password" v-model="password" :rules="[v => !!v || 'Item is required']"
                                     required></v-text-field>
-
-                     <!--  <v-text-field prepend-icon="lock" name="password" label="Confirm Password" id="confirmPassword" type="password" v-model="passwordConf" :rules="[v => !!v || 'Item is required']" 
-                                    required></v-text-field> -->
                     </v-form>
                   </v-card-text>
                   </v-btn>
@@ -125,7 +105,7 @@ import {mapGetters} from 'vuex'
       user(value) {
         if(value !== null && value !== undefined) {
           /* this.$router.push('/portfolio') */
-          this.$router.push('/dashboard')
+          this.$router.push('/dashboard/coin')
         }
       },
       firebaseMsg(value){
