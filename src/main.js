@@ -3,7 +3,6 @@
 import Vue from 'vue'
 import App from './App'
 import VueResource from 'vue-resource'
-import VueChart from 'vue-chart-js'
 import Vuetify from 'vuetify'
 import('../node_modules/vuetify/dist/vuetify.min.css') // Ensure you are using css-loader
 import Vuex from 'vuex'
@@ -14,7 +13,7 @@ import router from './router/router'
 import colors from 'vuetify/es5/util/colors'
 import AlertComp from './components/Shared/Alert.vue'
 
-Vue.config.productionTip = true
+Vue.config.productionTip = false
 
 Vue.component('app-alert', AlertComp)
 
