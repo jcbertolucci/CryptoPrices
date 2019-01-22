@@ -37,8 +37,5 @@ new Vue({
   router,
   el: '#app',
   template: '<App/>',
-  components: {App},
-  created(){
-
-  }  
+  components: {App}
 })
