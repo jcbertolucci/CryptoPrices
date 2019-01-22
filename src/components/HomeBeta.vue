@@ -137,7 +137,6 @@ export default {
 
 <style>
 
-
   i{
     color: white;
     font-size: 30px;
