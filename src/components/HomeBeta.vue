@@ -75,7 +75,7 @@
               <div class="rounded-div tech-right"></div>
             </div>
             <div class="bottom-flex-bottom">
-              <a class="logo" href="https://github.com/bertolucci1985/CryptoPrices" target="_blank"> <i class="fab fa-github"></i></a>
+              <a class="logo" href="https://github.com/jcbertolucci/CryptoPrices" target="_blank"> <i class="fab fa-github"></i></a>
             </div>
             <div class="bottom-flex-bottom-farther"><p>Check out on Github!</p></div>
           </div>
@@ -489,9 +489,7 @@ export default {
     font-weight: 300;
     font-size: 25px;
   }
-  .middle-flex-bottom::before{
-    
-  }
+
 }
   
 </style>

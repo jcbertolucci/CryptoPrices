@@ -166,9 +166,6 @@ export default {
   justify-items: center;
   text-align: center;
 }
-.portfolio-table{
-  
-}
 .summary-data h2{
   font-size: 28px;
   padding-bottom: 4%;
