@@ -8,9 +8,7 @@
 As the project grew bigger, an important feature has been added to it, the real-time cryptocurrency trading, where you can buy and/or sell cryptocurrency through the Australian exchange BTCMarkets by using your trader account.
 
 ## Screenshots
-> lkfajflakjflkaj fa;lfka;lfka;
-jdfhakjhdakjfhkjfdhfdkajhfhkjadhjkfhkjdhdakjhfda
-fdkjdhfakjfdhkjfdahjk
+> ![Image of Yaktocat](https://octodex.github.com/images/yaktocat.png)
 
 ## Built With
 
