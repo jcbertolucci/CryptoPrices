@@ -17,7 +17,8 @@ fdkjdhfakjfdhkjfdahjk
 * [Vue.js](https://vuejs.org/) - The Progressive JavaScript Framework
 * [Vuetify](https://vuetifyjs.com/en/) - Material Design Component Framework
 * [Firebase](https://firebase.google.com/) - Google's development platform
-* [Firebase](https://firebase.google.com/)
+
+## Acknowledgments
 
 ## Build Setup
 
