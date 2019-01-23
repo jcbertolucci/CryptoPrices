@@ -12,6 +12,12 @@ As the project grew bigger, an important feature has been added to it, the real-
 
 > ![Image of Coin](https://github.com/jcbertolucci/CryptoPrices/blob/master/localhost_8081_coin.png)
 
+> ![Image of Exchange](https://github.com/jcbertolucci/CryptoPrices/blob/master/localhost_8081_exchange_trade_btcMarkets.png)
+
+> ![Image of Portfolio](https://github.com/jcbertolucci/CryptoPrices/blob/master/localhost_8081_portfolio.png)
+
+> ![Image of Portfolio](https://github.com/jcbertolucci/CryptoPrices/blob/master/localhost_8081_addexchange.png)
+
 ## Built With
 
 * [Vue.js](https://vuejs.org/) - The Progressive JavaScript Framework
