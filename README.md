@@ -10,6 +10,8 @@ As the project grew bigger, an important feature has been added to it, the real-
 ## Screenshots
 > ![Image of Home](https://github.com/jcbertolucci/CryptoPrices/blob/master/localhost_8081_.png)
 
+> ![Image of Home](https://github.com/jcbertolucci/CryptoPrices/blob/master/localhost_8081_.png)
+
 ## Built With
 
 * [Vue.js](https://vuejs.org/) - The Progressive JavaScript Framework
