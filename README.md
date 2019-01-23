@@ -8,6 +8,16 @@
 As the project grew bigger, an important feature has been added to it, the real-time cryptocurrency trading, where you can buy and/or sell cryptocurrency through the Australian exchange BTCMarkets by using your trader account.
 
 ## Screenshots
+> lkfajflakjflkaj fa;lfka;lfka;
+jdfhakjhdakjfhkjfdhfdkajhfhkjadhjkfhkjdhdakjhfda
+fdkjdhfakjfdhkjfdahjk
+
+## Built With
+
+* [Vue.js](https://vuejs.org/) - The Progressive JavaScript Framework
+* [Vuetify](https://vuetifyjs.com/en/) - Material Design Component Framework
+* [Firebase](https://firebase.google.com/) - Google's development platform
+* [Firebase](https://firebase.google.com/)
 
 ## Build Setup
 
