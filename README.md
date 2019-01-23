@@ -7,6 +7,8 @@
 > The original idea behind the project was to gather cryptocurrencies prices from several exchanges around the world in one place. 
 As the project grew bigger, an important feature has been added to it, the real-time cryptocurrency trading, where you can buy and/or sell cryptocurrency through the Australian exchange BTCMarkets by using your trader account.
 
+## Screenshots
+
 ## Build Setup
 
 ``` bash
