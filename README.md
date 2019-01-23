@@ -14,7 +14,7 @@ As the project grew bigger, an important feature has been added to it, the real-
 * [Firebase](https://firebase.google.com/) - Google's development platform
 
 ## Acknowledgments
-This project's helped me to improve some and learn others tecnologies from scratch including HTML/CSS/JavaScript, Vue.js, NoSql Databases, State Management and Design Patterns.
+This project's helped me to improve some and learn other technologies from scratch including HTML/CSS/JavaScript, Vue.js, NoSql Databases, State Management and Design Patterns.
 
 ## Build Setup
 
