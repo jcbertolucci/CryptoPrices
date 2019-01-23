@@ -7,17 +7,6 @@
 > The original idea behind the project was to gather cryptocurrencies prices from several exchanges around the world in one place. 
 As the project grew bigger, an important feature has been added to it, the real-time cryptocurrency trading, where you can buy and/or sell cryptocurrency through the Australian exchange BTCMarkets by using your trader account.
 
-## Screenshots
-> ![Image of Home](https://github.com/jcbertolucci/CryptoPrices/blob/master/localhost_8081_.png)
-
-> ![Image of Coin](https://github.com/jcbertolucci/CryptoPrices/blob/master/localhost_8081_coin.png)
-
-> ![Image of Exchange](https://github.com/jcbertolucci/CryptoPrices/blob/master/localhost_8081_exchange_trade_btcMarkets.png)
-
-> ![Image of Portfolio](https://github.com/jcbertolucci/CryptoPrices/blob/master/localhost_8081_portfolio.png)
-
-> ![Image of Portfolio](https://github.com/jcbertolucci/CryptoPrices/blob/master/localhost_8081_addexchange.png)
-
 ## Built With
 
 * [Vue.js](https://vuejs.org/) - The Progressive JavaScript Framework
@@ -35,3 +24,14 @@ npm install
 
 # serve with hot reload at localhost:8080
 npm run dev
+```
+## Screenshots
+> ![Image of Home](https://github.com/jcbertolucci/CryptoPrices/blob/master/localhost_8081_.png)
+
+> ![Image of Coin](https://github.com/jcbertolucci/CryptoPrices/blob/master/localhost_8081_coin.png)
+
+> ![Image of Exchange](https://github.com/jcbertolucci/CryptoPrices/blob/master/localhost_8081_exchange_trade_btcMarkets.png)
+
+> ![Image of Portfolio](https://github.com/jcbertolucci/CryptoPrices/blob/master/localhost_8081_portfolio.png)
+
+> ![Image of Portfolio](https://github.com/jcbertolucci/CryptoPrices/blob/master/localhost_8081_addexchange.png)
